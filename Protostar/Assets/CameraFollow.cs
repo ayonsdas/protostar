@@ -91,16 +91,26 @@ public class CameraFollow : MonoBehaviour
             }
         }
 
-        // Calculate rotation based on player's forward direction + camera angles
-        Quaternion rotation = target.rotation * Quaternion.Euler(verticalAngle, horizontalAngle, 0f);
+        // Calculate camera rotation offset in local space
+        Quaternion localRotation = Quaternion.Euler(verticalAngle, horizontalAngle, 0f);
         
-        // Calculate desired position
-        Vector3 desiredPosition = target.position + rotation * offset;
+        // Apply rotation to the base offset in local space
+        Vector3 rotatedOffset = localRotation * offset;
+        
+        // Transform everything to world space using player's rotation
+        Vector3 worldOffset = target.TransformDirection(rotatedOffset);
+        Vector3 desiredPosition = target.position + worldOffset;
 
-        // Use SmoothDamp for jitter-free camera following
+        // Smoothly move camera
         transform.position = Vector3.SmoothDamp(transform.position, desiredPosition, ref velocity, smoothTime);
 
-        // Always look at the player
-        transform.LookAt(target);
+        // Camera rotation should also be relative to player
+        // The camera's forward should point at the player, but its up should align with player's up
+        Vector3 directionToTarget = target.position - transform.position;
+        if (directionToTarget.sqrMagnitude > 0.01f)
+        {
+            Quaternion lookRotation = Quaternion.LookRotation(directionToTarget, target.up);
+            transform.rotation = lookRotation;
+        }
     }
 }
