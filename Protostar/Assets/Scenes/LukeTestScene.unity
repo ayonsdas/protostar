@@ -426,6 +426,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fbe7004d309688d4c9978c7c66728aa5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  shiftCooldown: 0.25
   states:
   - Name: Large
     StateRoot: {fileID: 766405322}
@@ -453,7 +454,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3afde547402154b69895e1eddc6c8d1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInteractor
-  range: 4
+  range: 10
   interactableMask:
     serializedVersion: 2
     m_Bits: 64

@@ -1,4 +1,5 @@
 using UnityEngine;
+using Game.Objects.Shift;
 
 public class ShiftableObject : MonoBehaviour, IFocusable, IEngageable, IShiftable
 {
