@@ -8,38 +8,43 @@ public class Interactor : MonoBehaviour
     [SerializeField] private Transform origin;
 
     public IEngageable Engaged;
-    public IInteractable Hovered;
+    public IInteractable HoveredInteractable;
+    public IEngageable HoveredEngagable;
     public IFocusable Focused;
 
-    void Update()
+    public virtual void Update()
     {
         Cast();
     }
 
-    void Cast()
+    private void Cast()
     {
-        IInteractable newHovered = null;
+        IInteractable newHoveredInteractable = null;
+        IEngageable newHoveredEngagable = null;
         IFocusable newFocused = null;
 
 
         if (Physics.Raycast(origin.position, origin.forward, out var hit, range, interactableMask))
         {
-            newHovered = hit.collider.GetComponentInParent<IInteractable>();
+            newHoveredInteractable = hit.collider.GetComponentInParent<IInteractable>();
+            newHoveredEngagable = hit.collider.GetComponentInParent<IEngageable>();
             newFocused = hit.collider.GetComponentInParent<IFocusable>();
         }
 
         if (newFocused != Focused)
         {
-            Focused.Unfocus(gameObject);
-            newFocused.Focus(gameObject);
+            Focused?.Unfocus(gameObject);
+            newFocused?.Focus(gameObject);
             Focused = newFocused;
         }
+
+        HoveredInteractable = newHoveredInteractable;
+        HoveredEngagable = newHoveredEngagable;
     }
 
 
     public void Interact()
     {
-        // Engage or disengage
         if (Engaged != null)
         {
             Engaged.Disengage(gameObject);
@@ -47,15 +52,13 @@ public class Interactor : MonoBehaviour
             return;
         }
 
-        if (Hovered is IEngageable engageable)
+        if (HoveredEngagable != null)
         {
-            engageable.Engage(gameObject);
-            Engaged = engageable;
+            HoveredEngagable.Engage(gameObject);
+            Engaged = HoveredEngagable;
         }
-        else
-        {
-            Hovered?.Interact(gameObject);
-        }
+
+        HoveredInteractable?.Interact(gameObject);
     }
 
     public void Scroll(int direction)

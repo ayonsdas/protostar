@@ -3,13 +3,27 @@ using UnityEngine;
 public class ShiftableObject : MonoBehaviour, IFocusable, IEngageable, IShiftable
 {
 
+    [SerializeField] private float shiftCooldown = 0.25f;
     [SerializeField] private ShiftState[] states;
+
+    private float _lastShiftTime;
     private int _stateIndex = 0;
     private bool _engaged;
 
     public void Shift(int direction)
     {
+
+        if (Time.time < _lastShiftTime + shiftCooldown) return;
+        _lastShiftTime = Time.time;
+
+        if (!_engaged) return;
+
         int newIndex = (_stateIndex + direction) % states.Length;
+
+        // Needed to fix negative modulo since -1 % 5 = -1 in C#
+        newIndex = (newIndex + states.Length) % states.Length;
+        ChangeState(newIndex);
+        Debug.Log("Shifted to " + newIndex);
     }
 
     private void DisableStates()
