@@ -11,6 +11,7 @@ public class Interactor : MonoBehaviour
     public IInteractable HoveredInteractable;
     public IEngageable HoveredEngagable;
     public IFocusable Focused;
+    public IPickupable HoveredPickupable;
 
     public virtual void Update()
     {
@@ -22,6 +23,7 @@ public class Interactor : MonoBehaviour
         IInteractable newHoveredInteractable = null;
         IEngageable newHoveredEngagable = null;
         IFocusable newFocused = null;
+        IPickupable newHoveredPickupable = null;
 
 
         if (Physics.Raycast(origin.position, origin.forward, out var hit, range, interactableMask))
@@ -29,6 +31,7 @@ public class Interactor : MonoBehaviour
             newHoveredInteractable = hit.collider.GetComponentInParent<IInteractable>();
             newHoveredEngagable = hit.collider.GetComponentInParent<IEngageable>();
             newFocused = hit.collider.GetComponentInParent<IFocusable>();
+            newHoveredPickupable = hit.collider.GetComponentInParent<IPickupable>();
         }
 
         if (newFocused != Focused)
@@ -40,6 +43,7 @@ public class Interactor : MonoBehaviour
 
         HoveredInteractable = newHoveredInteractable;
         HoveredEngagable = newHoveredEngagable;
+        HoveredPickupable = newHoveredPickupable;
     }
 
 

@@ -11,6 +11,9 @@ GameObject:
   - component: {fileID: 4565624785422257827}
   - component: {fileID: 6951703177755471425}
   - component: {fileID: 273618132832200177}
+  - component: {fileID: 3745304208072338311}
+  - component: {fileID: -1692692842700892328}
+  - component: {fileID: -8759014368314150059}
   m_Layer: 6
   m_Name: ShiftableBox
   m_TagString: Untagged
@@ -61,6 +64,44 @@ MonoBehaviour:
     StateRoot: {fileID: 5767505249484571793}
   - Name: Small
     StateRoot: {fileID: 7198929871257860008}
+--- !u!114 &3745304208072338311
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4844590438133902822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbabac6e8fc84beea9ad4c696cd728f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SimpleFocusable
+--- !u!114 &-1692692842700892328
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4844590438133902822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c1298f5aa55770c49ad32eaf25dd805, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ColorFocusEffect
+  _baseObject: {fileID: 4844590438133902822}
+  _newColor: {r: 1, g: 0, b: 0, a: 0}
+--- !u!114 &-8759014368314150059
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4844590438133902822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eaa05bdc8e163c049b9dda697f2c4642, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PickupableObject
 --- !u!1 &5767505249484571793
 GameObject:
   m_ObjectHideFlags: 0
