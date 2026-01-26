@@ -1,16 +1,26 @@
 using UnityEngine;
 
-public class SimpleFocusable : MonoBehaviour
+public class SimpleFocusable : MonoBehaviour, IFocusable
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private IFocusEffect[] _focusEffects;
+
+    public void Start()
     {
-        
+        _focusEffects = gameObject.GetComponents<IFocusEffect>();
+    }
+    public void Focus(GameObject interactor)
+    {
+        foreach (IFocusEffect focusEffect in _focusEffects)
+        {
+            focusEffect.OnFocus();
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Unfocus(GameObject interactor)
     {
-        
+        foreach (IFocusEffect focusEffect in _focusEffects)
+        {
+            focusEffect.OnUnfocus();
+        }
     }
 }

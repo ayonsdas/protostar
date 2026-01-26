@@ -1,7 +1,7 @@
 using UnityEngine;
 using Game.Objects.Shift;
 
-public class ShiftableObject : MonoBehaviour, IFocusable, IEngageable, IShiftable
+public class ShiftableObject : MonoBehaviour, IEngageable, IShiftable
 {
 
     [SerializeField] private float shiftCooldown = 0.25f;
@@ -46,16 +46,6 @@ public class ShiftableObject : MonoBehaviour, IFocusable, IEngageable, IShiftabl
     {
         DisableStates();
         ChangeState(0);
-    }
-
-    public void Focus(GameObject interactor)
-    {
-        Debug.Log("Focused on object " + this.gameObject.name);
-    }
-
-    public void Unfocus(GameObject interactor)
-    {
-        Debug.Log("Unfocused on object " + this.gameObject.name);
     }
 
     public void Engage(GameObject interactor)
