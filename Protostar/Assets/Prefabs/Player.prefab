@@ -162,7 +162,7 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
-  gravityRotationSpeed: 2
+  gravityRotationSpeed: 15
 --- !u!54 &8402902860222378733
 Rigidbody:
   m_ObjectHideFlags: 0

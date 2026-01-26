@@ -12,7 +12,8 @@ public class PlayerController : MonoBehaviour
     public float jumpForce = 5f;
     public float groundCheckRadius = 0.3f;
     public Transform groundCheck; // Create an empty child object at player's feet
-    public LayerMask groundLayer = -1; // Default to everything
+    [Tooltip("Layers to check for ground. Set to 'Everything' to jump off any object, or specific layers to limit what counts as ground.")]
+    public LayerMask groundLayer = ~0; // Default to all layers (~0 = everything)
 
     [Header("Gravity Rotation Settings")]
     public float gravityRotationSpeed = 2f; // How fast player rotates to match gravity
