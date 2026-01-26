@@ -132,7 +132,7 @@ GameObject:
   - component: {fileID: 146963966}
   - component: {fileID: 146963965}
   - component: {fileID: 146963964}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: State_Small
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -383,7 +383,8 @@ GameObject:
   - component: {fileID: 612239040}
   - component: {fileID: 612239042}
   - component: {fileID: 612239044}
-  - component: {fileID: 612239043}
+  - component: {fileID: 612239045}
+  - component: {fileID: 612239046}
   m_Layer: 6
   m_Name: ShiftableBox
   m_TagString: Untagged
@@ -434,20 +435,6 @@ MonoBehaviour:
     StateRoot: {fileID: 766405322}
   - Name: Small
     StateRoot: {fileID: 146963963}
---- !u!114 &612239043
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 612239036}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c1298f5aa55770c49ad32eaf25dd805, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ColorFocusEffect
-  _baseObject: {fileID: 612239036}
-  _newColor: {r: 1, g: 0, b: 0, a: 0}
 --- !u!114 &612239044
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -460,6 +447,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbabac6e8fc84beea9ad4c696cd728f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SimpleFocusable
+--- !u!114 &612239045
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 612239036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5938b7bb399d38c5aa4dd5462d18e74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineFocusEffect
+  _baseObject: {fileID: 612239036}
+  _outlineMaterial: {fileID: 2100000, guid: 7ef39ac0db4f9827e84d8911875640d5, type: 2}
+--- !u!135 &612239046
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 612239036}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 3
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &698404313 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 39550120540274030, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
@@ -500,7 +522,7 @@ GameObject:
   - component: {fileID: 766405325}
   - component: {fileID: 766405324}
   - component: {fileID: 766405323}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: State_Large
   m_TagString: Untagged
   m_Icon: {fileID: 0}
