@@ -1,0 +1,25 @@
+:root {
+}
+
+.label-main-title {
+    color: rgb(137, 162, 87);
+    font-size: 85px;
+    -unity-font-style: bold;
+    margin-top: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    margin-left: 15px;
+    letter-spacing: 3px;
+    -unity-text-outline-color: rgb(137, 162, 87);
+    -unity-text-outline-width: 1px;
+}
+
+
+
+
+
+
+
+
+
+
