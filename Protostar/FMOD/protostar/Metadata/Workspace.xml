@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.02.03.00">
 	<object class="Workspace" id="{16456bb9-4d96-469f-b942-d4bd7c4289eb}">
 		<property name="builtBanksOutputDirectory">
-			<value>../../../../../Documents/GitHub/protostar/Protostar/FMOD</value>
+			<value>../../FMOD Assets</value>
 		</property>
 		<relationship name="masterEventFolder">
 			<destination>{490043c4-e8aa-4ff8-92c3-76fd89b9720c}</destination>
