@@ -19,7 +19,7 @@ MonoBehaviour:
     Data3: 111836566
     Data4: -2106466884
   Banks:
-  - {fileID: 4496383075587105863}
+  - {fileID: -5376813369076871623}
   IsStream: 1
   Is3D: 0
   IsOneShot: 0
@@ -27,6 +27,46 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 68000
+--- !u!114 &-5376813369076871623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Living Space.bank
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorBankRef
+  Path: FMOD/protostar/Build/Desktop/Living Space.bank
+  Name: Living Space
+  StudioPath: bank:/Living Space
+  lastModified: 639050365682242614
+  FileSizes:
+  - Name: Desktop
+    Value: 3567136
+  Exists: 1
+--- !u!114 &-1160879835627733204
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.strings.bank
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorBankRef
+  Path: FMOD/protostar/Build/Desktop/Master.strings.bank
+  Name: Master.strings
+  StudioPath: bank:/Master.strings
+  lastModified: 639050365682424305
+  FileSizes:
+  - Name: Desktop
+    Value: 1034
+  Exists: 1
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -40,20 +80,20 @@ MonoBehaviour:
   m_Name: FMODStudioCache
   m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EventCache
   EditorBanks:
-  - {fileID: 7765496896265820473}
-  - {fileID: 4496383075587105863}
-  - {fileID: 1128340105727648486}
+  - {fileID: -1160879835627733204}
+  - {fileID: -5376813369076871623}
+  - {fileID: 8747590004998944600}
   EditorEvents:
   - {fileID: -9010742006837110562}
   - {fileID: 4556406200423680749}
   - {fileID: 4069148110368751025}
   EditorParameters: []
   MasterBanks:
-  - {fileID: 1128340105727648486}
+  - {fileID: 8747590004998944600}
   StringsBanks:
-  - {fileID: 7765496896265820473}
+  - {fileID: -1160879835627733204}
   cacheVersion: 131848
-  cacheTime: 639050381474475168
+  cacheTime: 639050365682424305
   SerializableEventsDict:
   - key: event:/Ambience/LivingSpaceAmbience
     index: 0
@@ -61,24 +101,6 @@ MonoBehaviour:
     index: 1
   - key: event:/Player/Timeshift
     index: 2
---- !u!114 &1128340105727648486
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
-  m_Name: bank:/Master.bank
-  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorBankRef
-  Path: FMOD Assets/Desktop/Master.bank
-  Name: Master
-  StudioPath: bank:/Master
-  lastModified: 639050381474465137
-  FileSizes: []
-  Exists: 1
 --- !u!114 &4069148110368751025
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -98,7 +120,7 @@ MonoBehaviour:
     Data3: 18289802
     Data4: -1714419739
   Banks:
-  - {fileID: 1128340105727648486}
+  - {fileID: 8747590004998944600}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
@@ -106,24 +128,6 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 2000
---- !u!114 &4496383075587105863
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
-  m_Name: bank:/Living Space.bank
-  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorBankRef
-  Path: FMOD Assets/Desktop/Living Space.bank
-  Name: Living Space
-  StudioPath: bank:/Living Space
-  lastModified: 639050381474237904
-  FileSizes: []
-  Exists: 1
 --- !u!114 &4556406200423680749
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -143,8 +147,8 @@ MonoBehaviour:
     Data3: 1486378148
     Data4: 124316143
   Banks:
-  - {fileID: 4496383075587105863}
-  - {fileID: 1128340105727648486}
+  - {fileID: -5376813369076871623}
+  - {fileID: 8747590004998944600}
   IsStream: 1
   Is3D: 0
   IsOneShot: 0
@@ -152,7 +156,7 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 104727
---- !u!114 &7765496896265820473
+--- !u!114 &8747590004998944600
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -162,13 +166,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
-  m_Name: bank:/Master.strings.bank
+  m_Name: bank:/Master.bank
   m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorBankRef
-  Path: FMOD Assets/Desktop/Master.strings.bank
-  Name: Master.strings
-  StudioPath: bank:/Master.strings
-  lastModified: 639050381474475168
+  Path: FMOD/protostar/Build/Desktop/Master.bank
+  Name: Master
+  StudioPath: bank:/Master
+  lastModified: 639050365682424305
   FileSizes:
-  - Name: 
-    Value: 1034
+  - Name: Desktop
+    Value: 2735424
   Exists: 1
