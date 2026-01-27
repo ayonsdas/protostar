@@ -10,6 +10,13 @@ public class Telescope : MonoBehaviour, IInteractable
     [SerializeField] private float rotationSpeed = 50f;
     [SerializeField] private float verticalLimit = 60f; // Max angle up/down
     
+    [Header("Target Detection")]
+    [SerializeField] private Light telescopeLight; // Light that changes when pointing at target
+    [SerializeField] private GameObject targetObject; // The red sphere to look for
+    [SerializeField] private float detectionRange = 1000f;
+    [SerializeField] private float alignmentThreshold = 0.98f; // How accurate aim needs to be (0.98 = ~11 degrees)
+    [SerializeField] private Color targetColor = Color.red;
+    
     private bool isActive = false;
     private Camera playerCamera;
     private CameraFollow cameraFollow;
@@ -24,6 +31,12 @@ public class Telescope : MonoBehaviour, IInteractable
             telescopeCamera.enabled = false;
         }
         
+        // Disable telescope light by default
+        if (telescopeLight != null)
+        {
+            telescopeLight.enabled = false;
+        }
+        
         // Calculate initial offset if cameraRoot is set
         if (cameraRoot != null && telescopeCamera != null)
         {
@@ -36,6 +49,35 @@ public class Telescope : MonoBehaviour, IInteractable
         if (isActive)
         {
             HandleTelescopeRotation();
+            CheckTargetAlignment();
+        }
+    }
+    
+    private void CheckTargetAlignment()
+    {
+        if (telescopeCamera == null || targetObject == null || telescopeLight == null)
+            return;
+        
+        // Get direction from telescope to target
+        Vector3 directionToTarget = (targetObject.transform.position - telescopeCamera.transform.position).normalized;
+        Vector3 telescopeForward = telescopeCamera.transform.forward;
+        
+        // Check if telescope is pointing at target
+        float alignment = Vector3.Dot(telescopeForward, directionToTarget);
+        
+        Debug.Log($"Alignment: {alignment:F3} (threshold: {alignmentThreshold:F3})");
+        
+        if (alignment >= alignmentThreshold)
+        {
+            // Pointing at target - turn light on and make it red
+            telescopeLight.enabled = true;
+            telescopeLight.color = targetColor;
+            Debug.Log("TARGET ALIGNED - Light ON");
+        }
+        else
+        {
+            // Not pointing at target - turn light off
+            telescopeLight.enabled = false;
         }
     }
     
@@ -138,18 +180,18 @@ public class Telescope : MonoBehaviour, IInteractable
     
     private void ExitTelescopeView()
     {    
-            // Re-enable camera follow script
-            if (cameraFollow != null)
-            {
-                cameraFollow.enabled = true;
-            }
-        
         isActive = false;
         
         // Re-enable player camera
         if (playerCamera != null)
         {
             playerCamera.enabled = true;
+            
+            // Re-enable camera follow script
+            if (cameraFollow != null)
+            {
+                cameraFollow.enabled = true;
+            }
         }
         
         // Disable telescope camera (but rotation persists)
