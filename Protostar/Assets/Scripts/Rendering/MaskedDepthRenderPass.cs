@@ -4,25 +4,25 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.RenderGraphModule;
 using UnityEngine.Rendering.Universal;
 
-class NormalMaskPassData
+class MaskedDepthPassData
 {
-    public TextureHandle maskTexture;
+    public TextureHandle maskedDepthTexture;
     public RendererListHandle rendererList;
 }
 
-public class NormalMaskRenderPass : ScriptableRenderPass
+public class MaskedDepthRenderPass : ScriptableRenderPass
 {
     public TextureHandle OutputMaskTexture;
     private FilteringSettings _filteringSettings;
-    private int globalMaskTextureID = Shader.PropertyToID("_MaskTexture");
-    private Material _normalsMaterial;
+    private int globalMaskedDepthTextureID = Shader.PropertyToID("_MaskedDepthTexture");
+    private Material _depthMaterial;
 
     public void SetMaterial(Material material)
     {
-        _normalsMaterial = material;
+        _depthMaterial = material;
     }
 
-    public NormalMaskRenderPass(RenderingLayerMask layerMask)
+    public MaskedDepthRenderPass(RenderingLayerMask layerMask)
     {
         _filteringSettings = new FilteringSettings(RenderQueueRange.opaque, renderingLayerMask: layerMask);
     }
@@ -34,8 +34,8 @@ public class NormalMaskRenderPass : ScriptableRenderPass
         UniversalRenderingData renderingData = frameData.Get<UniversalRenderingData>();
         UniversalLightData lightData = frameData.Get<UniversalLightData>();
 
-        using var builder = renderGraph.AddRasterRenderPass<NormalMaskPassData>(
-            "Normal Mask Pass",
+        using var builder = renderGraph.AddRasterRenderPass<MaskedDepthPassData>(
+            "Masked Depth Pass",
             out var passData
         );
 
@@ -46,9 +46,9 @@ public class NormalMaskRenderPass : ScriptableRenderPass
         desc.clearBuffer = true;
         desc.clearColor = Color.black;
 
-        passData.maskTexture = renderGraph.CreateTexture(desc);
+        passData.maskedDepthTexture = renderGraph.CreateTexture(desc);
 
-        builder.SetRenderAttachment(passData.maskTexture, 0);
+        builder.SetRenderAttachment(passData.maskedDepthTexture, 0);
 
         // For testing by passing to color instead of output texture
         // builder.SetRenderAttachment(resourceData.activeColorTexture, 0);
@@ -64,7 +64,7 @@ public class NormalMaskRenderPass : ScriptableRenderPass
             lightData,
             SortingCriteria.CommonOpaque
         );
-        drawingSettings.overrideMaterial = _normalsMaterial;
+        drawingSettings.overrideMaterial = _depthMaterial;
 
         RendererListParams rendererListParams = new RendererListParams(
             renderingData.cullResults,
@@ -76,12 +76,12 @@ public class NormalMaskRenderPass : ScriptableRenderPass
         builder.UseRendererList(passData.rendererList);
 
         // Render function
-        builder.SetRenderFunc((NormalMaskPassData data, RasterGraphContext ctx) =>
+        builder.SetRenderFunc((MaskedDepthPassData data, RasterGraphContext ctx) =>
         {
             ctx.cmd.DrawRendererList(data.rendererList);
         });
 
-        builder.SetGlobalTextureAfterPass(passData.maskTexture, globalMaskTextureID);
-        OutputMaskTexture = passData.maskTexture;
+        builder.SetGlobalTextureAfterPass(passData.maskedDepthTexture, globalMaskedDepthTextureID);
+        OutputMaskTexture = passData.maskedDepthTexture;
     }
 }

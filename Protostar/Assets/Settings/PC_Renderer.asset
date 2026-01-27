@@ -15,8 +15,9 @@ MonoBehaviour:
   m_Active: 1
   _renderPassEvent: 300
   _settings:
+    DepthShader: {fileID: -6465566751694194690, guid: aae55917ebfc29b64a25c6641e1ae24f, type: 3}
     NormalsShader: {fileID: -6465566751694194690, guid: aae55917ebfc29b64a25c6641e1ae24f, type: 3}
-    OutlineShader: {fileID: -6465566751694194690, guid: 6f7eb18372a98d824a5c0903396f01b3, type: 3}
+    OutlineShader: {fileID: -6465566751694194690, guid: 34e9d69370a380bb485614e3d00d0393, type: 3}
     OutlineLayer:
       serializedVersion: 0
       m_Bits: 256
