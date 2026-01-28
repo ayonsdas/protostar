@@ -1,5 +1,4 @@
 using UnityEngine;
-// using UnityEngine.InputSystem; // Note: We are using the standard Input Manager, so this isn't needed.
 
 public class TestPlayerController : MonoBehaviour
 {
@@ -8,55 +7,90 @@ public class TestPlayerController : MonoBehaviour
 
     [Header("Look Settings")]
     public float mouseSensitivity = 2f;
-    public float lookXLimit = 90f; // Prevents head from spinning 360 degrees
+    public float lookXLimit = 90f;
 
-    float xInput;
-    float yInput;
-    float rotationX = 0f;
+    private float xInput;
+    private float yInput;
+    private float rotationX = 0f;
+    
+    // We now track this based on the GameState, not a local toggle
+    private bool isControlActive = false;
 
     public Camera playerCamera;
 
     void Start()
     {
-        // Lock the mouse to the center of the screen and hide it
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        // Subscribe to state changes
+        if (GameStateManager.Instance != null)
+        {
+            GameStateManager.Instance.OnStateChanged += OnGameStateChanged;
+            
+            // Initialize based on current state (in case we start directly InGame)
+            OnGameStateChanged(GameStateManager.Instance.CurrentState);
+        }
+    }
+
+    void OnDestroy()
+    {
+        // Always unsubscribe to prevent memory leaks
+        if (GameStateManager.Instance != null)
+        {
+            GameStateManager.Instance.OnStateChanged -= OnGameStateChanged;
+        }
+    }
+
+    // This function automatically runs whenever the State Manager changes states
+    private void OnGameStateChanged(GameStateManager.GameState newState)
+    {
+        if (newState == GameStateManager.GameState.InGame)
+        {
+            // Resume Game: Lock cursor and enable movement
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            isControlActive = true;
+        }
+        else
+        {
+            // Menu/Paused: Unlock cursor and disable movement
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            isControlActive = false;
+        }
     }
 
     void Update()
     {
-        // --- 1. Movement Input ---
+        // 1. Handle Pausing
+        // If we are playing and hit Escape, tell the Manager to Pause.
+        // The Manager will then fire the event to unlock the cursor.
+        if (isControlActive && Input.GetKeyDown(KeyCode.Escape))
+        {
+            GameStateManager.Instance.SetState(GameStateManager.GameState.Paused);
+            return; // Stop processing this frame
+        }
+
+        // 2. Stop here if we aren't allowed to move
+        if (!isControlActive) return;
+
+        // --- Movement Logic (Only runs if InGame) ---
         xInput = Input.GetAxisRaw("Horizontal");
         yInput = Input.GetAxisRaw("Vertical");
 
-        // Calculate movement direction relative to where we are looking
         Vector3 moveDirection = transform.right * xInput + transform.forward * yInput;
-        
-        // Apply Movement
         transform.Translate(moveDirection.normalized * moveSpeed * Time.deltaTime, Space.World);
 
-        // --- 2. Mouse Look Input ---
+        // --- Mouse Look Logic (Only runs if InGame) ---
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
 
-        // Rotate the BODY Left/Right (Y-Axis)
         transform.Rotate(Vector3.up * mouseX);
 
-        // Rotate the CAMERA Up/Down (X-Axis)
         rotationX -= mouseY;
         rotationX = Mathf.Clamp(rotationX, -lookXLimit, lookXLimit);
-        
-        // Apply rotation to camera
+
         if (playerCamera)
         {
             playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0f, 0f);
         }
-    }
-
-    void FixedUpdate() 
-    {
-        // Since we are using transform.Translate in Update (non-physics movement),
-        // we can leave this empty. 
-        // If you were using a Rigidbody, you would apply force/velocity here.
     }
 }

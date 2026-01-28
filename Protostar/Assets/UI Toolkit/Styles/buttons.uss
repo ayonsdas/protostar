@@ -8,7 +8,7 @@
     color: rgb(89, 96, 112);
     -unity-text-outline-color: rgb(89, 96, 112);
     -unity-text-outline-width: 1px;
-    letter-spacing: 3px;
+    letter-spacing: 10px;
     margin-top: 10px;
     margin-right: 30px;
     margin-bottom: 10px;
