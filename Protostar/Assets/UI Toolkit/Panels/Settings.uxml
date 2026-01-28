@@ -3,11 +3,12 @@
     <Style src="project://database/Assets/UI%20Toolkit/Styles/toggle.uss?fileID=7433441132597879392&amp;guid=7953690aa0dcd9143aba92266de10fb2&amp;type=3#toggle"/>
     <Style src="project://database/Assets/UI%20Toolkit/Styles/dropdowns.uss?fileID=7433441132597879392&amp;guid=93e3f89099b44e14a8496c119d34bd4e&amp;type=3#dropdowns"/>
     <ui:VisualElement name="SettingsContainer" style="flex-grow: 1; background-color: rgb(108, 108, 108);">
-        <ui:Label text="Settings" name="Title"/>
-        <ui:SliderInt label="Master Volume %" value="100" high-value="100" name="MasterVolumeSlider" fill="true" show-input-field="true"/>
-        <ui:Toggle label="Fullscreen" name="FullscreenToggle"/>
-        <ui:DropdownField label="Resolution" name="ResolutionDropdown"/>
-        <ui:Button text="Back" name="BackButton"/>
-        <ui:Button text="Return to Main Menu" name="MainMenuButton"/>
+        <ui:Label text="Settings" name="Title" style="-unity-font-style: bold; -unity-font-definition: url(&quot;project://database/Assets/UI%20Toolkit/Fonts/diffusion-regular.ttf?fileID=12800000&amp;guid=f760a940b7e6de640878ca886a4eb990&amp;type=3#diffusion-regular&quot;); font-size: 30px;"/>
+        <ui:SliderInt label="Master Volume %:" value="100" high-value="100" name="MasterVolumeSlider" fill="true" show-input-field="true" style="-unity-font-definition: url(&quot;project://database/Assets/UI%20Toolkit/Fonts/diffusion-regular.ttf?fileID=12800000&amp;guid=f760a940b7e6de640878ca886a4eb990&amp;type=3#diffusion-regular&quot;); font-size: 18px;"/>
+        <ui:SliderInt label="Mouse Sens:" value="3" high-value="10" name="MouseSensSlider" fill="true" show-input-field="true" low-value="1" style="font-size: 18px; -unity-font-definition: url(&quot;project://database/Assets/UI%20Toolkit/Fonts/diffusion-regular.ttf?fileID=12800000&amp;guid=f760a940b7e6de640878ca886a4eb990&amp;type=3#diffusion-regular&quot;);"/>
+        <ui:Toggle label="Fullscreen:" name="FullscreenToggle" style="font-size: 18px; -unity-font-definition: url(&quot;project://database/Assets/UI%20Toolkit/Fonts/diffusion-regular.ttf?fileID=12800000&amp;guid=f760a940b7e6de640878ca886a4eb990&amp;type=3#diffusion-regular&quot;);"/>
+        <ui:DropdownField label="Resolution:" name="ResolutionDropdown" style="font-size: 18px; -unity-font-definition: url(&quot;project://database/Assets/UI%20Toolkit/Fonts/diffusion-regular.ttf?fileID=12800000&amp;guid=f760a940b7e6de640878ca886a4eb990&amp;type=3#diffusion-regular&quot;);"/>
+        <ui:Button text="Back" name="BackButton" style="-unity-font-definition: url(&quot;project://database/Assets/UI%20Toolkit/Fonts/diffusion-regular.ttf?fileID=12800000&amp;guid=f760a940b7e6de640878ca886a4eb990&amp;type=3#diffusion-regular&quot;); font-size: 18px; -unity-font-style: bold;"/>
+        <ui:Button text="Return to Main Menu" name="MainMenuButton" style="-unity-font-style: bold; font-size: 18px; -unity-font-definition: url(&quot;project://database/Assets/UI%20Toolkit/Fonts/diffusion-regular.ttf?fileID=12800000&amp;guid=f760a940b7e6de640878ca886a4eb990&amp;type=3#diffusion-regular&quot;);"/>
     </ui:VisualElement>
 </ui:UXML>
