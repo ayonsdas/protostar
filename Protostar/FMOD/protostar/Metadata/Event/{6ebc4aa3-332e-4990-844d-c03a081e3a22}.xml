@@ -91,9 +91,48 @@
 	<object class="MixerBusEffectChain" id="{fff31c8d-4dee-4f05-ada7-05403b5e2a5c}">
 		<relationship name="effects">
 			<destination>{ba901cbf-13bc-4a7e-bb28-e09e70eae0bd}</destination>
+			<destination>{20c57e3f-be8b-41f6-b6b8-a059e6780e84}</destination>
+			<destination>{34ca911b-7cae-4244-97b7-4dbad9ea821d}</destination>
+			<destination>{33be0a26-a73e-4394-a87e-616f4daf6c96}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{a49d0b84-8d25-463b-8214-e9e4403baace}" />
 	<object class="MixerBusFader" id="{1b289708-a572-47e6-9650-c69d1884e3bf}" />
 	<object class="MixerBusFader" id="{ba901cbf-13bc-4a7e-bb28-e09e70eae0bd}" />
+	<object class="DelayEffect" id="{20c57e3f-be8b-41f6-b6b8-a059e6780e84}">
+		<property name="bypass">
+			<value>true</value>
+		</property>
+		<property name="delay">
+			<value>300</value>
+		</property>
+		<property name="level">
+			<value>-44</value>
+		</property>
+	</object>
+	<object class="SFXReverbEffect" id="{34ca911b-7cae-4244-97b7-4dbad9ea821d}">
+		<property name="decayTime">
+			<value>4800</value>
+		</property>
+		<property name="lowShelfFrequency">
+			<value>1000</value>
+		</property>
+		<property name="lowShelfGain">
+			<value>-8</value>
+		</property>
+		<property name="highCut">
+			<value>8000</value>
+		</property>
+	</object>
+	<object class="CompressorEffect" id="{33be0a26-a73e-4394-a87e-616f4daf6c96}">
+		<property name="threshold">
+			<value>-31.5</value>
+		</property>
+		<property name="gain">
+			<value>7.5</value>
+		</property>
+		<relationship name="sidechains">
+			<destination>{d5031299-1fe3-4c1a-b9fa-ddf016ea4864}</destination>
+		</relationship>
+	</object>
 </objects>

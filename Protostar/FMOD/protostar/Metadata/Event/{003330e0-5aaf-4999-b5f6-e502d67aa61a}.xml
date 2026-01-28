@@ -75,9 +75,6 @@
 		</relationship>
 	</object>
 	<object class="MultiSound" id="{e9700de3-bb03-4741-b6b8-e50ac7aa2fa4}">
-		<property name="length">
-			<value>2</value>
-		</property>
 		<relationship name="modulators">
 			<destination>{7c1f1637-bb14-4c60-b0fd-cd68e639c45d}</destination>
 		</relationship>
