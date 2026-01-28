@@ -4892,7 +4892,6 @@ MonoBehaviour:
     Path: event:/Ambience/LivingSpaceAmbience
   masterVolume: 1
   musicVolume: 1
-  ambienceVolume: 1
   sfxVolume: 1
 --- !u!1 &639515018
 GameObject:
@@ -7619,23 +7618,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2094070022166867159, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
       propertyPath: footstepEventReference.Path
-      value: event:/Player/Footsteps
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 2094070022166867159, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
       propertyPath: footstepEventReference.Guid.Data1
-      value: 3354848
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2094070022166867159, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
       propertyPath: footstepEventReference.Guid.Data2
-      value: 1234786991
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2094070022166867159, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
       propertyPath: footstepEventReference.Guid.Data3
-      value: 48625333
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2094070022166867159, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
       propertyPath: footstepEventReference.Guid.Data4
-      value: 447118038
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2669202432495148151, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
       propertyPath: m_Enabled
