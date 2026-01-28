@@ -66,15 +66,12 @@ public class SimpleWorldUI : MonoBehaviour {
     }
 
     void LateUpdate() {
-        // Handle Rotation (Always face the camera)
+        // Rotate UI to face camera
         if (canvas && canvas.gameObject.activeSelf && mainCameraTransform) {
-            // This math makes the canvas look directly at the camera
-            // (We flip the direction because UI usually faces 'backwards' in 3D space)
-            transform.rotation = Quaternion.LookRotation(transform.position - mainCameraTransform.position);
+            canvas.transform.rotation = Quaternion.LookRotation(canvas.transform.position - mainCameraTransform.position);
         }
     }
 
-    // Trigger Logic
     void OnTriggerEnter(Collider other) {
         if (other.CompareTag("Player")) {
             ShowUI();
@@ -99,7 +96,7 @@ public class SimpleWorldUI : MonoBehaviour {
         pendingHide = true;
     }
     
-    // Draw the green circle in the editor so you can see the range
+    // Show range in editor
     private void OnDrawGizmosSelected() {
         Gizmos.color = new Color(0, 1, 0, 0.2f);
         Gizmos.DrawWireSphere(transform.position, triggerRadius);
