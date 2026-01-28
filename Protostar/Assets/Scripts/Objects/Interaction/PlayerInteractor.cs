@@ -15,8 +15,13 @@ public class PlayerInteractor : Interactor
         // Only allow interact if not carrying something
         if (value.isPressed && carriedObject == null)
         {
-            Debug.Log("Interacted");
+            Debug.Log("[PlayerInteractor] OnInteract - about to call Interact()");
             Interact();
+            Debug.Log("[PlayerInteractor] OnInteract - after calling Interact()");
+        }
+        else
+        {
+            Debug.Log($"[PlayerInteractor] OnInteract blocked - isPressed={value.isPressed}, carriedObject null={carriedObject == null}");
         }
     }
 

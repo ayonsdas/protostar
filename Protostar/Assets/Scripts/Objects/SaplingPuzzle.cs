@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using FMODUnity;
+using UnityEngine.Rendering;
 
 /// <summary>
 /// Sapling that shifts into a tree when all seeds are in the trigger zone
@@ -15,9 +16,11 @@ public class SaplingPuzzle : MonoBehaviour, IInteractable, IShiftable
     [Header("Colliders")]
     [SerializeField] private Collider seedDetectionZone; // Trigger collider for detecting seeds
 
-    [Header("State")]
-    [SerializeField] private bool isShifted = false;
+    [Header("Skybox")]
+    [SerializeField] private Material targetSkybox; // The skybox to show after puzzle completion
+    
     [Header("Sound")]
+    private bool isShifted = false; // Runtime state only
     [field: SerializeField] public EventReference treeGrowSoundEvent { get; private set; }
     [field: SerializeField] public EventReference seedPlantSoundEvent { get; private set; }
 
@@ -36,6 +39,59 @@ public class SaplingPuzzle : MonoBehaviour, IInteractable, IShiftable
         if (saplingModel != null)
         {
             saplingModel.SetActive(true);
+        }
+        
+        // Set skybox to black at start
+        SetBlackSkybox();
+    }
+    
+    private void SetBlackSkybox()
+    {
+        RenderSettings.skybox = null;
+        RenderSettings.ambientMode = AmbientMode.Flat;
+        RenderSettings.ambientLight = Color.black;
+        
+        // Enable fog with pure black - very aggressive
+        RenderSettings.fog = true;
+        RenderSettings.fogColor = Color.black;
+        RenderSettings.fogMode = FogMode.Linear;
+        RenderSettings.fogStartDistance = 0f;  // Start immediately
+        RenderSettings.fogEndDistance = 20f;   // Very short distance
+        
+        // Set camera background to black
+        Camera mainCamera = Camera.main;
+        if (mainCamera != null)
+        {
+            mainCamera.backgroundColor = Color.black;
+            mainCamera.clearFlags = CameraClearFlags.SolidColor;
+        }
+        
+        DynamicGI.UpdateEnvironment();
+    }
+    
+    private void SetTargetSkybox()
+    {
+        if (targetSkybox != null)
+        {
+            RenderSettings.skybox = targetSkybox;
+            RenderSettings.ambientMode = AmbientMode.Skybox;
+            
+            // Disable fog when skybox is enabled
+            RenderSettings.fog = false;
+            
+            // Reset camera to skybox mode
+            Camera mainCamera = Camera.main;
+            if (mainCamera != null)
+            {
+                mainCamera.clearFlags = CameraClearFlags.Skybox;
+            }
+            
+            DynamicGI.UpdateEnvironment();
+            Debug.Log("Skybox changed to target skybox");
+        }
+        else
+        {
+            Debug.LogWarning("Target skybox material is not assigned!");
         }
     }
 
@@ -77,6 +133,8 @@ public class SaplingPuzzle : MonoBehaviour, IInteractable, IShiftable
 
     public void Interact(GameObject interactor)
     {
+        Debug.Log($"[SaplingPuzzle] Interact called: canInteract={canInteract}, isShifted={isShifted}, seedsInZone.Count={seedsInZone.Count}, requiredSeeds={requiredSeeds}");
+        
         if (canInteract)
         {
             Debug.Log("Attempting to shift sapling...");
@@ -150,6 +208,9 @@ public class SaplingPuzzle : MonoBehaviour, IInteractable, IShiftable
         }
 
         Debug.Log("Sapling shifted into tree! Seeds consumed.");
+        
+        // Change skybox to target skybox
+        SetTargetSkybox();
 
         // Disable the seed detection zone so no more seeds affect it
         if (seedDetectionZone != null)

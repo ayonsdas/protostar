@@ -125,10 +125,18 @@ public class PlayerController : MonoBehaviour
     {
         // Calculate movement direction relative to current rotation
         Vector3 moveDirection = transform.forward * moveInput.y;
-
-        // Apply movement using Rigidbody for smooth physics-based movement
-        Vector3 newPosition = rb.position + moveDirection * moveSpeed * Time.fixedDeltaTime;
-        rb.MovePosition(newPosition);
+        Vector3 desiredVelocity = moveDirection * moveSpeed;
+        
+        // Use velocity for proper collision detection
+        Vector3 currentVelocity = rb.linearVelocity;
+        Vector3 gravityDirection = gravityBody.GetGravityDirection();
+        
+        // Keep only the gravity component of velocity, replace horizontal movement
+        float gravityComponent = Vector3.Dot(currentVelocity, gravityDirection);
+        Vector3 gravityVelocity = gravityDirection * gravityComponent;
+        
+        // Apply new velocity (movement + gravity)
+        rb.linearVelocity = desiredVelocity + gravityVelocity;
 
         // Apply rotation using Rigidbody - rotate around gravity's up direction
         if (moveInput.x != 0)
