@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 83123533}
   - component: {fileID: 83123534}
   m_Layer: 0
-  m_Name: Player
+  m_Name: UITestPlayer
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
