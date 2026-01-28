@@ -32,7 +32,6 @@ public class TestPlayerController : MonoBehaviour
 
     void OnDestroy()
     {
-        // Always unsubscribe to prevent memory leaks
         if (GameStateManager.Instance != null)
         {
             GameStateManager.Instance.OnStateChanged -= OnGameStateChanged;
