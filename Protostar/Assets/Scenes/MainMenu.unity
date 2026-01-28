@@ -193,7 +193,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 208322a3ef10bf64d97969fcbe747d7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StartViewPresenter
-  gameSceneName: MainLevel
+  gameSceneName: WhiteBoxPuzzle
   mainMenuSceneName: MainMenu
 --- !u!114 &1002217928
 MonoBehaviour:

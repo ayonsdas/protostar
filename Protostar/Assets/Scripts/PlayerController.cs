@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour
     [Header("Gravity Rotation Settings")]
     public float gravityRotationSpeed = 2f; // How fast player rotates to match gravity
     [Header("Sound Settings")]
+    [SerializeField] private bool disableFootsteps = false;
     [SerializeField] private float footstepSpeedThreshold = 0.01f;
     [SerializeField] private EventReference footstepEventReference;
 
@@ -178,6 +179,7 @@ public class PlayerController : MonoBehaviour
 
     private void UpdateSound()
     {
+        if (disableFootsteps) return;
         if (rb.linearVelocity.magnitude >= footstepSpeedThreshold && isGrounded)
         {
             PLAYBACK_STATE playbackState;

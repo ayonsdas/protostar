@@ -26,7 +26,7 @@ public class SettingsPresenter
     private Toggle fullscreenToggle;
     private DropdownField resolutionsDropdown;
     private Slider musicMasterSlider;
-    
+
 
     public SettingsPresenter(VisualElement root)
     {
@@ -53,15 +53,15 @@ public class SettingsPresenter
             fullscreenToggle.value = PlayerPrefs.GetInt(FULLSCREEN_KEY, Screen.fullScreen ? 1 : 0) == 1;
             fullscreenToggle.RegisterCallback<MouseUpEvent>((evt) => { SetFullscreen(fullscreenToggle.value); }, TrickleDown.TrickleDown);
         }
-        
+
         if (resolutionsDropdown != null)
         {
             resolutionsDropdown.choices = resolutions;
-            
+
             // Load saved resolution index
             int savedIndex = PlayerPrefs.GetInt(RESOLUTION_KEY, 2); // Default to 1920x1080
             resolutionsDropdown.index = Mathf.Clamp(savedIndex, 0, resolutions.Count - 1);
-            
+
             resolutionsDropdown.RegisterValueChangedCallback((value) => SetResolution(value.newValue));
         }
         else
@@ -90,7 +90,7 @@ public class SettingsPresenter
         int[] valuesIntArray = new int[] { int.Parse(resolutionArray[0]), int.Parse(resolutionArray[1]) };
 
         Screen.SetResolution(valuesIntArray[0], valuesIntArray[1], fullscreenToggle.value);
-        
+
         // Save the index
         int index = resolutions.IndexOf(newResolution);
         PlayerPrefs.SetInt(RESOLUTION_KEY, index);
@@ -99,6 +99,10 @@ public class SettingsPresenter
 
     private void SetMusicMasterVolume(float volume)
     {
+        // Sets volume in Audio Manager which connects to busses
+        Debug.Log("Set Master volume to ");
+        AudioManager.Instance.masterVolume = volume;
+
         PlayerPrefs.SetFloat(MUSIC_MASTER_KEY, volume);
         PlayerPrefs.Save();
     }
