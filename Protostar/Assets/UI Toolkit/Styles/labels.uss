@@ -9,7 +9,8 @@
     margin-right: 10px;
     margin-bottom: 10px;
     margin-left: 30px;
-    letter-spacing: 3px;
+    letter-spacing: -4px;
     -unity-text-outline-color: rgb(89, 96, 112);
     -unity-text-outline-width: 1px;
+    -unity-font-definition: url("project://database/Assets/UI%20Toolkit/Fonts/diffusion-regular.ttf?fileID=12800000&guid=f760a940b7e6de640878ca886a4eb990&type=3#diffusion-regular");
 }
