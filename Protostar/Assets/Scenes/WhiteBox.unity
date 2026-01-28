@@ -3008,6 +3008,11 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 406910558}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &410682348 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 39550120540274030, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
+  m_PrefabInstance: {fileID: 890825962}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &450332627
 GameObject:
   m_ObjectHideFlags: 0
@@ -4806,6 +4811,68 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &628667625
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 628667627}
+  - component: {fileID: 628667628}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &628667627
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 628667625}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &628667628
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 628667625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca2d70603c1abe29c9b77fb07b38eb23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AudioManager
+  musicEventReference:
+    Guid:
+      Data1: 349925590
+      Data2: 1115495488
+      Data3: 1486378148
+      Data4: 124316143
+    Path: event:/Music/LivingSpaceMusic
+  ambienceEventReference:
+    Guid:
+      Data1: -410983625
+      Data2: 1260687932
+      Data3: 111836566
+      Data4: -2106466884
+    Path: event:/Ambience/LivingSpaceAmbience
+  masterVolume: 1
+  musicVolume: 1
+  ambienceVolume: 1
+  sfxVolume: 1
 --- !u!1 &639515018
 GameObject:
   m_ObjectHideFlags: 0
@@ -6648,6 +6715,20 @@ MonoBehaviour:
   treeModel: {fileID: 478334543}
   seedDetectionZone: {fileID: 0}
   isShifted: 0
+  <treeGrowSoundEvent>k__BackingField:
+    Guid:
+      Data1: 145945970
+      Data2: 1274479552
+      Data3: -1590742095
+      Data4: 1062387620
+    Path: event:/TreeGrow
+  <seedPlantSoundEvent>k__BackingField:
+    Guid:
+      Data1: 325684601
+      Data2: 1299453874
+      Data3: 846548886
+      Data4: 269152575
+    Path: event:/SeedPlant
 --- !u!1 &842624734
 GameObject:
   m_ObjectHideFlags: 0
@@ -15604,6 +15685,7 @@ GameObject:
   - component: {fileID: 1766510122}
   - component: {fileID: 1766510121}
   - component: {fileID: 1766510125}
+  - component: {fileID: 1766510126}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -15662,7 +15744,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1766510120}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!20 &1766510123
 Camera:
   m_ObjectHideFlags: 0
@@ -15747,6 +15829,20 @@ MonoBehaviour:
   rotationSpeed: 100
   returnDelay: 3
   returnSpeed: 2
+--- !u!114 &1766510126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1766510120}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: FMODUnity::FMODUnity.StudioListener
+  nonRigidbodyVelocity: 0
+  attenuationObject: {fileID: 410682348}
 --- !u!1 &1770240493
 GameObject:
   m_ObjectHideFlags: 0
@@ -19490,3 +19586,4 @@ SceneRoots:
   - {fileID: 1133671348}
   - {fileID: 1411345283}
   - {fileID: 31817278}
+  - {fileID: 628667627}

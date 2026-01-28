@@ -600,7 +600,7 @@ MonoBehaviour:
   HasSourceProject: 0
   HasPlatforms: 0
   sourceProjectPath: 
-  sourceBankPath: FMOD/protostar/Banks/Desktop
+  sourceBankPath: Assets/StreamingAssets/FMOD/Desktop
   sourceBankPathUnformatted: 
   BankRefreshCooldown: 5
   ShowBankRefreshWindow: 1
@@ -622,9 +622,9 @@ MonoBehaviour:
   RealChannelSettings: []
   Plugins: []
   MasterBanks:
-  - protostar/Banks/Desktop/Master
+  - Master
   Banks:
-  - protostar/Banks/Desktop/Living Space
+  - Living Space
   BanksToLoad: []
   LiveUpdatePort: 9264
   EnableMemoryTracking: 0

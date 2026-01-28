@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using FMODUnity;
 
 /// <summary>
 /// Sapling that shifts into a tree when all seeds are in the trigger zone
@@ -10,16 +11,19 @@ public class SaplingPuzzle : MonoBehaviour, IInteractable, IShiftable
     [SerializeField] private int requiredSeeds = 4;
     [SerializeField] private GameObject saplingModel; // The sapling visual
     [SerializeField] private GameObject treeModel; // The tree model to shift to
-    
+
     [Header("Colliders")]
     [SerializeField] private Collider seedDetectionZone; // Trigger collider for detecting seeds
-    
+
     [Header("State")]
     [SerializeField] private bool isShifted = false;
-    
+    [Header("Sound")]
+    [field: SerializeField] public EventReference treeGrowSoundEvent { get; private set; }
+    [field: SerializeField] public EventReference seedPlantSoundEvent { get; private set; }
+
     private HashSet<SeedObject> seedsInZone = new HashSet<SeedObject>();
     private bool canInteract = false;
-    
+
     private void Start()
     {
         // Make sure tree is hidden initially
@@ -27,14 +31,14 @@ public class SaplingPuzzle : MonoBehaviour, IInteractable, IShiftable
         {
             treeModel.SetActive(false);
         }
-        
+
         // Make sure sapling is visible
         if (saplingModel != null)
         {
             saplingModel.SetActive(true);
         }
     }
-    
+
     private void OnTriggerEnter(Collider other)
     {
         // Check if a seed entered the zone
@@ -42,11 +46,12 @@ public class SaplingPuzzle : MonoBehaviour, IInteractable, IShiftable
         if (seed != null)
         {
             seedsInZone.Add(seed);
+            RuntimeManager.PlayOneShot(seedPlantSoundEvent, seed.transform.position);
             Debug.Log($"Seed entered zone. Total seeds: {seedsInZone.Count}/{requiredSeeds}");
             UpdateInteractableState();
         }
     }
-    
+
     private void OnTriggerExit(Collider other)
     {
         // Check if a seed left the zone
@@ -58,18 +63,18 @@ public class SaplingPuzzle : MonoBehaviour, IInteractable, IShiftable
             UpdateInteractableState();
         }
     }
-    
+
     private void UpdateInteractableState()
     {
         // Can only interact when all seeds are present and not already shifted
         canInteract = seedsInZone.Count >= requiredSeeds && !isShifted;
-        
+
         if (canInteract)
         {
             Debug.Log("All seeds collected! You can now interact with the sapling.");
         }
     }
-    
+
     public void Interact(GameObject interactor)
     {
         if (canInteract)
@@ -87,21 +92,28 @@ public class SaplingPuzzle : MonoBehaviour, IInteractable, IShiftable
             Debug.Log($"Need all {requiredSeeds} seeds in the zone. Currently have {seedsInZone.Count}.");
         }
     }
-    
+
+    private void PlaySFX()
+    {
+        RuntimeManager.PlayOneShot(treeGrowSoundEvent, gameObject.transform.position);
+    }
+
     // IShiftable implementation
     public void Shift(int direction)
     {
         Debug.Log($"Shift called. canInteract={canInteract}, isShifted={isShifted}");
-        
+
         if (!canInteract || isShifted)
         {
             Debug.Log("Cannot shift - requirements not met");
             return;
         }
-        
+
         isShifted = true;
+        PlaySFX();
         Debug.Log("Starting shift process...");
-        
+
+
         // Hide sapling
         if (saplingModel != null)
         {
@@ -112,7 +124,7 @@ public class SaplingPuzzle : MonoBehaviour, IInteractable, IShiftable
         {
             Debug.LogWarning("Sapling model is null!");
         }
-        
+
         // Hide/destroy all seeds
         Debug.Log($"Hiding {seedsInZone.Count} seeds");
         foreach (var seed in seedsInZone)
@@ -125,7 +137,7 @@ public class SaplingPuzzle : MonoBehaviour, IInteractable, IShiftable
             }
         }
         seedsInZone.Clear();
-        
+
         // Show tree
         if (treeModel != null)
         {
@@ -136,21 +148,21 @@ public class SaplingPuzzle : MonoBehaviour, IInteractable, IShiftable
         {
             Debug.LogWarning("Tree model is null!");
         }
-        
+
         Debug.Log("Sapling shifted into tree! Seeds consumed.");
-        
+
         // Disable the seed detection zone so no more seeds affect it
         if (seedDetectionZone != null)
         {
             seedDetectionZone.enabled = false;
         }
     }
-    
+
     public bool CanShift()
     {
         return canInteract && !isShifted;
     }
-    
+
     public int GetState()
     {
         return isShifted ? 1 : 0;
