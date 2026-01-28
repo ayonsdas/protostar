@@ -6,12 +6,21 @@ public class Telescope : MonoBehaviour, IInteractable
     [Header("Telescope Settings")]
     [SerializeField] private Camera telescopeCamera;
     [SerializeField] private Transform cameraRoot; // Empty GameObject to rotate (pivot point)
+    [SerializeField] private GameObject telescopeHead; // Visual model that rotates around cameraRoot
+    [SerializeField] private Light telescopeLight; // Light that rotates around cameraRoot
     [SerializeField] private Vector3 cameraOffset = new Vector3(0, 0, 0); // Offset from cameraRoot to camera
     [SerializeField] private float rotationSpeed = 50f;
     [SerializeField] private float verticalLimit = 60f; // Max angle up/down
     
+    private Vector3 headOffset;
+    private Vector3 lightOffset;
+    private Quaternion headLocalRotation;
+    private Quaternion lightLocalRotation;
+    
+    [Header("Requirements")]
+    [SerializeField] private SaplingPuzzle requiredPuzzle; // Must complete this puzzle before using telescope
+    
     [Header("Target Detection")]
-    [SerializeField] private Light telescopeLight; // Light that changes when pointing at target
     [SerializeField] private GameObject targetObject; // The red sphere to look for
     [SerializeField] private float detectionRange = 1000f;
     [SerializeField] private float alignmentThreshold = 0.98f; // How accurate aim needs to be (0.98 = ~11 degrees)
@@ -42,6 +51,20 @@ public class Telescope : MonoBehaviour, IInteractable
         {
             cameraOffset = cameraRoot.InverseTransformPoint(telescopeCamera.transform.position);
         }
+        
+        // Calculate head offset and rotation
+        if (cameraRoot != null && telescopeHead != null)
+        {
+            headOffset = cameraRoot.InverseTransformPoint(telescopeHead.transform.position);
+            headLocalRotation = Quaternion.Inverse(cameraRoot.rotation) * telescopeHead.transform.rotation;
+        }
+        
+        // Calculate light offset and rotation
+        if (cameraRoot != null && telescopeLight != null)
+        {
+            lightOffset = cameraRoot.InverseTransformPoint(telescopeLight.transform.position);
+            lightLocalRotation = Quaternion.Inverse(cameraRoot.rotation) * telescopeLight.transform.rotation;
+        }
     }
     
     void Update()
@@ -51,6 +74,14 @@ public class Telescope : MonoBehaviour, IInteractable
             HandleTelescopeRotation();
             CheckTargetAlignment();
         }
+    }
+    
+    /// <summary>
+    /// Check if the telescope light is currently on (puzzle complete indicator)
+    /// </summary>
+    public bool IsLightOn()
+    {
+        return telescopeLight != null && telescopeLight.enabled;
     }
     
     private void CheckTargetAlignment()
@@ -122,6 +153,23 @@ public class Telescope : MonoBehaviour, IInteractable
                     telescopeCamera.transform.rotation = cameraRoot.rotation;
                 }
             }
+            
+            // Position and rotate telescope head
+            if (telescopeHead != null)
+            {
+                Vector3 worldHeadOffset = cameraRoot.TransformDirection(headOffset);
+                telescopeHead.transform.position = cameraRoot.position + worldHeadOffset;
+                telescopeHead.transform.rotation = cameraRoot.rotation * headLocalRotation;
+            }
+            
+            // Position and rotate telescope light
+            if (telescopeLight != null)
+            {
+                Vector3 worldLightOffset = cameraRoot.TransformDirection(lightOffset);
+                telescopeLight.transform.position = cameraRoot.position + worldLightOffset;
+                telescopeLight.transform.rotation = cameraRoot.rotation * lightLocalRotation;
+                Debug.Log($"Light moved to: {telescopeLight.transform.position}, rotation: {telescopeLight.transform.rotation.eulerAngles}");
+            }
         }
         // If no root, rotate camera directly
         else if (telescopeCamera != null)
@@ -132,6 +180,13 @@ public class Telescope : MonoBehaviour, IInteractable
     
     public void Interact(GameObject interactor)
     {
+        // Check if puzzle requirement is met
+        if (requiredPuzzle != null && requiredPuzzle.GetState() == 0)
+        {
+            Debug.Log("The telescope is locked. Complete the sapling puzzle first!");
+            return;
+        }
+        
         if (!isActive)
         {
             // Enter telescope view
