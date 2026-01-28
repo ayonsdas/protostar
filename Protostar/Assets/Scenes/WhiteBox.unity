@@ -263,6 +263,13 @@ MonoBehaviour:
   closedModel: {fileID: 1959741467}
   openModel: {fileID: 278411364}
   requiredTelescope: {fileID: 551275047}
+  openEventReference:
+    Guid:
+      Data1: 1857833635
+      Data2: 1234187054
+      Data3: 985681284
+      Data4: 574234120
+    Path: event:/CabinetOpen
 --- !u!4 &31817278
 Transform:
   m_ObjectHideFlags: 0
@@ -3718,6 +3725,13 @@ MonoBehaviour:
   detectionRange: 1000
   alignmentThreshold: 0.95
   targetColor: {r: 1, g: 0.5518868, b: 0.5518868, a: 1}
+  interactEventReference:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
 --- !u!65 &506273479
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4373,6 +4387,13 @@ MonoBehaviour:
   detectionRange: 1000
   alignmentThreshold: 0.95
   targetColor: {r: 1, g: 0.5518868, b: 0.5518868, a: 1}
+  interactEventReference:
+    Guid:
+      Data1: -601990724
+      Data2: 1092509927
+      Data3: -2070665555
+      Data4: 293719561
+    Path: event:/TeleInteract
 --- !u!4 &551275048 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a9282c5e476cb1441b58b7f3fdce468f, type: 3}
@@ -7595,6 +7616,26 @@ PrefabInstance:
     - target: {fileID: 2094070022166867159, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
       propertyPath: groundLayer.m_Bits
       value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 2094070022166867159, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
+      propertyPath: footstepEventReference.Path
+      value: event:/Player/Footsteps
+      objectReference: {fileID: 0}
+    - target: {fileID: 2094070022166867159, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
+      propertyPath: footstepEventReference.Guid.Data1
+      value: 3354848
+      objectReference: {fileID: 0}
+    - target: {fileID: 2094070022166867159, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
+      propertyPath: footstepEventReference.Guid.Data2
+      value: 1234786991
+      objectReference: {fileID: 0}
+    - target: {fileID: 2094070022166867159, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
+      propertyPath: footstepEventReference.Guid.Data3
+      value: 48625333
+      objectReference: {fileID: 0}
+    - target: {fileID: 2094070022166867159, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
+      propertyPath: footstepEventReference.Guid.Data4
+      value: 447118038
       objectReference: {fileID: 0}
     - target: {fileID: 2669202432495148151, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
       propertyPath: m_Enabled

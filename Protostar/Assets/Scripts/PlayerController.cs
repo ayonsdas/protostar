@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour
     [Header("Gravity Rotation Settings")]
     public float gravityRotationSpeed = 2f; // How fast player rotates to match gravity
     [Header("Sound Settings")]
+    [SerializeField] private float footstepSpeedThreshold = 0.01f;
     [SerializeField] private EventReference footstepEventReference;
 
     private Rigidbody rb;
@@ -177,23 +178,24 @@ public class PlayerController : MonoBehaviour
 
     private void UpdateSound()
     {
-        if (rb.linearVelocity.magnitude != 0 && isGrounded)
+        if (rb.linearVelocity.magnitude >= footstepSpeedThreshold && isGrounded)
         {
             PLAYBACK_STATE playbackState;
             footstepEventInstance.getPlaybackState(out playbackState);
             if (playbackState == PLAYBACK_STATE.STOPPED)
             {
-                Debug.Log("Started footsteps Velocity: " + rb.linearVelocity + " Grounded: " + isGrounded);
+                //Debug.Log("Started footsteps Velocity: " + rb.linearVelocity + " Grounded: " + isGrounded);
                 footstepEventInstance.start();
             }
         }
+
         else
         {
             PLAYBACK_STATE playbackState;
             footstepEventInstance.getPlaybackState(out playbackState);
             if (playbackState == PLAYBACK_STATE.PLAYING)
             {
-                Debug.Log("Stopped footsteps Velocity: " + rb.linearVelocity + " Grounded: " + isGrounded);
+                //Debug.Log("Stopped footsteps Velocity: " + rb.linearVelocity + " Grounded: " + isGrounded);
                 footstepEventInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
             }
 
