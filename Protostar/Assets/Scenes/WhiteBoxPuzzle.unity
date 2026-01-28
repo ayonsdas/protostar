@@ -1517,7 +1517,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: 25262a23cc3d7ca478e9cf32f54ef5ea, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 9f74a13152dad544abedc7538eb3182c, type: 2}
+      objectReference: {fileID: 2100000, guid: 232547048c02a4f0db630c1c6ac36e4c, type: 2}
     - target: {fileID: 919132149155446097, guid: 25262a23cc3d7ca478e9cf32f54ef5ea, type: 3}
       propertyPath: m_Name
       value: low_poly_living_quarters_main_tree
