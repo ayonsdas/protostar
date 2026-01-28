@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="AudioFile" id="{bf692ff6-4644-40b0-86da-0bac0a514948}">
+		<property name="assetPath">
+			<value>Living Space Objects/seed plant.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>1.0363333333333333</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{16d8ab07-7665-4059-870a-5631b0737b7a}</destination>
+		</relationship>
+	</object>
+</objects>

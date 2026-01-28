@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="AudioFile" id="{55d00f08-9a5c-44b0-b3d1-e54887639a5c}">
+		<property name="assetPath">
+			<value>Player/protostar footsteps2.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>0.99102083333333335</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{16d8ab07-7665-4059-870a-5631b0737b7a}</destination>
+		</relationship>
+	</object>
+</objects>
