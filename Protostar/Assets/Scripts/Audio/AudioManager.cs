@@ -8,7 +8,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private EventReference musicEventReference;
     [SerializeField] private EventReference ambienceEventReference;
     [Range(0, 1)]
-    public float masterVolume = 1;
+    public float masterVolume = 0.5f;
     [Range(0, 1)]
     public float musicVolume = 1;
 
