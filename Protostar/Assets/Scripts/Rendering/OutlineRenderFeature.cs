@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -9,6 +10,9 @@ public class OutlineRenderFeatureSettings
     [Header("Shaders")]
     public Shader NormalsShader;
     public Shader OutlineShader;
+    public Shader DilateShader;
+    public Shader ErodeShader;
+    public Shader CompositeShader;
     public RenderingLayerMask OutlineLayer;
     [Header("Outline Settings")]
     public Color OutlineColor;
@@ -32,6 +36,9 @@ public class OutlineRenderFeature : ScriptableRendererFeature
     private OutlineRenderPass _outlineRenderPass;
     private Material _normalsMaterial;
     private Material _outlineMaterial;
+    private Material _dilateMaterial;
+    private Material _erodeMaterial;
+    private Material _compositeMaterial;
 
     public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
     {
@@ -45,7 +52,25 @@ public class OutlineRenderFeature : ScriptableRendererFeature
         if (_outlineMaterial == null && _settings.OutlineShader != null)
         {
             _outlineMaterial = CoreUtils.CreateEngineMaterial(_settings.OutlineShader);
-            _outlineRenderPass?.SetMaterial(_outlineMaterial);
+            _outlineRenderPass?.SetOutlineMaterial(_outlineMaterial);
+        }
+
+        if (_dilateMaterial == null && _settings.DilateShader != null)
+        {
+            _dilateMaterial = CoreUtils.CreateEngineMaterial(_settings.DilateShader);
+            _outlineRenderPass?.SetDilateMaterial(_dilateMaterial);
+        }
+
+        if (_erodeMaterial == null && _settings.ErodeShader != null)
+        {
+            _erodeMaterial = CoreUtils.CreateEngineMaterial(_settings.ErodeShader);
+            _outlineRenderPass?.SetErodeMaterial(_erodeMaterial);
+        }
+
+        if (_compositeMaterial == null && _settings.CompositeShader != null)
+        {
+            _compositeMaterial = CoreUtils.CreateEngineMaterial(_settings.CompositeShader);
+            _outlineRenderPass?.SetCompositeMaterial(_compositeMaterial);
         }
 
         // Update shader settings from serialize properties
@@ -77,8 +102,12 @@ public class OutlineRenderFeature : ScriptableRendererFeature
     {
         CoreUtils.Destroy(_normalsMaterial);
         CoreUtils.Destroy(_outlineMaterial);
+        CoreUtils.Destroy(_dilateMaterial);
+        CoreUtils.Destroy(_erodeMaterial);
 
         _normalsMaterial = null;
         _outlineMaterial = null;
+        _dilateMaterial = null;
+        _erodeMaterial = null;
     }
 }
