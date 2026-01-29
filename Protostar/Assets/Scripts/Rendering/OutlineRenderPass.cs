@@ -38,25 +38,26 @@ public class OutlineRenderPass : ScriptableRenderPass
 
         var sourceTexture = resourceData.activeColorTexture;
 
+
         var outlineDesc = renderGraph.GetTextureDesc(sourceTexture);
         outlineDesc.name = "OutlineTexture";
         outlineDesc.clearBuffer = false;
         TextureHandle outlineTexture = renderGraph.CreateTexture(outlineDesc);
 
-        var dilateDesc = renderGraph.GetTextureDesc(sourceTexture);
-        dilateDesc.name = "DilateTexture";
-        dilateDesc.clearBuffer = false;
-        TextureHandle dilateTexture = renderGraph.CreateTexture(dilateDesc);
+        // var dilateDesc = renderGraph.GetTextureDesc(sourceTexture);
+        // dilateDesc.name = "DilateTexture";
+        // dilateDesc.clearBuffer = false;
+        // TextureHandle dilateTexture = renderGraph.CreateTexture(dilateDesc);
 
-        var erodeDesc = renderGraph.GetTextureDesc(sourceTexture);
-        erodeDesc.name = "ErodeTexture";
-        erodeDesc.clearBuffer = false;
-        TextureHandle erodeTexture = renderGraph.CreateTexture(erodeDesc);
+        // var erodeDesc = renderGraph.GetTextureDesc(sourceTexture);
+        // erodeDesc.name = "ErodeTexture";
+        // erodeDesc.clearBuffer = false;
+        // TextureHandle erodeTexture = renderGraph.CreateTexture(erodeDesc);
 
-        var compositeDesc = renderGraph.GetTextureDesc(sourceTexture);
-        compositeDesc.name = "CompositeTexture";
-        compositeDesc.clearBuffer = false;
-        TextureHandle compositeTexture = renderGraph.CreateTexture(compositeDesc);
+        // var compositeDesc = renderGraph.GetTextureDesc(sourceTexture);
+        // compositeDesc.name = "CompositeTexture";
+        // compositeDesc.clearBuffer = false;
+        // TextureHandle compositeTexture = renderGraph.CreateTexture(compositeDesc);
 
         RenderGraphUtils.BlitMaterialParameters outlineBlitParameters = new(
             sourceTexture,
@@ -64,46 +65,49 @@ public class OutlineRenderPass : ScriptableRenderPass
             _outlineMaterial,
             0
         );
-        using var builder = renderGraph.AddBlitPass(outlineBlitParameters, passName: "OutlinePass", returnBuilder: true);
-        builder.SetGlobalTextureAfterPass(resourceData.activeColorTexture, Shader.PropertyToID("_SceneTexture"));
+        renderGraph.AddBlitPass(outlineBlitParameters, passName: "OutlinePass");
 
-        int width = renderGraph.GetTextureDesc(outlineTexture).width;
-        int height = renderGraph.GetTextureDesc(outlineTexture).height;
+        // int width = renderGraph.GetTextureDesc(outlineTexture).width;
+        // int height = renderGraph.GetTextureDesc(outlineTexture).height;
 
-        MaterialPropertyBlock dilatePropertyBlock = new MaterialPropertyBlock();
-        dilatePropertyBlock.SetFloat("_BlurRadius", BLUR_RADIUS);
-        dilatePropertyBlock.SetVector("_TexelSize", new Vector4(1f / width, 1f / height, 0, 0));
+        // MaterialPropertyBlock dilatePropertyBlock = new MaterialPropertyBlock();
+        // dilatePropertyBlock.SetFloat("_BlurRadius", BLUR_RADIUS);
+        // dilatePropertyBlock.SetVector("_TexelSize", new Vector4(1f / width, 1f / height, 0, 0));
 
-        RenderGraphUtils.BlitMaterialParameters dilateBlitParameters = new(
-            outlineTexture,
-            dilateTexture,
-            _dilateMaterial,
-            0,
-            dilatePropertyBlock
-        );
-        renderGraph.AddBlitPass(dilateBlitParameters, passName: "DilatePass");
+        // RenderGraphUtils.BlitMaterialParameters dilateBlitParameters = new(
+        //     outlineTexture,
+        //     dilateTexture,
+        //     _dilateMaterial,
+        //     0,
+        //     dilatePropertyBlock
+        // );
+        // renderGraph.AddBlitPass(dilateBlitParameters, passName: "DilatePass");
 
-        MaterialPropertyBlock erodePropertyBlock = new MaterialPropertyBlock();
-        erodePropertyBlock.SetFloat("_BlurRadius", BLUR_RADIUS);
-        erodePropertyBlock.SetVector("_TexelSize", new Vector4(1f / width, 1f / height, 0, 0));
+        // MaterialPropertyBlock erodePropertyBlock = new MaterialPropertyBlock();
+        // erodePropertyBlock.SetFloat("_BlurRadius", BLUR_RADIUS);
+        // erodePropertyBlock.SetVector("_TexelSize", new Vector4(1f / width, 1f / height, 0, 0));
 
-        RenderGraphUtils.BlitMaterialParameters erodeBlitParameters = new(
-            dilateTexture,
-            erodeTexture,
-            _erodeMaterial,
-            0,
-            erodePropertyBlock
-        );
-        renderGraph.AddBlitPass(erodeBlitParameters, passName: "ErodePass");
+        // RenderGraphUtils.BlitMaterialParameters erodeBlitParameters = new(
+        //     dilateTexture,
+        //     erodeTexture,
+        //     _erodeMaterial,
+        //     0,
+        //     erodePropertyBlock
+        // );
+        // renderGraph.AddBlitPass(erodeBlitParameters, passName: "ErodePass");
 
-        RenderGraphUtils.BlitMaterialParameters compositeBlitParameters = new(
-            erodeTexture,
-            compositeTexture,
-            _compositeMaterial,
-            0
-        );
-        renderGraph.AddBlitPass(compositeBlitParameters, passName: "CompositePass");
+        // RenderGraphUtils.BlitMaterialParameters compositeBlitParameters = new(
+        //     erodeTexture,
+        //     compositeTexture,
+        //     _compositeMaterial,
+        //     0
+        // );
+        // using (var builder = renderGraph.AddBlitPass(compositeBlitParameters, passName: "CompositePass", returnBuilder: true))
+        // {
+        //     builder.UseGlobalTexture(sceneColorTextureID);
+        // }
 
-        resourceData.cameraColor = compositeTexture;
+        // resourceData.cameraColor = compositeTexture;
+        resourceData.cameraColor = outlineTexture;
     }
 }

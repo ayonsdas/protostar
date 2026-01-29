@@ -13,12 +13,13 @@ MonoBehaviour:
   m_Name: OutlineRenderFeature
   m_EditorClassIdentifier: Assembly-CSharp::OutlineRenderFeature
   m_Active: 1
-  _renderPassEvent: 300
+  _renderPassEvent: 500
   _settings:
     NormalsShader: {fileID: -6465566751694194690, guid: aae55917ebfc29b64a25c6641e1ae24f, type: 3}
-    OutlineShader: {fileID: -6465566751694194690, guid: 893bbe2ba480f084ba9d706dd77e01f2, type: 3}
+    OutlineShader: {fileID: -6465566751694194690, guid: 34e9d69370a380bb485614e3d00d0393, type: 3}
     DilateShader: {fileID: 4800000, guid: 6b4b7e82f2781a8d2b2be3b969300591, type: 3}
     ErodeShader: {fileID: 4800000, guid: 446440baa90e878b1ba73d502d8b36e9, type: 3}
+    CompositeShader: {fileID: -6465566751694194690, guid: fc79cf9b086110c58b5d01bd52348ea9, type: 3}
     OutlineLayer:
       serializedVersion: 0
       m_Bits: 256

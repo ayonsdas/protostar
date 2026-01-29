@@ -104,10 +104,12 @@ public class OutlineRenderFeature : ScriptableRendererFeature
         CoreUtils.Destroy(_outlineMaterial);
         CoreUtils.Destroy(_dilateMaterial);
         CoreUtils.Destroy(_erodeMaterial);
+        CoreUtils.Destroy(_compositeMaterial);
 
         _normalsMaterial = null;
         _outlineMaterial = null;
         _dilateMaterial = null;
         _erodeMaterial = null;
+        _compositeMaterial = null;
     }
 }

@@ -437,20 +437,36 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: 4e5043aeadbe2c84b9386819990c71da, type: 3}
       propertyPath: m_RenderingLayerMask
-      value: 257
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: 4e5043aeadbe2c84b9386819990c71da, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 9fe0a856a63e8634ebc7077bc570ea68, type: 2}
+      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
     - target: {fileID: 919132149155446097, guid: 4e5043aeadbe2c84b9386819990c71da, type: 3}
       propertyPath: m_Name
       value: second_try_tree_scaling
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 4e5043aeadbe2c84b9386819990c71da, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4e5043aeadbe2c84b9386819990c71da, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2088610082}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4e5043aeadbe2c84b9386819990c71da, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2088610078}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4e5043aeadbe2c84b9386819990c71da, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2088610077}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4e5043aeadbe2c84b9386819990c71da, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2088610083}
   m_SourcePrefab: {fileID: 100100000, guid: 4e5043aeadbe2c84b9386819990c71da, type: 3}
 --- !u!1 &559710987
 GameObject:
@@ -653,7 +669,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OutlineFocusEffect
   _baseObject: {fileID: 612239036}
-  _outlineMaterial: {fileID: 2100000, guid: 7ef39ac0db4f9827e84d8911875640d5, type: 2}
+  outlineLayerMask:
+    serializedVersion: 0
+    m_Bits: 256
 --- !u!135 &612239046
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -675,35 +693,11 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 3
   m_Center: {x: 0, y: 0, z: 0}
---- !u!1 &698404313 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 39550120540274030, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
-  m_PrefabInstance: {fileID: 1066138866}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &698404321 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 116889316238556093, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
   m_PrefabInstance: {fileID: 1066138866}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &698404322
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 698404313}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3afde547402154b69895e1eddc6c8d1b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerInteractor
-  range: 10
-  interactableMask:
-    serializedVersion: 2
-    m_Bits: 64
-  origin: {fileID: 698404321}
-  pickupHoldPoint: {fileID: 0}
-  dropDistance: 2
 --- !u!1 &766405322
 GameObject:
   m_ObjectHideFlags: 0
@@ -1265,10 +1259,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 39550120540274030, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 698404322}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
 --- !u!1 &1605641789
 GameObject:
@@ -1382,6 +1373,82 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2088610073 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 4e5043aeadbe2c84b9386819990c71da, type: 3}
+  m_PrefabInstance: {fileID: 448297625}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2088610077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2088610073}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5938b7bb399d38c5aa4dd5462d18e74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OutlineFocusEffect
+  _baseObject: {fileID: 2088610073}
+  outlineLayerMask:
+    serializedVersion: 0
+    m_Bits: 256
+--- !u!114 &2088610078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2088610073}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbabac6e8fc84beea9ad4c696cd728f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SimpleFocusable
+--- !u!64 &2088610082
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2088610073}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 0
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4068373912626513877, guid: 25262a23cc3d7ca478e9cf32f54ef5ea, type: 3}
+--- !u!65 &2088610083
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2088610073}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: -0.09, y: 0.14597723, z: 0.09}
+  m_Center: {x: -0.0039347857, y: 0.07181236, z: -0.0028310902}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
