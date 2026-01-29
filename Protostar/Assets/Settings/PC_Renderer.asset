@@ -15,13 +15,12 @@ MonoBehaviour:
   m_Active: 1
   _renderPassEvent: 300
   _settings:
-    DepthShader: {fileID: -6465566751694194690, guid: aae55917ebfc29b64a25c6641e1ae24f, type: 3}
     NormalsShader: {fileID: -6465566751694194690, guid: aae55917ebfc29b64a25c6641e1ae24f, type: 3}
     OutlineShader: {fileID: -6465566751694194690, guid: 34e9d69370a380bb485614e3d00d0393, type: 3}
     OutlineLayer:
       serializedVersion: 0
       m_Bits: 256
-    OutlineColor: {r: 0, g: 0, b: 0, a: 0}
+    OutlineColor: {r: 1, g: 0, b: 0, a: 0}
     DepthThreshold: 0.5
     NormalThreshold: 0.5
     OutlineScale: 1

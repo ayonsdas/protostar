@@ -7,7 +7,6 @@ using UnityEngine.Rendering.Universal;
 public class OutlineRenderFeatureSettings
 {
     [Header("Shaders")]
-    public Shader DepthShader;
     public Shader NormalsShader;
     public Shader OutlineShader;
     public RenderingLayerMask OutlineLayer;
@@ -29,22 +28,14 @@ public class OutlineRenderFeature : ScriptableRendererFeature
 {
     [SerializeField] private RenderPassEvent _renderPassEvent = RenderPassEvent.AfterRenderingOpaques;
     [SerializeField] private OutlineRenderFeatureSettings _settings = new OutlineRenderFeatureSettings();
-    private MaskedDepthRenderPass _maskedDepthRenderPass;
     private MaskedNormalsRenderPass _maskedNormalsRenderPass;
     private OutlineRenderPass _outlineRenderPass;
-    private Material _depthMaterial;
     private Material _normalsMaterial;
     private Material _outlineMaterial;
 
     public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
     {
         // Create outline and normals materials from shaders if not initialized
-        if (_depthMaterial == null && _settings.DepthShader != null)
-        {
-            _depthMaterial = CoreUtils.CreateEngineMaterial(_settings.DepthShader);
-            _maskedDepthRenderPass?.SetMaterial(_depthMaterial);
-        }
-
         if (_normalsMaterial == null && _settings.NormalsShader != null)
         {
             _normalsMaterial = CoreUtils.CreateEngineMaterial(_settings.NormalsShader);
@@ -68,15 +59,12 @@ public class OutlineRenderFeature : ScriptableRendererFeature
         }
 
         // Set main passes
-        renderer.EnqueuePass(_maskedDepthRenderPass);
         renderer.EnqueuePass(_maskedNormalsRenderPass);
         renderer.EnqueuePass(_outlineRenderPass);
     }
 
     public override void Create()
     {
-        _maskedDepthRenderPass = new MaskedDepthRenderPass(_settings.OutlineLayer);
-        _maskedDepthRenderPass.renderPassEvent = _renderPassEvent;
 
         _maskedNormalsRenderPass = new MaskedNormalsRenderPass(_settings.OutlineLayer);
         _maskedNormalsRenderPass.renderPassEvent = _renderPassEvent;
@@ -87,11 +75,9 @@ public class OutlineRenderFeature : ScriptableRendererFeature
 
     protected override void Dispose(bool disposing)
     {
-        CoreUtils.Destroy(_depthMaterial);
         CoreUtils.Destroy(_normalsMaterial);
         CoreUtils.Destroy(_outlineMaterial);
 
-        _depthMaterial = null;
         _normalsMaterial = null;
         _outlineMaterial = null;
     }
