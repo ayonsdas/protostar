@@ -49,8 +49,14 @@ public class Interactor : MonoBehaviour
 
     public void Interact()
     {
+        // Make sure we have the latest raycast data
+        Cast();
+        
+        Debug.Log($"[Interactor] Interact() called. Engaged={Engaged != null}, HoveredEngagable={HoveredEngagable != null}, HoveredInteractable={HoveredInteractable != null}");
+        
         if (Engaged != null)
         {
+            Debug.Log("[Interactor] Disengaging");
             Engaged.Disengage(gameObject);
             Engaged = null;
             return;
@@ -58,11 +64,18 @@ public class Interactor : MonoBehaviour
 
         if (HoveredEngagable != null)
         {
+            Debug.Log("[Interactor] Engaging HoveredEngagable");
             HoveredEngagable.Engage(gameObject);
             Engaged = HoveredEngagable;
         }
 
+        Debug.Log($"[Interactor] About to call HoveredInteractable.Interact, HoveredInteractable is null: {HoveredInteractable == null}");
+        if (HoveredInteractable != null)
+        {
+            Debug.Log($"[Interactor] HoveredInteractable type: {HoveredInteractable.GetType().Name}");
+        }
         HoveredInteractable?.Interact(gameObject);
+        Debug.Log("[Interactor] After calling HoveredInteractable.Interact");
     }
 
     public void Scroll(int direction)

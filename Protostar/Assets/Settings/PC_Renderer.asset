@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c35c57deaa1051a186767a871abed1e, type: 3}
   m_Name: OutlineRenderFeature
   m_EditorClassIdentifier: Assembly-CSharp::OutlineRenderFeature
-  m_Active: 1
+  m_Active: 0
   _renderPassEvent: 300
   _settings:
     NormalsShader: {fileID: -6465566751694194690, guid: aae55917ebfc29b64a25c6641e1ae24f, type: 3}

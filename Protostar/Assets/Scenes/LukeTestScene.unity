@@ -371,6 +371,67 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &277852352
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 277852354}
+  - component: {fileID: 277852353}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &277852353
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 277852352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca2d70603c1abe29c9b77fb07b38eb23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Protostar::AudioManager
+  musicEventReference:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  ambienceEventReference:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  masterVolume: 0.5
+  musicVolume: 1
+  sfxVolume: 1
+--- !u!4 &277852354
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 277852352}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.84707, y: 1.87105, z: 4.91998}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &448297625
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1256,6 +1317,30 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2094070022166867159, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
+      propertyPath: disableFootsteps
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2094070022166867159, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
+      propertyPath: footstepEventReference.Path
+      value: event:/Player/Footsteps
+      objectReference: {fileID: 0}
+    - target: {fileID: 2094070022166867159, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
+      propertyPath: footstepEventReference.Guid.Data1
+      value: 3354848
+      objectReference: {fileID: 0}
+    - target: {fileID: 2094070022166867159, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
+      propertyPath: footstepEventReference.Guid.Data2
+      value: 1234786991
+      objectReference: {fileID: 0}
+    - target: {fileID: 2094070022166867159, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
+      propertyPath: footstepEventReference.Guid.Data3
+      value: 48625333
+      objectReference: {fileID: 0}
+    - target: {fileID: 2094070022166867159, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
+      propertyPath: footstepEventReference.Guid.Data4
+      value: 447118038
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1447,7 +1532,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: -0.09, y: 0.14597723, z: 0.09}
+  m_Size: {x: 0.09, y: 0.14597723, z: 0.09}
   m_Center: {x: -0.0039347857, y: 0.07181236, z: -0.0028310902}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
@@ -1462,3 +1547,4 @@ SceneRoots:
   - {fileID: 1605641793}
   - {fileID: 559710991}
   - {fileID: 448297625}
+  - {fileID: 277852354}
