@@ -1,0 +1,9 @@
+:root {
+}
+
+.button-main-title {
+    background-color: rgb(176, 80, 80);
+}
+
+.button-main-title:hover {
+}

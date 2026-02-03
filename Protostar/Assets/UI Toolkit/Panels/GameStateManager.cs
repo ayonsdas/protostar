@@ -10,8 +10,9 @@ public class GameStateManager : MonoBehaviour
     {
         MainMenu,
         InGame,
-        Paused,  // Settings open while in-game
-        Settings // Settings from main menu
+        Paused,   // Settings open while in-game
+        Settings, // Settings from main menu
+        Credits   // Credits screen
     }
 
     public GameState CurrentState { get; private set; } = GameState.MainMenu;

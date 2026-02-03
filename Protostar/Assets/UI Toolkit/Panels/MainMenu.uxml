@@ -6,6 +6,7 @@
             <ui:Label text="Protostar" name="Title" class="label-main-title"/>
             <ui:Button text="Start" name="Start" class="button-main-title"/>
             <ui:Button text="Settings" name="Settings" class="button-main-title"/>
+            <ui:Button text="Credits" name="Credits" class="button-main-title"/>
             <ui:Button text="Quit" name="Quit" class="button-main-title"/>
         </ui:VisualElement>
     </ui:VisualElement>
