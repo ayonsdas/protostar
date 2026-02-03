@@ -5,10 +5,10 @@ using UnityEngine.Rendering.Universal;
 
 
 [System.Serializable]
-public class OutlineRenderFeatureSettings
+public class OutlineRenderFeatureV2Settings
 {
     [Header("Shaders")]
-    public Shader NormalsShader;
+    public Shader MaskShader;
     public Shader OutlineShader;
     public RenderingLayerMask OutlineLayer;
     [Header("Outline Settings")]
@@ -25,22 +25,22 @@ public class OutlineRenderFeatureSettings
     public float Multiplier = 1f;
 }
 
-public class OutlineRenderFeature : ScriptableRendererFeature
+public class OutlineRenderFeatureV2 : ScriptableRendererFeature
 {
     [SerializeField] private RenderPassEvent _renderPassEvent = RenderPassEvent.AfterRenderingOpaques;
-    [SerializeField] private OutlineRenderFeatureSettings _settings = new OutlineRenderFeatureSettings();
-    private MaskedNormalsRenderPass _maskedNormalsRenderPass;
+    [SerializeField] private OutlineRenderFeatureV2Settings _settings = new OutlineRenderFeatureV2Settings();
+    private MaskRenderPass _maskRenderPass;
     private OutlineRenderPassV2 _outlineRenderPass;
-    private Material _normalsMaterial;
+    private Material _maskMaterial;
     private Material _outlineMaterial;
 
     public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
     {
         // Create outline and normals materials from shaders if not initialized
-        if (_normalsMaterial == null && _settings.NormalsShader != null)
+        if (_maskMaterial == null && _settings.MaskShader != null)
         {
-            _normalsMaterial = CoreUtils.CreateEngineMaterial(_settings.NormalsShader);
-            _maskedNormalsRenderPass?.SetMaterial(_normalsMaterial);
+            _maskMaterial = CoreUtils.CreateEngineMaterial(_settings.MaskShader);
+            _maskRenderPass?.SetMaterial(_maskMaterial);
         }
 
         if (_outlineMaterial == null && _settings.OutlineShader != null)
@@ -60,15 +60,17 @@ public class OutlineRenderFeature : ScriptableRendererFeature
         }
 
         // Set main passes
-        renderer.EnqueuePass(_maskedNormalsRenderPass);
+        renderer.EnqueuePass(_maskRenderPass);
+
+        _outlineRenderPass.ConfigureInput(ScriptableRenderPassInput.Depth | ScriptableRenderPassInput.Normal);
         renderer.EnqueuePass(_outlineRenderPass);
     }
 
     public override void Create()
     {
 
-        _maskedNormalsRenderPass = new MaskedNormalsRenderPass(_settings.OutlineLayer);
-        _maskedNormalsRenderPass.renderPassEvent = _renderPassEvent;
+        _maskRenderPass = new MaskRenderPass(_settings.OutlineLayer);
+        _maskRenderPass.renderPassEvent = _renderPassEvent;
 
         _outlineRenderPass = new OutlineRenderPassV2();
         _outlineRenderPass.renderPassEvent = _renderPassEvent;
@@ -76,10 +78,10 @@ public class OutlineRenderFeature : ScriptableRendererFeature
 
     protected override void Dispose(bool disposing)
     {
-        CoreUtils.Destroy(_normalsMaterial);
+        CoreUtils.Destroy(_maskMaterial);
         CoreUtils.Destroy(_outlineMaterial);
 
-        _normalsMaterial = null;
+        _maskMaterial = null;
         _outlineMaterial = null;
     }
 }
