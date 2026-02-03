@@ -98,8 +98,11 @@ Shader "Custom/OutlineBlitV2"
 
             for (int i = -radius; i <= radius; ++i)
             {
-                float2 uvSample = uv + blurDirection.xy * texelSize.xy * float(i);
-                float sample = Mask(uvSample);
+                float2 sampleUV = uv + blurDirection.xy * texelSize.xy * float(i);
+                float sample = Mask(sampleUV);
+                if(SampleSceneDepth(sampleUV) >= 0.999) {
+                    sample = 1;
+                }
                 mask += sample;
                 samples++;
             }
@@ -144,7 +147,7 @@ Shader "Custom/OutlineBlitV2"
 
                 float blurred = (h + v) * 0.5;
                 float smoothed = smoothstep(0.02, 0.95, blurred);
-                float outside = saturate(smoothed - Mask(input.texcoord));
+                float outside = smoothed * (1 - Mask(input.texcoord));
                 return float4(outside, outside, outside, 1);
 
                 float4 outlineColor = float4(1, 0, 0, 1);
