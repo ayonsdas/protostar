@@ -128,7 +128,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 599105601}
-  - component: {fileID: 599105600}
+  - component: {fileID: 599105602}
   m_Layer: 0
   m_Name: GameStateManager
   m_TagString: Untagged
@@ -136,18 +136,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &599105600
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 599105599}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 143ab4dcbf130d04cb138314127247d7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
 --- !u!4 &599105601
 Transform:
   m_ObjectHideFlags: 0
@@ -163,6 +151,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &599105602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 599105599}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10bd109cca642e74684503a056de5f87, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameStateManager
 --- !u!1 &1002217926
 GameObject:
   m_ObjectHideFlags: 0
@@ -173,7 +173,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1002217929}
   - component: {fileID: 1002217928}
-  - component: {fileID: 1002217927}
+  - component: {fileID: 1002217930}
   m_Layer: 5
   m_Name: UIDocument
   m_TagString: Untagged
@@ -181,20 +181,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1002217927
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1002217926}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 208322a3ef10bf64d97969fcbe747d7a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::StartViewPresenter
-  gameSceneName: WhiteBoxPuzzle
-  mainMenuSceneName: MainMenu
 --- !u!114 &1002217928
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -233,6 +219,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1002217930
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1002217926}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 208322a3ef10bf64d97969fcbe747d7a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StartViewPresenter
+  gameSceneName: WhiteBoxPuzzle
+  mainMenuSceneName: MainMenu
 --- !u!1 &1308094499
 GameObject:
   m_ObjectHideFlags: 0

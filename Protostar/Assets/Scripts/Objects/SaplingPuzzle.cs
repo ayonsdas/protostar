@@ -18,6 +18,7 @@ public class SaplingPuzzle : MonoBehaviour, IInteractable, IShiftable
 
     [Header("Skybox")]
     [SerializeField] private Material targetSkybox; // The skybox to show after puzzle completion
+    [SerializeField] private GameObject sun; // The sun/directional light to hide/show
     
     [Header("Sound")]
     private bool isShifted = false; // Runtime state only
@@ -41,24 +42,64 @@ public class SaplingPuzzle : MonoBehaviour, IInteractable, IShiftable
             saplingModel.SetActive(true);
         }
         
+        // Check for seeds already in the zone at startup
+        DetectInitialSeeds();
+        
         // Set skybox to black at start
         SetBlackSkybox();
     }
     
+    private void DetectInitialSeeds()
+    {
+        if (seedDetectionZone != null)
+        {
+            // Find all SeedObject components in the scene
+            SeedObject[] allSeeds = FindObjectsOfType<SeedObject>();
+            
+            foreach (SeedObject seed in allSeeds)
+            {
+                // Check if the seed's collider is within the detection zone
+                Collider seedCollider = seed.GetComponent<Collider>();
+                if (seedCollider != null && seedDetectionZone.bounds.Intersects(seedCollider.bounds))
+                {
+                    seedsInZone.Add(seed);
+                    Debug.Log($"[SaplingPuzzle] Found seed already in zone at startup: {seed.name}");
+                }
+            }
+            
+            Debug.Log($"[SaplingPuzzle] Initial seed count: {seedsInZone.Count}/{requiredSeeds}");
+            UpdateInteractableState();
+        }
+    }
+    
     private void SetBlackSkybox()
     {
+        // Set skybox to null for pure black
         RenderSettings.skybox = null;
+        
+        // Set ambient lighting to black
         RenderSettings.ambientMode = AmbientMode.Flat;
         RenderSettings.ambientLight = Color.black;
+        RenderSettings.ambientIntensity = 0f;
         
-        // Enable fog with pure black - very aggressive
-        RenderSettings.fog = true;
-        RenderSettings.fogColor = Color.black;
-        RenderSettings.fogMode = FogMode.Linear;
-        RenderSettings.fogStartDistance = 0f;  // Start immediately
-        RenderSettings.fogEndDistance = 20f;   // Very short distance
+        // Disable reflection probes and environment reflections
+        RenderSettings.defaultReflectionMode = UnityEngine.Rendering.DefaultReflectionMode.Custom;
+        RenderSettings.customReflectionTexture = null;
+        RenderSettings.reflectionIntensity = 0f;
         
-        // Set camera background to black
+        // Disable fog completely
+        RenderSettings.fog = false;
+        
+        // Disable subtractive ambient (prevents light bleeding)
+        RenderSettings.subtractiveShadowColor = Color.black;
+        
+        // Hide the sun
+        if (sun != null)
+        {
+            sun.SetActive(false);
+        }
+        
+        // Set camera background to pure black with no environment influence
         Camera mainCamera = Camera.main;
         if (mainCamera != null)
         {
@@ -79,6 +120,12 @@ public class SaplingPuzzle : MonoBehaviour, IInteractable, IShiftable
             // Disable fog when skybox is enabled
             RenderSettings.fog = false;
             
+            // Show the sun
+            if (sun != null)
+            {
+                sun.SetActive(true);
+            }
+            
             // Reset camera to skybox mode
             Camera mainCamera = Camera.main;
             if (mainCamera != null)
@@ -97,21 +144,39 @@ public class SaplingPuzzle : MonoBehaviour, IInteractable, IShiftable
 
     private void OnTriggerEnter(Collider other)
     {
-        // Check if a seed entered the zone
-        SeedObject seed = other.GetComponent<SeedObject>();
+        Debug.Log($"[SaplingPuzzle] OnTriggerEnter called! Collider name: {other.gameObject.name}");
+        
+        // Check if a seed entered the zone - check parent too in case collider is on child
+        SeedObject seed = other.GetComponentInParent<SeedObject>();
         if (seed != null)
         {
             seedsInZone.Add(seed);
-            RuntimeManager.PlayOneShot(seedPlantSoundEvent, seed.transform.position);
+            
+            // Try to play sound, but don't let it break gameplay
+            try
+            {
+                RuntimeManager.PlayOneShot(seedPlantSoundEvent, seed.transform.position);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning($"Failed to play seed plant sound: {e.Message}");
+            }
+            
             Debug.Log($"Seed entered zone. Total seeds: {seedsInZone.Count}/{requiredSeeds}");
             UpdateInteractableState();
+        }
+        else
+        {
+            Debug.Log($"[SaplingPuzzle] Object that entered has no SeedObject component (checked parent too)");
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        // Check if a seed left the zone
-        SeedObject seed = other.GetComponent<SeedObject>();
+        Debug.Log($"[SaplingPuzzle] OnTriggerExit called! Collider name: {other.gameObject.name}");
+        
+        // Check if a seed left the zone - check parent too
+        SeedObject seed = other.GetComponentInParent<SeedObject>();
         if (seed != null)
         {
             seedsInZone.Remove(seed);
@@ -123,7 +188,11 @@ public class SaplingPuzzle : MonoBehaviour, IInteractable, IShiftable
     private void UpdateInteractableState()
     {
         // Can only interact when all seeds are present and not already shifted
-        canInteract = seedsInZone.Count >= requiredSeeds && !isShifted;
+        bool hadEnoughSeeds = seedsInZone.Count >= requiredSeeds;
+        bool notShifted = !isShifted;
+        canInteract = hadEnoughSeeds && notShifted;
+
+        Debug.Log($"[SaplingPuzzle] UpdateInteractableState: seedsInZone.Count={seedsInZone.Count}, requiredSeeds={requiredSeeds}, hadEnoughSeeds={hadEnoughSeeds}, notShifted={notShifted}, canInteract={canInteract}");
 
         if (canInteract)
         {
@@ -153,7 +222,14 @@ public class SaplingPuzzle : MonoBehaviour, IInteractable, IShiftable
 
     private void PlaySFX()
     {
-        RuntimeManager.PlayOneShot(treeGrowSoundEvent, gameObject.transform.position);
+        try
+        {
+            RuntimeManager.PlayOneShot(treeGrowSoundEvent, gameObject.transform.position);
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning($"Failed to play tree grow sound: {e.Message}");
+        }
     }
 
     // IShiftable implementation

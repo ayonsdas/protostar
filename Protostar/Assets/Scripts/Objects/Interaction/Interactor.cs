@@ -26,7 +26,7 @@ public class Interactor : MonoBehaviour
         IPickupable newHoveredPickupable = null;
 
 
-        if (Physics.Raycast(origin.position, origin.forward, out var hit, range, interactableMask))
+        if (Physics.Raycast(origin.position, origin.forward, out var hit, range, interactableMask, QueryTriggerInteraction.Collide))
         {
             newHoveredInteractable = hit.collider.GetComponentInParent<IInteractable>();
             newHoveredEngagable = hit.collider.GetComponentInParent<IEngageable>();
