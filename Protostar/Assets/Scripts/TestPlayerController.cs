@@ -28,6 +28,13 @@ public class TestPlayerController : MonoBehaviour
             // Initialize based on current state (in case we start directly InGame)
             OnGameStateChanged(GameStateManager.Instance.CurrentState);
         }
+        else
+        {
+            // No GameStateManager present - enable controls by default
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            isControlActive = true;
+        }
     }
 
     void OnDestroy()
@@ -64,8 +71,11 @@ public class TestPlayerController : MonoBehaviour
         // The Manager will then fire the event to unlock the cursor.
         if (isControlActive && Input.GetKeyDown(KeyCode.Escape))
         {
-            GameStateManager.Instance.SetState(GameStateManager.GameState.Paused);
-            return; // Stop processing this frame
+            if (GameStateManager.Instance != null)
+            {
+                GameStateManager.Instance.SetState(GameStateManager.GameState.Paused);
+                return; // Stop processing this frame
+            }
         }
 
         // 2. Stop here if we aren't allowed to move
