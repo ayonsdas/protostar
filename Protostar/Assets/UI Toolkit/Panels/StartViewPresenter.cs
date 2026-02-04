@@ -12,6 +12,7 @@ public class StartViewPresenter : MonoBehaviour
     private VisualElement root;
     private VisualElement settingsView;
     private VisualElement mainMenuView;
+    private VisualElement creditsView;
 
     void Awake()
     {
@@ -29,9 +30,11 @@ public class StartViewPresenter : MonoBehaviour
         root = GetComponent<UIDocument>().rootVisualElement;
         settingsView = root.Q<TemplateContainer>("Settings");
         mainMenuView = root.Q<TemplateContainer>("MainMenu");
+        creditsView = root.Q<TemplateContainer>("Credits");
 
         SetupMainMenu();
         SetupSettingsMenu();
+        SetupCreditsMenu();
 
         // Subscribe to state changes
         GameStateManager.Instance.OnStateChanged += OnGameStateChanged;
@@ -53,6 +56,7 @@ public class StartViewPresenter : MonoBehaviour
         MainMenuPresenter menuPresenter = new MainMenuPresenter(mainMenuView);
         menuPresenter.OpenSettings = () => GameStateManager.Instance.SetState(GameStateManager.GameState.Settings);
         menuPresenter.StartGame = () => GameStateManager.Instance.StartGame(gameSceneName);
+        menuPresenter.OpenCredits = () => GameStateManager.Instance.SetState(GameStateManager.GameState.Credits);
         menuPresenter.QuitGame = () => Application.Quit();
     }
 
@@ -83,6 +87,12 @@ public class StartViewPresenter : MonoBehaviour
         };
     }
 
+    private void SetupCreditsMenu()
+    {
+        CreditsPresenter creditsPresenter = new CreditsPresenter(root.Q<TemplateContainer>("Credits"));
+        creditsPresenter.BackAction = () => GameStateManager.Instance.SetState(GameStateManager.GameState.MainMenu);
+    }
+
     private void OnGameStateChanged(GameStateManager.GameState newState)
     {
         // Show main menu only in MainMenu state
@@ -91,6 +101,9 @@ public class StartViewPresenter : MonoBehaviour
         // Show settings in both Settings (from menu) and Paused (from game) states
         settingsView.Display(newState == GameStateManager.GameState.Settings || 
                             newState == GameStateManager.GameState.Paused);
+        
+        // Show credits only in Credits state
+        creditsView.Display(newState == GameStateManager.GameState.Credits);
         
         // Show root UI except when actively playing
         root.Display(newState != GameStateManager.GameState.InGame);
