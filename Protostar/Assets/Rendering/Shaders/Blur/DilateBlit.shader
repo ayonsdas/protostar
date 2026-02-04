@@ -2,7 +2,7 @@ Shader "Custom/DilateBlit"
 {
     Properties
     {
-		_BlurRadius("Blur Radius", Float) = 1
+		_DilateRadius("Dilate Radius", Float) = 1
     }
     SubShader
     {
@@ -10,7 +10,7 @@ Shader "Custom/DilateBlit"
         #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
         #include "Packages/com.unity.render-pipelines.core/Runtime/Utilities/Blit.hlsl"
 
-        float _BlurRadius;
+        float _DilateRadius;
         float4 _TexelSize;
 
         struct FragInput
@@ -22,7 +22,7 @@ Shader "Custom/DilateBlit"
         float4 Frag(FragInput input) : SV_Target
         {
             float mask = 0;
-            int radius = int(ceil(_BlurRadius));
+            int radius = int(ceil(_DilateRadius));
 
             for (int i = -radius; i <= radius; ++i)
             {
