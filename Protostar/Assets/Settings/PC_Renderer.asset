@@ -20,9 +20,9 @@ MonoBehaviour:
     OutlineLayer:
       serializedVersion: 0
       m_Bits: 256
-    OutlineColor: {r: 1, g: 0, b: 0, a: 0}
-    DepthThreshold: 0.8
-    NormalThreshold: 0.5
+    OutlineColor: {r: 0.4, g: 0.8, b: 0.9, a: 0}
+    DepthThreshold: 0.5
+    NormalThreshold: 0.2
     OutlineScale: 0.6
     Multiplier: 1
 --- !u!114 &11400000
