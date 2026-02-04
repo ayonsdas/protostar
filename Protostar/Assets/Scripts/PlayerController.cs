@@ -9,6 +9,10 @@ public class PlayerController : MonoBehaviour
     [Header("Movement Settings")]
     public float moveSpeed = 5f;
     public float turnSpeed = 100f;
+    
+    [Header("Mouse Look Settings")]
+    public float mouseSensitivity = 2f;
+    public bool requireMouseHold = true; // If true, must hold mouse button to look
 
     [Header("Jump Settings")]
     public float jumpForce = 5f;
@@ -27,6 +31,8 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rb;
     private CustomGravityBody gravityBody;
     private Vector2 moveInput;
+    private Vector2 mouseDelta;
+    private bool isMouseHeld = false;
     private bool isGrounded;
     private Quaternion targetRotation;
     private EventInstance footstepEventInstance;
@@ -64,20 +70,27 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        // Get the "down" direction based on current gravity
+        // Get gravity direction for proper orientation
         Vector3 gravityDown = gravityBody.GetGravityDirection();
+        
+        // Use OverlapSphere to check for ground, excluding player's own collider
+        Collider[] colliders = Physics.OverlapSphere(groundCheck.position, groundCheckRadius, groundLayer, QueryTriggerInteraction.Ignore);
+        isGrounded = false;
+        
+        // Check if any of the overlapping colliders are NOT the player's own collider
+        Collider playerCollider = GetComponent<Collider>();
+        foreach (Collider col in colliders)
+        {
+            if (col != playerCollider)
+            {
+                isGrounded = true;
+                break;
+            }
+        }
 
-        // Position ground check at the bottom of the player in gravity's direction
-        BoxCollider box = GetComponent<BoxCollider>();
-        float checkDistance = box != null ? (box.size.y / 2f) : 1f;
-        Vector3 checkPosition = transform.position + gravityDown * checkDistance;
-
-        // Use CheckSphere for ground detection
-        isGrounded = Physics.CheckSphere(checkPosition, groundCheckRadius, groundLayer);
-
-        // Debug visualization
+        // Debug visualization using gravity direction
         Color debugColor = isGrounded ? Color.green : Color.red;
-        Debug.DrawRay(checkPosition, gravityDown * 0.5f, debugColor);
+        Debug.DrawLine(groundCheck.position, groundCheck.position + gravityDown * groundCheckRadius, debugColor);
 
         // Play sound if grounded and moving
         UpdateSound();
@@ -127,33 +140,72 @@ public class PlayerController : MonoBehaviour
         Vector3 moveDirection = transform.forward * moveInput.y;
         Vector3 desiredVelocity = moveDirection * moveSpeed;
         
-        // Use velocity for proper collision detection
+        // Use linearVelocity for proper collision detection
         Vector3 currentVelocity = rb.linearVelocity;
         Vector3 gravityDirection = gravityBody.GetGravityDirection();
         
-        // Keep only the gravity component of velocity, replace horizontal movement
-        float gravityComponent = Vector3.Dot(currentVelocity, gravityDirection);
-        Vector3 gravityVelocity = gravityDirection * gravityComponent;
+        // Keep the vertical (gravity-aligned) component of velocity
+        float verticalComponent = Vector3.Dot(currentVelocity, gravityDirection);
+        Vector3 verticalVelocity = gravityDirection * verticalComponent;
         
-        // Apply new velocity (movement + gravity)
-        rb.linearVelocity = desiredVelocity + gravityVelocity;
+        // Apply new velocity (horizontal movement + vertical velocity from gravity/jump)
+        rb.linearVelocity = desiredVelocity + verticalVelocity;
 
         // Apply rotation using Rigidbody - rotate around gravity's up direction
-        if (moveInput.x != 0)
+        // Only use keyboard input for player rotation (camera handles mouse look)
+        float rotationInput = moveInput.x;
+        
+        if (rotationInput != 0)
         {
             Vector3 upDirection = gravityBody.GetUpDirection();
-            Quaternion deltaRotation = Quaternion.AngleAxis(moveInput.x * turnSpeed * Time.fixedDeltaTime, upDirection);
+            Quaternion deltaRotation = Quaternion.AngleAxis(rotationInput * turnSpeed * Time.fixedDeltaTime, upDirection);
             rb.MoveRotation(deltaRotation * rb.rotation);
         }
 
         // Smoothly align player to gravity direction (after turning so it doesn't override)
         AlignToGravity();
+
+        // Reset mouse delta each frame so it doesn't persist
+        mouseDelta = Vector2.zero;
     }
 
     // Called by Player Input component (Send Messages behavior)
     public void OnMove(InputValue value)
     {
         moveInput = value.Get<Vector2>();
+    }
+    
+    // Called by Player Input component for mouse delta
+    public void OnLook(InputValue value)
+    {
+        // Only accept mouse input if not requiring hold, or if mouse is held
+        if (!requireMouseHold || isMouseHeld)
+        {
+            mouseDelta = value.Get<Vector2>();
+        }
+        else
+        {
+            mouseDelta = Vector2.zero;
+        }
+    }
+    
+    // Called when mouse button is pressed/released
+    public void OnMouseHold(InputValue value)
+    {
+        isMouseHeld = value.isPressed;
+        Debug.Log($"[MouseHold] isPressed: {value.isPressed}, isMouseHeld: {isMouseHeld}");
+        
+        // Lock/unlock cursor based on mouse hold state
+        if (isMouseHeld)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
     }
 
     // Called by Player Input component (Send Messages behavior)

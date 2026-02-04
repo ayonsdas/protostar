@@ -42,7 +42,7 @@ public class SaplingPuzzle : MonoBehaviour, IInteractable, IShiftable
         }
         
         // Set skybox to black at start
-        SetBlackSkybox();
+        // SetBlackSkybox();
     }
     
     private void SetBlackSkybox()

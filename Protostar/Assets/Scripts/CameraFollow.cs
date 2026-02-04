@@ -19,6 +19,7 @@ public class CameraFollow : MonoBehaviour
 
     private PlayerInput playerInput;
     private InputAction lookAction;
+    private InputAction mouseHoldAction;
     private float horizontalAngle = 0f;
     private float verticalAngle = 0f;
     private float timeSinceLastInput = 0f;
@@ -32,6 +33,7 @@ public class CameraFollow : MonoBehaviour
             if (playerInput != null)
             {
                 lookAction = playerInput.actions["Look"];
+                mouseHoldAction = playerInput.actions["MouseHold"];
             }
             
             // Enable interpolation on the player's Rigidbody to reduce jitter
@@ -50,13 +52,20 @@ public class CameraFollow : MonoBehaviour
 
         // Get camera rotation input
         Vector2 lookInput = Vector2.zero;
+        bool isMouseHeld = false;
+        
         if (lookAction != null)
         {
             lookInput = lookAction.ReadValue<Vector2>();
         }
+        
+        if (mouseHoldAction != null)
+        {
+            isMouseHeld = mouseHoldAction.ReadValue<float>() > 0.5f;
+        }
 
-        // Check if there's camera input
-        if (lookInput.magnitude > 0.01f)
+        // Check if there's camera input AND mouse is held
+        if (lookInput.magnitude > 0.01f && isMouseHeld)
         {
             horizontalAngle += lookInput.x * rotationSpeed * Time.deltaTime;
             verticalAngle -= lookInput.y * rotationSpeed * Time.deltaTime;
