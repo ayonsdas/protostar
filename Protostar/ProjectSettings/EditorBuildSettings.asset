@@ -14,12 +14,9 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/MainLevel.unity
     guid: a62031cdf2c7bed4ebfb3518560e96b9
-  - enabled: 0
-    path: Assets/Scenes/WhiteBoxPuzzle.unity
-    guid: 08fa96a59b454f14292057e2a869301d
   - enabled: 1
-    path: Assets/Scenes/WhiteBoxPuzzle_katyabranch.unity
-    guid: 6ed89eb0e6331f6488c3c2ba3b674cd8
+    path: Assets/Scenes/WhiteBoxPuzzle.unity
+    guid: b8ccf57ee3e793f4d949eb5326d15072
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
