@@ -10,6 +10,7 @@ public class OutlineRenderFeatureV2Settings
     [Header("Shaders")]
     public Shader MaskShader;
     public Shader OutlineShader;
+    public Shader BlurShader;
     public RenderingLayerMask OutlineLayer;
     [Header("Outline Settings")]
     public Color OutlineColor;
@@ -33,6 +34,7 @@ public class OutlineRenderFeatureV2 : ScriptableRendererFeature
     private OutlineRenderPassV2 _outlineRenderPass;
     private Material _maskMaterial;
     private Material _outlineMaterial;
+    private Material _blurMaterial;
 
     public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
     {
@@ -47,6 +49,12 @@ public class OutlineRenderFeatureV2 : ScriptableRendererFeature
         {
             _outlineMaterial = CoreUtils.CreateEngineMaterial(_settings.OutlineShader);
             _outlineRenderPass?.SetOutlineMaterial(_outlineMaterial);
+        }
+
+        if (_blurMaterial == null && _settings.BlurShader != null)
+        {
+            _blurMaterial = CoreUtils.CreateEngineMaterial(_settings.BlurShader);
+            _outlineRenderPass?.SetBlurMaterial(_blurMaterial);
         }
 
         // Update shader settings from serialize properties
@@ -80,8 +88,10 @@ public class OutlineRenderFeatureV2 : ScriptableRendererFeature
     {
         CoreUtils.Destroy(_maskMaterial);
         CoreUtils.Destroy(_outlineMaterial);
+        CoreUtils.Destroy(_blurMaterial);
 
         _maskMaterial = null;
         _outlineMaterial = null;
+        _blurMaterial = null;
     }
 }
