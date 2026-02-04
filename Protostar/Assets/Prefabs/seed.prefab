@@ -98,6 +98,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f6ed5afb9bc1a6a42bb32d2c4c134b58, type: 3}
       insertIndex: -1
       addedObject: {fileID: -7117512424672271999}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f6ed5afb9bc1a6a42bb32d2c4c134b58, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9074771782874662972}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f6ed5afb9bc1a6a42bb32d2c4c134b58, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3393707751095455122}
   m_SourcePrefab: {fileID: 100100000, guid: f6ed5afb9bc1a6a42bb32d2c4c134b58, type: 3}
 --- !u!1 &648155595322371774 stripped
 GameObject:
@@ -210,3 +216,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eaa05bdc8e163c049b9dda697f2c4642, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PickupableObject
+--- !u!114 &9074771782874662972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 648155595322371774}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbabac6e8fc84beea9ad4c696cd728f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Protostar::SimpleFocusable
+--- !u!114 &3393707751095455122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 648155595322371774}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5938b7bb399d38c5aa4dd5462d18e74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Protostar::OutlineFocusEffect
+  _baseObject: {fileID: 0}
+  outlineLayerMask:
+    serializedVersion: 0
+    m_Bits: 256
