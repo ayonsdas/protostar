@@ -13,6 +13,7 @@ public class StartViewPresenter : MonoBehaviour
     private VisualElement settingsView;
     private VisualElement mainMenuView;
     private VisualElement creditsView;
+    private VisualElement controlsView;
 
     void Awake()
     {
@@ -31,10 +32,12 @@ public class StartViewPresenter : MonoBehaviour
         settingsView = root.Q<TemplateContainer>("Settings");
         mainMenuView = root.Q<TemplateContainer>("MainMenu");
         creditsView = root.Q<TemplateContainer>("Credits");
+        controlsView = root.Q<TemplateContainer>("Controls");
 
         SetupMainMenu();
         SetupSettingsMenu();
         SetupCreditsMenu();
+        SetupControlsMenu();
 
         // Subscribe to state changes
         GameStateManager.Instance.OnStateChanged += OnGameStateChanged;
@@ -58,6 +61,25 @@ public class StartViewPresenter : MonoBehaviour
         menuPresenter.StartGame = () => GameStateManager.Instance.StartGame(gameSceneName);
         menuPresenter.OpenCredits = () => GameStateManager.Instance.SetState(GameStateManager.GameState.Credits);
         menuPresenter.QuitGame = () => Application.Quit();
+    }
+
+    private void SetupControlsMenu()
+    {
+        ControlsPresenter controlsPresenter = new ControlsPresenter(root.Q<TemplateContainer>("Controls"));
+        
+        // Back button - return to settings or paused state
+        controlsPresenter.BackAction = () =>
+        {
+            var previousState = GameStateManager.Instance.GetPreviousState();
+            if (previousState == GameStateManager.GameState.Paused)
+            {
+                GameStateManager.Instance.SetState(GameStateManager.GameState.Paused);
+            }
+            else
+            {
+                GameStateManager.Instance.SetState(GameStateManager.GameState.Settings);
+            }
+        };
     }
 
     private void SetupSettingsMenu()
@@ -85,6 +107,12 @@ public class StartViewPresenter : MonoBehaviour
         {
             GameStateManager.Instance.ReturnToMainMenu(mainMenuSceneName);
         };
+        
+        // Controls button - open controls page
+        settingsPresenter.ControlsAction = () =>
+        {
+            GameStateManager.Instance.SetState(GameStateManager.GameState.Controls);
+        };
     }
 
     private void SetupCreditsMenu()
@@ -104,6 +132,9 @@ public class StartViewPresenter : MonoBehaviour
         
         // Show credits only in Credits state
         creditsView.Display(newState == GameStateManager.GameState.Credits);
+        
+        // Show controls only in Controls state
+        controlsView.Display(newState == GameStateManager.GameState.Controls);
         
         // Show root UI except when actively playing
         root.Display(newState != GameStateManager.GameState.InGame);

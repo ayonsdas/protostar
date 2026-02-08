@@ -20,9 +20,11 @@ public class SettingsPresenter
 
     public Action BackAction { set { if (backButton != null) backButton.clicked += value; } }
     public Action ReturnToMainMenuAction { set { if (mainMenuButton != null) mainMenuButton.clicked += value; } }
+    public Action ControlsAction { set { if (controlsButton != null) controlsButton.clicked += value; } }
 
     private Button backButton;
     private Button mainMenuButton;
+    private Button controlsButton;
     private Toggle fullscreenToggle;
     private DropdownField resolutionsDropdown;
     private Slider musicMasterSlider;
@@ -38,6 +40,7 @@ public class SettingsPresenter
 
         backButton = root.Q<Button>("BackButton");
         mainMenuButton = root.Q<Button>("MainMenuButton");
+        controlsButton = root.Q<Button>("ControlsButton");
         fullscreenToggle = root.Q<Toggle>("FullscreenToggle");
         resolutionsDropdown = root.Q<DropdownField>("ResolutionDropdown");
         musicMasterSlider = root.Q<Slider>("MusicMasterSlider");
