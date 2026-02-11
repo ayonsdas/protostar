@@ -79,10 +79,10 @@ MonoBehaviour:
     OutlineLayer:
       serializedVersion: 0
       m_Bits: 256
-    OutlineColor: {r: 1, g: 1, b: 1, a: 1}
-    EdgeRadius: 2
-    DilateRadius: 2
-    BlurRadius: 3
+    OutlineColor: {r: 0, g: 1, b: 1, a: 1}
+    EdgeRadius: 4
+    DilateRadius: 4
+    BlurRadius: 4
 --- !u!114 &7833122117494664109
 MonoBehaviour:
   m_ObjectHideFlags: 0
