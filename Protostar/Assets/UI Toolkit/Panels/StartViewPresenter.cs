@@ -41,6 +41,9 @@ public class StartViewPresenter : MonoBehaviour
 
         GameStateManager.Instance.OnStateChanged += OnGameStateChanged;
         OnGameStateChanged(GameStateManager.Instance.CurrentState);
+
+        // Force initial focus after UI has fully initialized
+        root.schedule.Execute(() => mainMenuView.Q<Button>()?.Focus()).StartingIn(500);
     }
 
     private void OnDestroy()
