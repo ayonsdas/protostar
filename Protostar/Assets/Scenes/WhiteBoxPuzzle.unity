@@ -506,10 +506,10 @@ MonoBehaviour:
   nextSceneName: MainMenu
   openEventReference:
     Guid:
-      Data1: 1857833635
-      Data2: 1234187054
-      Data3: 985681284
-      Data4: 574234120
+      Data1: 735191110
+      Data2: 1330524946
+      Data3: -1237737083
+      Data4: 799238348
     Path: event:/CabinetOpen
 --- !u!4 &31817278
 Transform:
