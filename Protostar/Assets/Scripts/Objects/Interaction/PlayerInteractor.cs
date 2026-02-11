@@ -27,7 +27,44 @@ public class PlayerInteractor : Interactor
         if (!value.isPressed) return;
         if (isShiftHeld) return; // Don't interact while shifting
 
-        // Priority 1: If carrying something, drop it
+        Cast(); // Refresh raycast data
+
+        Debug.Log($"[PlayerInteractor] OnInteract: carried={carriedObject != null}, HoveredInteractable={HoveredInteractable?.GetType().Name ?? "null"}");
+
+        // Priority 1: If carrying a seed and hovering an empty SeedSlot, place seed
+        if (carriedObject != null && HoveredInteractable is SeedSlot emptySlot && !emptySlot.IsFilled)
+        {
+            SeedObject seed = carriedObject.GetComponent<SeedObject>();
+            if (seed != null)
+            {
+                Debug.Log("[PlayerInteractor] OnInteract - placing seed in slot");
+                // Unparent from hold point, then let the slot take over
+                carriedObject.transform.SetParent(null);
+                emptySlot.PlaceSeed(seed);
+                carriedObject = null;
+                carriedPickupable = null;
+                return;
+            }
+        }
+
+        // Priority 2: If not carrying and hovering a filled SeedSlot, remove seed and pick it up
+        if (carriedObject == null && HoveredInteractable is SeedSlot filledSlot && filledSlot.IsFilled)
+        {
+            SeedObject seed = filledSlot.RemoveSeed();
+            if (seed != null)
+            {
+                Debug.Log("[PlayerInteractor] OnInteract - removing seed from slot, picking up");
+                carriedObject = seed.gameObject;
+                carriedPickupable = seed;
+                carriedObject.transform.SetParent(pickupHoldPoint);
+                carriedObject.transform.localPosition = Vector3.zero;
+                carriedObject.transform.localRotation = Quaternion.identity;
+                seed.OnPickup(gameObject);
+                return;
+            }
+        }
+
+        // Priority 3: If carrying something, drop it
         if (carriedObject != null)
         {
             Debug.Log("[PlayerInteractor] OnInteract - dropping carried object");
@@ -35,7 +72,7 @@ public class PlayerInteractor : Interactor
             return;
         }
 
-        // Priority 2: If hovering a pickupable, pick it up
+        // Priority 4: If hovering a pickupable, pick it up
         if (HoveredPickupable != null)
         {
             Debug.Log("[PlayerInteractor] OnInteract - picking up object");
@@ -43,9 +80,19 @@ public class PlayerInteractor : Interactor
             return;
         }
 
-        // Priority 3: Normal interact (telescope, cabinet, etc.)
-        Debug.Log("[PlayerInteractor] OnInteract - calling Interact()");
-        Interact();
+        // Priority 5: Normal interact (telescope, cabinet, book, etc.)
+        // Call HoveredInteractable directly to avoid engage/disengage logic
+        Cast();
+        Debug.Log($"[PlayerInteractor] Priority 5 check: HoveredInteractable={HoveredInteractable?.GetType().Name ?? "null"}, HoveredEngagable={HoveredEngagable?.GetType().Name ?? "null"}, HoveredPickupable={HoveredPickupable?.GetType().Name ?? "null"}");
+        if (HoveredInteractable != null)
+        {
+            Debug.Log($"[PlayerInteractor] OnInteract - calling Interact on {HoveredInteractable.GetType().Name}");
+            HoveredInteractable.Interact(gameObject);
+        }
+        else
+        {
+            Debug.Log("[PlayerInteractor] OnInteract - nothing to interact with (no HoveredInteractable)");
+        }
     }
 
     public void OnShift(InputValue value)

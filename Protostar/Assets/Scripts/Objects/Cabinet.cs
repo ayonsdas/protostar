@@ -12,6 +12,7 @@ public class Cabinet : MonoBehaviour, IInteractable
     [SerializeField] private GameObject closedModel;
     [SerializeField] private GameObject openModel;
     [SerializeField] private GameObject bookModel; // Book to show when cabinet opens
+    [SerializeField] private GameObject lockModel; // Lock to hide when cabinet opens
 
     [Header("Telescope Requirement")]
     [SerializeField] private Telescope requiredTelescope; // Telescope that must complete its puzzle
@@ -43,6 +44,12 @@ public class Cabinet : MonoBehaviour, IInteractable
         if (bookModel != null)
         {
             bookModel.SetActive(false);
+        }
+
+        // Show lock initially
+        if (lockModel != null)
+        {
+            lockModel.SetActive(true);
         }
     }
 
@@ -86,7 +93,22 @@ public class Cabinet : MonoBehaviour, IInteractable
             Debug.Log("Book appeared in cabinet!");
         }
 
-        AudioManager.Instance.PlayOneShot(cabinetOpenEventReference, gameObject.transform.position);
+        // Hide lock
+        if (lockModel != null)
+        {
+            lockModel.SetActive(false);
+            Debug.Log("Lock removed from cabinet!");
+        }
+
+        try
+        {
+            AudioManager.Instance.PlayOneShot(cabinetOpenEventReference, gameObject.transform.position);
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning($"[Cabinet] Failed to play open sound: {e.Message}");
+        }
+
         Debug.Log("Cabinet opened! You can now interact with it to complete the demo.");
     }
     
@@ -95,7 +117,15 @@ public class Cabinet : MonoBehaviour, IInteractable
         // Only allow interaction if cabinet is open
         if (isOpen)
         {
-            AudioManager.Instance.PlayOneShot(bookOpenEventReference, gameObject.transform.position);
+            try
+            {
+                AudioManager.Instance.PlayOneShot(bookOpenEventReference, gameObject.transform.position);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning($"[Cabinet] Failed to play book sound: {e.Message}");
+            }
+
             EndDemo();
         }
         else

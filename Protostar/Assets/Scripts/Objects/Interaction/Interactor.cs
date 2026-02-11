@@ -32,6 +32,20 @@ public class Interactor : MonoBehaviour
             newHoveredEngagable = hit.collider.GetComponentInParent<IEngageable>();
             newFocused = hit.collider.GetComponentInParent<IFocusable>();
             newHoveredPickupable = hit.collider.GetComponentInParent<IPickupable>();
+            
+            // Filter out pickupables that can't currently be picked up
+            if (newHoveredPickupable != null && !newHoveredPickupable.CanPickup())
+            {
+                newHoveredPickupable = null;
+            }
+        }
+        else
+        {
+            // Debug: do an unfiltered raycast to see if we're hitting something on the wrong layer
+            if (Physics.Raycast(origin.position, origin.forward, out var debugHit, range))
+            {
+                Debug.Log($"[Interactor] Ray hit '{debugHit.collider.gameObject.name}' on layer {debugHit.collider.gameObject.layer} ({LayerMask.LayerToName(debugHit.collider.gameObject.layer)}), but NOT on interactableMask. Check the layer!");
+            }
         }
 
         if (newFocused != Focused)
