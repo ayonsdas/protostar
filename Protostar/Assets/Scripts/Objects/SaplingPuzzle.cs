@@ -6,7 +6,7 @@ using UnityEngine.Rendering;
 /// <summary>
 /// Sapling that shifts into a tree when all seeds are in the trigger zone
 /// </summary>
-public class SaplingPuzzle : MonoBehaviour, IInteractable, IShiftable
+public class SaplingPuzzle : MonoBehaviour, IEngageable, IShiftable
 {
     [Header("Puzzle Settings")]
     [SerializeField] private int requiredSeeds = 4;
@@ -27,6 +27,7 @@ public class SaplingPuzzle : MonoBehaviour, IInteractable, IShiftable
 
     private HashSet<SeedObject> seedsInZone = new HashSet<SeedObject>();
     private bool canInteract = false;
+    private bool _engaged = false;
 
     private void Start()
     {
@@ -200,24 +201,29 @@ public class SaplingPuzzle : MonoBehaviour, IInteractable, IShiftable
         }
     }
 
-    public void Interact(GameObject interactor)
+    // IEngageable implementation
+    public void Engage(GameObject interactor)
     {
-        Debug.Log($"[SaplingPuzzle] Interact called: canInteract={canInteract}, isShifted={isShifted}, seedsInZone.Count={seedsInZone.Count}, requiredSeeds={requiredSeeds}");
-        
+        _engaged = true;
+        Debug.Log($"[SaplingPuzzle] Engaged. canInteract={canInteract}, isShifted={isShifted}");
         if (canInteract)
         {
-            Debug.Log("Attempting to shift sapling...");
-            // Try to shift via IShiftable interface
-            Shift(1); // Shift forward
+            Debug.Log("[SaplingPuzzle] Press Shift to grow the tree!");
         }
         else if (isShifted)
         {
-            Debug.Log("Sapling has already been shifted to a tree.");
+            Debug.Log("[SaplingPuzzle] Sapling has already been shifted to a tree.");
         }
         else
         {
-            Debug.Log($"Need all {requiredSeeds} seeds in the zone. Currently have {seedsInZone.Count}.");
+            Debug.Log($"[SaplingPuzzle] Need all {requiredSeeds} seeds in the zone. Currently have {seedsInZone.Count}.");
         }
+    }
+
+    public void Disengage(GameObject interactor)
+    {
+        _engaged = false;
+        Debug.Log("[SaplingPuzzle] Disengaged");
     }
 
     private void PlaySFX()

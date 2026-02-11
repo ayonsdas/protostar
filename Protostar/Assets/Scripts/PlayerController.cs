@@ -36,6 +36,29 @@ public class PlayerController : MonoBehaviour
     private bool isGrounded;
     private Quaternion targetRotation;
     private EventInstance footstepEventInstance;
+    private Transform cameraTransform;
+    private bool movementLocked = false;
+
+    /// <summary>
+    /// Lock or unlock player movement. When locked, WASD input is ignored for movement.
+    /// </summary>
+    public void SetMovementLocked(bool locked)
+    {
+        movementLocked = locked;
+        if (locked)
+        {
+            moveInput = Vector2.zero;
+            // Kill horizontal velocity immediately
+            if (rb != null && gravityBody != null)
+            {
+                Vector3 gravityDir = gravityBody.GetGravityDirection();
+                float verticalComponent = Vector3.Dot(rb.linearVelocity, gravityDir);
+                rb.linearVelocity = gravityDir * verticalComponent;
+            }
+        }
+    }
+
+    public bool IsMovementLocked() => movementLocked;
 
     void Awake()
     {
@@ -66,6 +89,12 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         footstepEventInstance = AudioManager.Instance.CreateEventInstance(footstepEventReference);
+        
+        // Get reference to main camera
+        if (Camera.main != null)
+        {
+            cameraTransform = Camera.main.transform;
+        }
     }
 
     void Update()
@@ -136,8 +165,49 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        // Calculate movement direction relative to current rotation
-        Vector3 moveDirection = transform.forward * moveInput.y;
+        // Get camera reference if we don't have it
+        if (cameraTransform == null && Camera.main != null)
+        {
+            cameraTransform = Camera.main.transform;
+        }
+        
+        // Calculate movement direction relative to camera
+        Vector3 moveDirection = Vector3.zero;
+        
+        if (cameraTransform != null && moveInput.magnitude > 0.01f)
+        {
+            // Get camera's forward and right directions
+            Vector3 cameraForward = cameraTransform.forward;
+            Vector3 cameraRight = cameraTransform.right;
+            
+            // Project camera directions onto the plane perpendicular to gravity
+            Vector3 upDirection = gravityBody.GetUpDirection();
+            cameraForward = Vector3.ProjectOnPlane(cameraForward, upDirection).normalized;
+            cameraRight = Vector3.ProjectOnPlane(cameraRight, upDirection).normalized;
+            
+            // Calculate movement direction based on input
+            // For pure A or D input (x axis only), use 90-degree angle from camera
+            if (Mathf.Abs(moveInput.x) > 0.01f && Mathf.Abs(moveInput.y) < 0.01f)
+            {
+                // Pure strafe left or right (90 degrees from camera forward)
+                moveDirection = cameraRight * Mathf.Sign(moveInput.x);
+            }
+            else
+            {
+                // Combined input or forward/back - calculate normally
+                moveDirection = (cameraForward * moveInput.y + cameraRight * moveInput.x).normalized;
+            }
+            
+            // Rotate player to face movement direction
+            if (moveDirection.magnitude > 0.01f)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(moveDirection, upDirection);
+                Quaternion newRotation = Quaternion.Slerp(rb.rotation, targetRotation, turnSpeed * Time.fixedDeltaTime * 0.1f);
+                rb.MoveRotation(newRotation);
+            }
+        }
+        
+        // Calculate desired velocity
         Vector3 desiredVelocity = moveDirection * moveSpeed;
         
         // Use linearVelocity for proper collision detection
@@ -151,17 +221,6 @@ public class PlayerController : MonoBehaviour
         // Apply new velocity (horizontal movement + vertical velocity from gravity/jump)
         rb.linearVelocity = desiredVelocity + verticalVelocity;
 
-        // Apply rotation using Rigidbody - rotate around gravity's up direction
-        // Only use keyboard input for player rotation (camera handles mouse look)
-        float rotationInput = moveInput.x;
-        
-        if (rotationInput != 0)
-        {
-            Vector3 upDirection = gravityBody.GetUpDirection();
-            Quaternion deltaRotation = Quaternion.AngleAxis(rotationInput * turnSpeed * Time.fixedDeltaTime, upDirection);
-            rb.MoveRotation(deltaRotation * rb.rotation);
-        }
-
         // Smoothly align player to gravity direction (after turning so it doesn't override)
         AlignToGravity();
 
@@ -172,7 +231,10 @@ public class PlayerController : MonoBehaviour
     // Called by Player Input component (Send Messages behavior)
     public void OnMove(InputValue value)
     {
-        moveInput = value.Get<Vector2>();
+        if (!movementLocked)
+        {
+            moveInput = value.Get<Vector2>();
+        }
     }
     
     // Called by Player Input component for mouse delta

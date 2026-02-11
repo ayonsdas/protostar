@@ -23419,7 +23419,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 41c87ba690efe4748a65c90a98469e0d, type: 2}
+  - {fileID: 2100000, guid: f95eb8688e4b8384594ab82f50265fd4, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -41899,13 +41899,15 @@ MonoBehaviour:
   smoothTime: 0
   collisionLayers:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 4294967295
   collisionRadius: 0.3
   collisionSmoothTime: 0.1
   minDistance: 1
   rotationSpeed: 100
-  returnDelay: 3
-  returnSpeed: 2
+  returnDelay: 2
+  returnSpeed: 5
+  minPitch: -45
+  maxPitch: 75
 --- !u!114 &1766510126
 MonoBehaviour:
   m_ObjectHideFlags: 0

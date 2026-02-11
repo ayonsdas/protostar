@@ -10,46 +10,124 @@ public class PlayerInteractor : Interactor
     private GameObject carriedObject;
     private IPickupable carriedPickupable;
 
+    // Shift state
+    private bool isShiftHeld = false;
+    private IEngageable shiftEngaged = null;
+    private IShiftable shiftTarget = null;
+    private Vector2 shiftInput = Vector2.zero; // WASD input accumulated during shift hold
+    private PlayerController playerController;
+
+    private void Start()
+    {
+        playerController = GetComponent<PlayerController>();
+    }
+
     public void OnInteract(InputValue value)
     {
-        // Only allow interact if not carrying something
-        if (value.isPressed && carriedObject == null)
+        if (!value.isPressed) return;
+        if (isShiftHeld) return; // Don't interact while shifting
+
+        // Priority 1: If carrying something, drop it
+        if (carriedObject != null)
         {
-            Debug.Log("[PlayerInteractor] OnInteract - about to call Interact()");
-            Interact();
-            Debug.Log("[PlayerInteractor] OnInteract - after calling Interact()");
+            Debug.Log("[PlayerInteractor] OnInteract - dropping carried object");
+            DropObject();
+            return;
         }
-        else
+
+        // Priority 2: If hovering a pickupable, pick it up
+        if (HoveredPickupable != null)
         {
-            Debug.Log($"[PlayerInteractor] OnInteract blocked - isPressed={value.isPressed}, carriedObject null={carriedObject == null}");
+            Debug.Log("[PlayerInteractor] OnInteract - picking up object");
+            TryPickupObject();
+            return;
         }
+
+        // Priority 3: Normal interact (telescope, cabinet, etc.)
+        Debug.Log("[PlayerInteractor] OnInteract - calling Interact()");
+        Interact();
     }
 
     public void OnShift(InputValue value)
     {
-        // Only allow shifting if not carrying something
-        if (carriedObject == null)
+        if (value.isPressed)
         {
-            int direction = value.Get<float>() > 0 ? 1 : -1;
-            Scroll(direction);
-        }
-    }
+            // Shift pressed - try to engage with hovered shiftable
+            if (carriedObject != null) return; // Can't shift while carrying
 
-    public void OnPickup(InputValue value)
-    {
-        Debug.Log($"OnPickup called - isPressed: {value.isPressed}, carriedObject: {(carriedObject != null ? carriedObject.name : "null")}");
+            Cast(); // Make sure we have latest raycast
+            
+            // Look for an engageable+shiftable object
+            IEngageable engageable = HoveredEngagable;
+            IShiftable shiftable = null;
+            if (engageable != null)
+            {
+                shiftable = (engageable as MonoBehaviour)?.GetComponent<IShiftable>();
+            }
 
-        if (!value.isPressed) return;
+            if (engageable != null && shiftable != null)
+            {
+                isShiftHeld = true;
+                shiftEngaged = engageable;
+                shiftTarget = shiftable;
+                shiftInput = Vector2.zero;
 
-        if (carriedObject != null)
-        {
-            // Drop the object
-            DropObject();
+                // Engage the object
+                engageable.Engage(gameObject);
+
+                // Lock player movement
+                if (playerController != null)
+                {
+                    playerController.SetMovementLocked(true);
+                }
+
+                Debug.Log($"[PlayerInteractor] Shift engaged with {(engageable as MonoBehaviour)?.gameObject.name}");
+            }
         }
         else
         {
-            // Try to pick up object
-            TryPickupObject();
+            // Shift released - apply shift and disengage
+            if (isShiftHeld && shiftTarget != null)
+            {
+                // Determine shift direction from accumulated WASD input
+                // W/D = forward (+1), S/A = backward (-1), no input = forward (+1) default
+                int direction = 1;
+                if (Mathf.Abs(shiftInput.y) > Mathf.Abs(shiftInput.x))
+                {
+                    direction = shiftInput.y >= 0 ? 1 : -1;
+                }
+                else if (Mathf.Abs(shiftInput.x) > 0.01f)
+                {
+                    direction = shiftInput.x >= 0 ? 1 : -1;
+                }
+
+                Debug.Log($"[PlayerInteractor] Shift released, direction={direction}, input=({shiftInput.x},{shiftInput.y})");
+                shiftTarget.Shift(direction);
+
+                // Disengage
+                shiftEngaged?.Disengage(gameObject);
+            }
+
+            // Clean up
+            isShiftHeld = false;
+            shiftEngaged = null;
+            shiftTarget = null;
+            shiftInput = Vector2.zero;
+
+            // Unlock player movement
+            if (playerController != null)
+            {
+                playerController.SetMovementLocked(false);
+            }
+        }
+    }
+
+    public void OnMove(InputValue value)
+    {
+        // When shift is held, capture WASD as shift input instead of movement
+        if (isShiftHeld)
+        {
+            shiftInput = value.Get<Vector2>();
         }
     }
 

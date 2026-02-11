@@ -18,7 +18,7 @@ public class Interactor : MonoBehaviour
         Cast();
     }
 
-    private void Cast()
+    protected void Cast()
     {
         IInteractable newHoveredInteractable = null;
         IEngageable newHoveredEngagable = null;
