@@ -5,8 +5,9 @@ using UnityEngine.UIElements;
 public class ControlsPresenter
 {
     private Button returnButton;
-    public Action BackAction { set { if (returnButton != null) returnButton.clicked += value; } }
-
+    
+    public Action BackAction { set { UIHelper.RegisterButton(returnButton, value); } }
+    
     public ControlsPresenter(VisualElement root)
     {
         returnButton = root.Q<Button>("Return");
