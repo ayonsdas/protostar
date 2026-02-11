@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private bool disableFootsteps = false;
     [SerializeField] private float footstepSpeedThreshold = 0.01f;
     [SerializeField] private EventReference footstepEventReference;
+    [SerializeField] private EventReference jumpEventReference;
 
     private Rigidbody rb;
     private CustomGravityBody gravityBody;
@@ -216,6 +217,7 @@ public class PlayerController : MonoBehaviour
             // Jump in the opposite direction of gravity
             Vector3 jumpDirection = gravityBody.GetUpDirection();
             rb.AddForce(jumpDirection * jumpForce, ForceMode.Impulse);
+            AudioManager.Instance.PlayOneShot(jumpEventReference, gameObject.transform.position);
         }
     }
 

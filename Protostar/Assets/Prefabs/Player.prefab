@@ -156,6 +156,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   moveSpeed: 20
   turnSpeed: 200
+  mouseSensitivity: 2
+  requireMouseHold: 1
   jumpForce: 12
   groundCheckRadius: 0.3
   groundCheck: {fileID: 0}
@@ -163,6 +165,22 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   gravityRotationSpeed: 15
+  disableFootsteps: 0
+  footstepSpeedThreshold: 0.1
+  footstepEventReference:
+    Guid:
+      Data1: 3354848
+      Data2: 1234786991
+      Data3: 48625333
+      Data4: 447118038
+    Path: event:/Player/Footsteps
+  jumpEventReference:
+    Guid:
+      Data1: -205995131
+      Data2: 1106623750
+      Data3: 1408712344
+      Data4: -1088566950
+    Path: event:/Jump
 --- !u!54 &8402902860222378733
 Rigidbody:
   m_ObjectHideFlags: 0

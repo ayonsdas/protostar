@@ -14,19 +14,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorEventRef
   Path: event:/CabinetOpen
   Guid:
-    Data1: 1857833635
-    Data2: 1234187054
-    Data3: 985681284
-    Data4: 574234120
+    Data1: 735191110
+    Data2: 1330524946
+    Data3: -1237737083
+    Data4: 799238348
   Banks:
   - {fileID: 3519826573097436559}
   IsStream: 0
-  Is3D: 0
+  Is3D: 1
   IsOneShot: 1
   Parameters: []
-  MinDistance: 1
-  MaxDistance: 20
-  Length: 7090
+  MinDistance: 0.1
+  MaxDistance: 3600
+  Length: 7715
 --- !u!114 &-6323928327803451181
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42,11 +42,38 @@ MonoBehaviour:
   Path: FMOD/protostar/Banks/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 639058220228378448
+  lastModified: 639063585768388686
   FileSizes:
   - Name: 
-    Value: 1300
+    Value: 1336
   Exists: 1
+--- !u!114 &-4221883667984755971
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Jump
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorEventRef
+  Path: event:/Jump
+  Guid:
+    Data1: -205995131
+    Data2: 1106623750
+    Data3: 1408712344
+    Data4: -1088566950
+  Banks:
+  - {fileID: -3994024565558935635}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 2000
 --- !u!114 &-3994024565558935635
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62,7 +89,7 @@ MonoBehaviour:
   Path: FMOD/protostar/Banks/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 639058220228378448
+  lastModified: 639063585768378684
   FileSizes: []
   Exists: 1
 --- !u!114 &-358465970052557339
@@ -118,13 +145,14 @@ MonoBehaviour:
   - {fileID: 7431522245758495209}
   - {fileID: -358465970052557339}
   - {fileID: 8546727034300618241}
+  - {fileID: -4221883667984755971}
   EditorParameters: []
   MasterBanks:
   - {fileID: -3994024565558935635}
   StringsBanks:
   - {fileID: -6323928327803451181}
   cacheVersion: 131848
-  cacheTime: 639058220545148273
+  cacheTime: 639063585768388686
   SerializableEventsDict:
   - key: event:/Ambience/LivingSpaceAmbience
     index: 0
@@ -144,6 +172,8 @@ MonoBehaviour:
     index: 7
   - key: event:/Player/Footsteps
     index: 8
+  - key: event:/Jump
+    index: 9
 --- !u!114 &216727042927541213
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -170,7 +200,7 @@ MonoBehaviour:
   Parameters: []
   MinDistance: 1
   MaxDistance: 20
-  Length: 16135
+  Length: 14125
 --- !u!114 &1146476360675699075
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -267,7 +297,7 @@ MonoBehaviour:
   Path: FMOD/protostar/Banks/Desktop/Living Space.bank
   Name: Living Space
   StudioPath: bank:/Living Space
-  lastModified: 639058220545148273
+  lastModified: 639063585768238681
   FileSizes: []
   Exists: 1
 --- !u!114 &7353914500591581820
@@ -351,4 +381,4 @@ MonoBehaviour:
   Parameters: []
   MinDistance: 1
   MaxDistance: 20
-  Length: 1000
+  Length: 500

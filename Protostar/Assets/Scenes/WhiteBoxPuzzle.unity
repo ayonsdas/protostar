@@ -504,13 +504,20 @@ MonoBehaviour:
   bookModel: {fileID: 1837769534}
   requiredTelescope: {fileID: 551275047}
   nextSceneName: MainMenu
-  openEventReference:
+  cabinetOpenEventReference:
     Guid:
-      Data1: 1857833635
-      Data2: 1234187054
-      Data3: 985681284
-      Data4: 574234120
-    Path: event:/CabinetOpen
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  bookOpenEventReference:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
 --- !u!4 &31817278
 Transform:
   m_ObjectHideFlags: 0
@@ -16188,15 +16195,39 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2094070022166867159, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
       propertyPath: disableFootsteps
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2094070022166867159, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
       propertyPath: groundLayer.m_Bits
       value: 4294967295
       objectReference: {fileID: 0}
     - target: {fileID: 2094070022166867159, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
+      propertyPath: footstepSpeedThreshold
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2094070022166867159, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
+      propertyPath: jumpEventReference.Path
+      value: event:/Jump
+      objectReference: {fileID: 0}
+    - target: {fileID: 2094070022166867159, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
       propertyPath: footstepEventReference.Path
       value: event:/Player/Footsteps
+      objectReference: {fileID: 0}
+    - target: {fileID: 2094070022166867159, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
+      propertyPath: jumpEventReference.Guid.Data1
+      value: -205995131
+      objectReference: {fileID: 0}
+    - target: {fileID: 2094070022166867159, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
+      propertyPath: jumpEventReference.Guid.Data2
+      value: 1106623750
+      objectReference: {fileID: 0}
+    - target: {fileID: 2094070022166867159, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
+      propertyPath: jumpEventReference.Guid.Data3
+      value: 1408712344
+      objectReference: {fileID: 0}
+    - target: {fileID: 2094070022166867159, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
+      propertyPath: jumpEventReference.Guid.Data4
+      value: -1088566950
       objectReference: {fileID: 0}
     - target: {fileID: 2094070022166867159, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
       propertyPath: footstepEventReference.Guid.Data1
