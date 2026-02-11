@@ -42,7 +42,7 @@ MonoBehaviour:
   Path: FMOD/protostar/Banks/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 639063588657057535
+  lastModified: 639063589812871717
   FileSizes:
   - Name: 
     Value: 1336
@@ -89,7 +89,7 @@ MonoBehaviour:
   Path: FMOD/protostar/Banks/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 639063615065173321
+  lastModified: 639063589812871717
   FileSizes: []
   Exists: 1
 --- !u!114 &-358465970052557339
@@ -152,7 +152,7 @@ MonoBehaviour:
   StringsBanks:
   - {fileID: -6323928327803451181}
   cacheVersion: 131848
-  cacheTime: 639063615065173321
+  cacheTime: 639063589812871717
   SerializableEventsDict:
   - key: event:/Ambience/LivingSpaceAmbience
     index: 0
@@ -297,7 +297,7 @@ MonoBehaviour:
   Path: FMOD/protostar/Banks/Desktop/Living Space.bank
   Name: Living Space
   StudioPath: bank:/Living Space
-  lastModified: 639063588656917529
+  lastModified: 639063580238267566
   FileSizes: []
   Exists: 1
 --- !u!114 &7353914500591581820
@@ -381,4 +381,4 @@ MonoBehaviour:
   Parameters: []
   MinDistance: 1
   MaxDistance: 20
-  Length: 500
+  Length: 375

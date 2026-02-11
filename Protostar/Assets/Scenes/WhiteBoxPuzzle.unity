@@ -506,18 +506,18 @@ MonoBehaviour:
   nextSceneName: MainMenu
   cabinetOpenEventReference:
     Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
+      Data1: 735191110
+      Data2: 1330524946
+      Data3: -1237737083
+      Data4: 799238348
+    Path: event:/CabinetOpen
   bookOpenEventReference:
     Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
+      Data1: 1084460670
+      Data2: 1084897220
+      Data3: 961824949
+      Data4: 2051847597
+    Path: event:/BookOpen
 --- !u!4 &31817278
 Transform:
   m_ObjectHideFlags: 0
