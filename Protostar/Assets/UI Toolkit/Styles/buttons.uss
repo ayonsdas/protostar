@@ -6,7 +6,7 @@
     font-size: 30px;
     background-color: rgb(234, 240, 216);
     color: rgb(89, 96, 112);
-    -unity-text-outline-color: rgb(89, 96, 112);
+    -unity-text-outline-color: rgb(150, 162, 179);
     -unity-text-outline-width: 1px;
     letter-spacing: 10px;
     margin-top: 10px;
