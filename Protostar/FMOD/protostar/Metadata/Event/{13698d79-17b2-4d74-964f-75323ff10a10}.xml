@@ -78,12 +78,6 @@
 		<property name="length">
 			<value>1.0448087431693991</value>
 		</property>
-		<property name="pitch">
-			<value>-0.900000036</value>
-		</property>
-		<relationship name="modulators">
-			<destination>{268fcdac-ad70-4d25-ba2a-70bd75a871ee}</destination>
-		</relationship>
 		<relationship name="sounds">
 			<destination>{8cc4c258-ec50-4828-bcc1-672cf799b33f}</destination>
 			<destination>{cd8888c1-9710-48d9-a28f-1564b5b81f0c}</destination>
@@ -102,14 +96,6 @@
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{2bd8723a-ca04-4827-80a7-344c7031eac9}" />
-	<object class="RandomizerModulator" id="{268fcdac-ad70-4d25-ba2a-70bd75a871ee}">
-		<property name="nameOfPropertyBeingModulated">
-			<value>pitch</value>
-		</property>
-		<property name="amount">
-			<value>6</value>
-		</property>
-	</object>
 	<object class="SingleSound" id="{8cc4c258-ec50-4828-bcc1-672cf799b33f}">
 		<relationship name="audioFile">
 			<destination>{bf692ff6-4644-40b0-86da-0bac0a514948}</destination>
@@ -127,7 +113,7 @@
 			<value>2300</value>
 		</property>
 		<property name="wetLevel">
-			<value>-15.5</value>
+			<value>-17</value>
 		</property>
 	</object>
 </objects>

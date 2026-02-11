@@ -114,6 +114,9 @@
 		</relationship>
 	</object>
 	<object class="EventMixerGroup" id="{43962696-b5a9-4595-9010-5ffc556e6a58}">
+		<property name="volume">
+			<value>5</value>
+		</property>
 		<property name="name">
 			<value>Audio 1</value>
 		</property>
@@ -143,7 +146,7 @@
 	</object>
 	<object class="EventMixerGroup" id="{1fe0dc94-45c7-452d-abf8-27270b2b8f30}">
 		<property name="volume">
-			<value>-19.5</value>
+			<value>-14</value>
 		</property>
 		<property name="name">
 			<value>Audio 2</value>
@@ -191,10 +194,10 @@
 	<object class="MixerBusFader" id="{3e70bda8-7104-43b7-9976-78d8312296ec}" />
 	<object class="SpatialiserEffect" id="{df94e095-d0e0-4402-9317-546e550edd73}">
 		<property name="minimumDistance">
-			<value>1.60000002</value>
+			<value>9200</value>
 		</property>
 		<property name="maximumDistance">
-			<value>1400</value>
+			<value>10000</value>
 		</property>
 		<property name="overrideRange">
 			<value>true</value>
@@ -202,6 +205,9 @@
 	</object>
 	<object class="MixerBusFader" id="{cb7e39ca-12db-4ff6-bb95-fc0d04cf8120}" />
 	<object class="ThreeEQEffect" id="{94579c62-c8de-4c5a-bdb1-a03d6f51416e}">
+		<property name="bypass">
+			<value>true</value>
+		</property>
 		<property name="lowGain">
 			<value>-1.5</value>
 		</property>
