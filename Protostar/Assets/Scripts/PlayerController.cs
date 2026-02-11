@@ -26,7 +26,9 @@ public class PlayerController : MonoBehaviour
     [Header("Sound Settings")]
     [SerializeField] private bool disableFootsteps = false;
     [SerializeField] private float footstepSpeedThreshold = 0.01f;
+    [SerializeField] private float footstepDebounceTime = 0.5f;
     [SerializeField] private EventReference footstepEventReference;
+    [SerializeField] private EventReference jumpEventReference;
 
     private Rigidbody rb;
     private CustomGravityBody gravityBody;
@@ -36,6 +38,7 @@ public class PlayerController : MonoBehaviour
     private bool isGrounded;
     private Quaternion targetRotation;
     private EventInstance footstepEventInstance;
+    private float footstepStartTime;
     private Transform cameraTransform;
     private bool movementLocked = false;
 
@@ -89,6 +92,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         footstepEventInstance = AudioManager.Instance.CreateEventInstance(footstepEventReference);
+        footstepStartTime = Time.time;
         
         // Get reference to main camera
         if (Camera.main != null)
@@ -278,6 +282,7 @@ public class PlayerController : MonoBehaviour
             // Jump in the opposite direction of gravity
             Vector3 jumpDirection = gravityBody.GetUpDirection();
             rb.AddForce(jumpDirection * jumpForce, ForceMode.Impulse);
+            AudioManager.Instance.PlayOneShot(jumpEventReference, gameObject.transform.position);
         }
     }
 
@@ -299,30 +304,38 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private bool canStartFootsteps()
+    {
+        bool moving = rb.linearVelocity.magnitude >= footstepSpeedThreshold;
+        bool debounce = Time.time - footstepStartTime > footstepDebounceTime;
+        return moving && debounce && isGrounded;
+    }
+
     private void UpdateSound()
     {
         if (disableFootsteps) return;
-        if (rb.linearVelocity.magnitude >= footstepSpeedThreshold && isGrounded)
+        if (canStartFootsteps())
         {
             PLAYBACK_STATE playbackState;
             footstepEventInstance.getPlaybackState(out playbackState);
             if (playbackState == PLAYBACK_STATE.STOPPED)
             {
                 //Debug.Log("Started footsteps Velocity: " + rb.linearVelocity + " Grounded: " + isGrounded);
+                footstepStartTime = Time.time;
                 footstepEventInstance.start();
             }
         }
 
-        else
-        {
-            PLAYBACK_STATE playbackState;
-            footstepEventInstance.getPlaybackState(out playbackState);
-            if (playbackState == PLAYBACK_STATE.PLAYING)
-            {
-                //Debug.Log("Stopped footsteps Velocity: " + rb.linearVelocity + " Grounded: " + isGrounded);
-                footstepEventInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
-            }
+        //else
+        //{
+        //    PLAYBACK_STATE playbackState;
+        //    footstepEventInstance.getPlaybackState(out playbackState);
+        //    if (playbackState == PLAYBACK_STATE.PLAYING)
+        //    {
+        //        //Debug.Log("Stopped footsteps Velocity: " + rb.linearVelocity + " Grounded: " + isGrounded);
+        //        footstepEventInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+        //    }
 
-        }
+        //}
     }
 }
