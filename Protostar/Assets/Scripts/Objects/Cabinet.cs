@@ -20,7 +20,8 @@ public class Cabinet : MonoBehaviour, IInteractable
     [SerializeField] private string nextSceneName = "MainMenu"; // Scene to load when demo ends
     
     [Header("Sound Effects")]
-    [SerializeField] private EventReference openEventReference;
+    [SerializeField] private EventReference cabinetOpenEventReference;
+    [SerializeField] private EventReference bookOpenEventReference;
 
     private bool isOpen = false;
     private bool wasLightOn = false;
@@ -85,7 +86,7 @@ public class Cabinet : MonoBehaviour, IInteractable
             Debug.Log("Book appeared in cabinet!");
         }
 
-        AudioManager.Instance.PlayOneShot(openEventReference, gameObject.transform.position);
+        AudioManager.Instance.PlayOneShot(cabinetOpenEventReference, gameObject.transform.position);
         Debug.Log("Cabinet opened! You can now interact with it to complete the demo.");
     }
     
@@ -94,6 +95,7 @@ public class Cabinet : MonoBehaviour, IInteractable
         // Only allow interaction if cabinet is open
         if (isOpen)
         {
+            AudioManager.Instance.PlayOneShot(bookOpenEventReference, gameObject.transform.position);
             EndDemo();
         }
         else
