@@ -37,7 +37,7 @@ Shader "Custom/OutlineCompositeBlit"
                 float outlineMask =  SAMPLE_TEXTURE2D(_BlurOutlineTexture, sampler_BlurOutlineTexture, input.texcoord).r;
                 float mask = SAMPLE_TEXTURE2D(_MaskTexture, sampler_MaskTexture, input.texcoord).r;
                 outlineMask = outlineMask * (1 - mask);
-                outlineMask = smoothstep(0, 0.8, outlineMask);
+                outlineMask = ceil(outlineMask);
                 
                 float4 sceneColor = SAMPLE_TEXTURE2D(_BlitTexture, sampler_LinearClamp, input.texcoord).rgba;
                 return lerp(sceneColor, _OutlineColor, outlineMask);

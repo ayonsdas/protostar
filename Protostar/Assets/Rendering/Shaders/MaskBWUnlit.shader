@@ -14,6 +14,8 @@ Shader "Custom/MaskBWUnlit"
         {
             Tags { "LightMode" = "UniversalForward" }
 
+            ZTest Always
+
             HLSLPROGRAM
 
             #pragma vertex vert

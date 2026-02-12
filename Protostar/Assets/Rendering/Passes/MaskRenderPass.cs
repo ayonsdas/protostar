@@ -53,7 +53,7 @@ public class MaskRenderPass : ScriptableRenderPass
         // builder.SetRenderAttachment(resourceData.activeColorTexture, 0);
 
         // Use depth to enable occlusion
-        builder.SetRenderAttachmentDepth(resourceData.activeDepthTexture);
+        //builder.SetRenderAttachmentDepth(resourceData.activeDepthTexture);
 
         // Filter to desired layers and use Normals shader material
         DrawingSettings drawingSettings = RenderingUtils.CreateDrawingSettings(
