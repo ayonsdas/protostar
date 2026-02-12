@@ -4,29 +4,26 @@ using FMODUnity;
 using UnityEngine.Rendering;
 
 /// <summary>
-/// Sapling that shifts into a tree when all seeds are in the trigger zone
+/// Sapling that shifts into a tree when all four seed slots are filled.
 /// </summary>
-public class SaplingPuzzle : MonoBehaviour, IInteractable, IShiftable
+public class SaplingPuzzle : MonoBehaviour, IEngageable, IShiftable
 {
     [Header("Puzzle Settings")]
-    [SerializeField] private int requiredSeeds = 4;
-    [SerializeField] private GameObject saplingModel; // The sapling visual
-    [SerializeField] private GameObject treeModel; // The tree model to shift to
-
-    [Header("Colliders")]
-    [SerializeField] private Collider seedDetectionZone; // Trigger collider for detecting seeds
+    [SerializeField] private SeedSlot[] seedSlots; // Assign exactly 4 in the Inspector
+    [SerializeField] private GameObject saplingModel;
+    [SerializeField] private GameObject treeModel;
 
     [Header("Skybox")]
-    [SerializeField] private Material targetSkybox; // The skybox to show after puzzle completion
-    [SerializeField] private GameObject sun; // The sun/directional light to hide/show
+    [SerializeField] private bool startWithBlackSkybox = true; // Toggle whether to start with black skybox
+    [SerializeField] private Material targetSkybox;
+    [SerializeField] private GameObject sun;
     
     [Header("Sound")]
-    private bool isShifted = false; // Runtime state only
+    private bool isShifted = false;
     [field: SerializeField] public EventReference treeGrowSoundEvent { get; private set; }
-    [field: SerializeField] public EventReference seedPlantSoundEvent { get; private set; }
 
-    private HashSet<SeedObject> seedsInZone = new HashSet<SeedObject>();
     private bool canInteract = false;
+    private bool _engaged = false;
 
     private void Start()
     {
@@ -41,34 +38,40 @@ public class SaplingPuzzle : MonoBehaviour, IInteractable, IShiftable
         {
             saplingModel.SetActive(true);
         }
-        
-        // Check for seeds already in the zone at startup
-        DetectInitialSeeds();
-        
-        // Set skybox to black at start
-        SetBlackSkybox();
-    }
-    
-    private void DetectInitialSeeds()
-    {
-        if (seedDetectionZone != null)
+
+        // Subscribe to each slot's change event
+        if (seedSlots != null)
         {
-            // Find all SeedObject components in the scene
-            SeedObject[] allSeeds = FindObjectsOfType<SeedObject>();
-            
-            foreach (SeedObject seed in allSeeds)
+            foreach (var slot in seedSlots)
             {
-                // Check if the seed's collider is within the detection zone
-                Collider seedCollider = seed.GetComponent<Collider>();
-                if (seedCollider != null && seedDetectionZone.bounds.Intersects(seedCollider.bounds))
+                if (slot != null)
                 {
-                    seedsInZone.Add(seed);
-                    Debug.Log($"[SaplingPuzzle] Found seed already in zone at startup: {seed.name}");
+                    slot.OnSlotChanged += UpdateInteractableState;
                 }
             }
-            
-            Debug.Log($"[SaplingPuzzle] Initial seed count: {seedsInZone.Count}/{requiredSeeds}");
-            UpdateInteractableState();
+        }
+
+        UpdateInteractableState();
+        
+        // Set skybox to black at start (if enabled)
+        if (startWithBlackSkybox)
+        {
+            SetBlackSkybox();
+        }
+    }
+
+    private void OnDestroy()
+    {
+        // Unsubscribe to avoid leaks
+        if (seedSlots != null)
+        {
+            foreach (var slot in seedSlots)
+            {
+                if (slot != null)
+                {
+                    slot.OnSlotChanged -= UpdateInteractableState;
+                }
+            }
         }
     }
     
@@ -142,82 +145,64 @@ public class SaplingPuzzle : MonoBehaviour, IInteractable, IShiftable
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    private int FilledSlotCount()
     {
-        Debug.Log($"[SaplingPuzzle] OnTriggerEnter called! Collider name: {other.gameObject.name}");
-        
-        // Check if a seed entered the zone - check parent too in case collider is on child
-        SeedObject seed = other.GetComponentInParent<SeedObject>();
-        if (seed != null)
+        if (seedSlots == null) return 0;
+        int count = 0;
+        foreach (var slot in seedSlots)
         {
-            seedsInZone.Add(seed);
-            
-            // Try to play sound, but don't let it break gameplay
-            try
-            {
-                RuntimeManager.PlayOneShot(seedPlantSoundEvent, seed.transform.position);
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogWarning($"Failed to play seed plant sound: {e.Message}");
-            }
-            
-            Debug.Log($"Seed entered zone. Total seeds: {seedsInZone.Count}/{requiredSeeds}");
-            UpdateInteractableState();
+            if (slot != null && slot.IsFilled) count++;
         }
-        else
-        {
-            Debug.Log($"[SaplingPuzzle] Object that entered has no SeedObject component (checked parent too)");
-        }
+        return count;
     }
 
-    private void OnTriggerExit(Collider other)
+    private bool AllSlotsFilled()
     {
-        Debug.Log($"[SaplingPuzzle] OnTriggerExit called! Collider name: {other.gameObject.name}");
-        
-        // Check if a seed left the zone - check parent too
-        SeedObject seed = other.GetComponentInParent<SeedObject>();
-        if (seed != null)
+        if (seedSlots == null || seedSlots.Length == 0) return false;
+        foreach (var slot in seedSlots)
         {
-            seedsInZone.Remove(seed);
-            Debug.Log($"Seed left zone. Total seeds: {seedsInZone.Count}/{requiredSeeds}");
-            UpdateInteractableState();
+            if (slot == null || !slot.IsFilled) return false;
         }
+        return true;
     }
 
     private void UpdateInteractableState()
     {
-        // Can only interact when all seeds are present and not already shifted
-        bool hadEnoughSeeds = seedsInZone.Count >= requiredSeeds;
+        bool allFilled = AllSlotsFilled();
         bool notShifted = !isShifted;
-        canInteract = hadEnoughSeeds && notShifted;
+        canInteract = allFilled && notShifted;
 
-        Debug.Log($"[SaplingPuzzle] UpdateInteractableState: seedsInZone.Count={seedsInZone.Count}, requiredSeeds={requiredSeeds}, hadEnoughSeeds={hadEnoughSeeds}, notShifted={notShifted}, canInteract={canInteract}");
+        Debug.Log($"[SaplingPuzzle] UpdateInteractableState: filled={FilledSlotCount()}/{(seedSlots != null ? seedSlots.Length : 0)}, allFilled={allFilled}, notShifted={notShifted}, canInteract={canInteract}");
 
         if (canInteract)
         {
-            Debug.Log("All seeds collected! You can now interact with the sapling.");
+            Debug.Log("[SaplingPuzzle] All seed slots filled! You can now shift the sapling.");
         }
     }
 
-    public void Interact(GameObject interactor)
+    // IEngageable implementation
+    public void Engage(GameObject interactor)
     {
-        Debug.Log($"[SaplingPuzzle] Interact called: canInteract={canInteract}, isShifted={isShifted}, seedsInZone.Count={seedsInZone.Count}, requiredSeeds={requiredSeeds}");
-        
+        _engaged = true;
+        Debug.Log($"[SaplingPuzzle] Engaged. canInteract={canInteract}, isShifted={isShifted}");
         if (canInteract)
         {
-            Debug.Log("Attempting to shift sapling...");
-            // Try to shift via IShiftable interface
-            Shift(1); // Shift forward
+            Debug.Log("[SaplingPuzzle] All slots filled! Press Shift to grow the tree!");
         }
         else if (isShifted)
         {
-            Debug.Log("Sapling has already been shifted to a tree.");
+            Debug.Log("[SaplingPuzzle] Sapling has already been shifted to a tree.");
         }
         else
         {
-            Debug.Log($"Need all {requiredSeeds} seeds in the zone. Currently have {seedsInZone.Count}.");
+            Debug.Log($"[SaplingPuzzle] Need all {(seedSlots != null ? seedSlots.Length : 0)} seed slots filled. Currently have {FilledSlotCount()}.");
         }
+    }
+
+    public void Disengage(GameObject interactor)
+    {
+        _engaged = false;
+        Debug.Log("[SaplingPuzzle] Disengaged");
     }
 
     private void PlaySFX()
@@ -259,18 +244,18 @@ public class SaplingPuzzle : MonoBehaviour, IInteractable, IShiftable
             Debug.LogWarning("Sapling model is null!");
         }
 
-        // Hide/destroy all seeds
-        Debug.Log($"Hiding {seedsInZone.Count} seeds");
-        foreach (var seed in seedsInZone)
+        // Consume all seeds from slots
+        if (seedSlots != null)
         {
-            if (seed != null)
+            foreach (var slot in seedSlots)
             {
-                seed.gameObject.SetActive(false);
-                Debug.Log($"Hidden seed: {seed.name}");
-                // Or use Destroy(seed.gameObject) if you want to permanently remove them
+                if (slot != null)
+                {
+                    slot.ConsumeSeed();
+                }
             }
         }
-        seedsInZone.Clear();
+        Debug.Log("All seeds consumed from slots.");
 
         // Show tree
         if (treeModel != null)
@@ -287,12 +272,6 @@ public class SaplingPuzzle : MonoBehaviour, IInteractable, IShiftable
         
         // Change skybox to target skybox
         SetTargetSkybox();
-
-        // Disable the seed detection zone so no more seeds affect it
-        if (seedDetectionZone != null)
-        {
-            seedDetectionZone.enabled = false;
-        }
     }
 
     public bool CanShift()

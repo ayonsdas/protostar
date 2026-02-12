@@ -13,6 +13,7 @@ public class StartViewPresenter : MonoBehaviour
     private VisualElement settingsView;
     private VisualElement mainMenuView;
     private VisualElement creditsView;
+    private VisualElement controlsView;
 
     void Awake()
     {
@@ -31,16 +32,18 @@ public class StartViewPresenter : MonoBehaviour
         settingsView = root.Q<TemplateContainer>("Settings");
         mainMenuView = root.Q<TemplateContainer>("MainMenu");
         creditsView = root.Q<TemplateContainer>("Credits");
+        controlsView = root.Q<TemplateContainer>("Controls");
 
         SetupMainMenu();
         SetupSettingsMenu();
         SetupCreditsMenu();
+        SetupControlsMenu();
 
-        // Subscribe to state changes
         GameStateManager.Instance.OnStateChanged += OnGameStateChanged;
-
-        // Initialize UI based on current state
         OnGameStateChanged(GameStateManager.Instance.CurrentState);
+
+        // Force initial focus after UI has fully initialized
+        root.schedule.Execute(() => mainMenuView.Q<Button>()?.Focus()).StartingIn(500);
     }
 
     private void OnDestroy()
@@ -60,31 +63,32 @@ public class StartViewPresenter : MonoBehaviour
         menuPresenter.QuitGame = () => Application.Quit();
     }
 
+    private void SetupControlsMenu()
+    {
+        ControlsPresenter controlsPresenter = new ControlsPresenter(root.Q<TemplateContainer>("Controls"));
+        controlsPresenter.BackAction = () =>
+        {
+            var previousState = GameStateManager.Instance.GetPreviousState();
+            if (previousState == GameStateManager.GameState.Paused)
+                GameStateManager.Instance.SetState(GameStateManager.GameState.Paused);
+            else
+                GameStateManager.Instance.SetState(GameStateManager.GameState.Settings);
+        };
+    }
+
     private void SetupSettingsMenu()
     {
         SettingsPresenter settingsPresenter = new SettingsPresenter(root.Q<TemplateContainer>("Settings"));
-        
-        // Back button - return to previous screen
         settingsPresenter.BackAction = () =>
         {
             var currentState = GameStateManager.Instance.CurrentState;
             if (currentState == GameStateManager.GameState.Settings)
-            {
-                // Came from main menu
                 GameStateManager.Instance.SetState(GameStateManager.GameState.MainMenu);
-            }
             else if (currentState == GameStateManager.GameState.Paused)
-            {
-                // Came from in-game, resume playing
                 GameStateManager.Instance.SetState(GameStateManager.GameState.InGame);
-            }
         };
-        
-        // Return to main menu button (used when paused in-game)
-        settingsPresenter.ReturnToMainMenuAction = () =>
-        {
-            GameStateManager.Instance.ReturnToMainMenu(mainMenuSceneName);
-        };
+        settingsPresenter.ReturnToMainMenuAction = () => GameStateManager.Instance.ReturnToMainMenu(mainMenuSceneName);
+        settingsPresenter.ControlsAction = () => GameStateManager.Instance.SetState(GameStateManager.GameState.Controls);
     }
 
     private void SetupCreditsMenu()
@@ -95,17 +99,29 @@ public class StartViewPresenter : MonoBehaviour
 
     private void OnGameStateChanged(GameStateManager.GameState newState)
     {
-        // Show main menu only in MainMenu state
         mainMenuView.Display(newState == GameStateManager.GameState.MainMenu);
-        
-        // Show settings in both Settings (from menu) and Paused (from game) states
         settingsView.Display(newState == GameStateManager.GameState.Settings || 
                             newState == GameStateManager.GameState.Paused);
-        
-        // Show credits only in Credits state
         creditsView.Display(newState == GameStateManager.GameState.Credits);
-        
-        // Show root UI except when actively playing
+        controlsView.Display(newState == GameStateManager.GameState.Controls);
         root.Display(newState != GameStateManager.GameState.InGame);
+
+        // Set initial focus for controller navigation
+        switch (newState)
+        {
+            case GameStateManager.GameState.MainMenu:
+                mainMenuView.Q<Button>()?.Focus();
+                break;
+            case GameStateManager.GameState.Settings:
+            case GameStateManager.GameState.Paused:
+                settingsView.Q<Button>()?.Focus();
+                break;
+            case GameStateManager.GameState.Credits:
+                creditsView.Q<Button>()?.Focus();
+                break;
+            case GameStateManager.GameState.Controls:
+                controlsView.Q<Button>()?.Focus();
+                break;
+        }
     }
 }

@@ -44,11 +44,11 @@
                 },
                 {
                     "name": "Shift",
-                    "type": "Value",
+                    "type": "Button",
                     "id": "8bcbf9d5-13a7-46a5-ba5b-b7aac1fdaa54",
-                    "expectedControlType": "Axis",
+                    "expectedControlType": "",
                     "processors": "",
-                    "interactions": "",
+                    "interactions": "Press(behavior=2)",
                     "initialStateCheck": true
                 },
                 {
@@ -60,15 +60,7 @@
                     "interactions": "",
                     "initialStateCheck": false
                 },
-                {
-                    "name": "Pickup",
-                    "type": "Button",
-                    "id": "a5f3d9c2-8e4b-4a1c-9d7f-3c2b1e8a4f6d",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
+
                 {
                     "name": "MouseHold",
                     "type": "Button",
@@ -171,7 +163,7 @@
                 {
                     "name": "",
                     "id": "748c96ba-2bda-4a29-a56c-c6168bd671ab",
-                    "path": "<Mouse>/scroll/y",
+                    "path": "<Keyboard>/leftShift",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -190,17 +182,7 @@
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
-                {
-                    "name": "",
-                    "id": "b8e2f5c3-9a4d-4e7b-8c6f-2d1a3e5b7c9f",
-                    "path": "<Keyboard>/p",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Pickup",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
+
                 {
                     "name": "",
                     "id": "c2e55de6-ae91-472e-927f-eeee4dfe789f",
