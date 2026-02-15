@@ -60,7 +60,6 @@
                     "interactions": "",
                     "initialStateCheck": false
                 },
-
                 {
                     "name": "MouseHold",
                     "type": "Button",
@@ -129,8 +128,30 @@
                 },
                 {
                     "name": "",
+                    "id": "4f69bf0c-0d87-482a-b170-7a6e5b645098",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "4362bd46-fea4-4178-ae39-73712be6e2a0",
                     "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a3196c8b-2def-40f9-8590-bf68bd4ccd0b",
+                    "path": "<Gamepad>/buttonSouth",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -151,8 +172,30 @@
                 },
                 {
                     "name": "",
+                    "id": "90f31e56-6c4f-4f86-93f7-203af9293266",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Look",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "1e0fa3d9-2052-4691-a29a-e549aee3d84c",
                     "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6fa72ce4-37a4-4263-933d-903103b42b81",
+                    "path": "<Gamepad>/buttonWest",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -173,6 +216,17 @@
                 },
                 {
                     "name": "",
+                    "id": "b27f5387-afa5-40bc-930f-bee4ffa354cf",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Shift",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "7d9c5dcc-1bc6-44d4-b95d-5c08ce378a35",
                     "path": "<Keyboard>/g",
                     "interactions": "",
@@ -182,12 +236,22 @@
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
-
                 {
                     "name": "",
                     "id": "c2e55de6-ae91-472e-927f-eeee4dfe789f",
                     "path": "<Mouse>/rightButton",
                     "interactions": "Press(behavior=2)",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MouseHold",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "09209d84-f1b9-4e09-9678-db335b288ae5",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "MouseHold",
