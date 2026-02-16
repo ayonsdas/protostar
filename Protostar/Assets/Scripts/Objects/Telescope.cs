@@ -10,7 +10,7 @@ public class Telescope : MonoBehaviour, IInteractable
     [SerializeField] private GameObject telescopeHead; // Visual model that rotates around cameraRoot
     [SerializeField] private Light telescopeLight; // Light that rotates around cameraRoot
     [SerializeField] private Vector3 cameraOffset = new Vector3(0, 0, 0); // Offset from cameraRoot to camera
-    [SerializeField] private float rotationSpeed = 50f;
+    [SerializeField] private float mouseSensitivity = 25f; // Mouse sensitivity (half of normal camera)
     [SerializeField] private float verticalLimit = 60f; // Max angle up/down
 
     private Vector3 headOffset;
@@ -32,6 +32,9 @@ public class Telescope : MonoBehaviour, IInteractable
     private bool isActive = false;
     private Camera playerCamera;
     private CameraFollow cameraFollow;
+    private PlayerController playerController;
+    private PlayerInput playerInput;
+    private InputAction lookAction;
     private float currentHorizontalAngle = 0f;
     private float currentVerticalAngle = 0f;
 
@@ -92,6 +95,10 @@ public class Telescope : MonoBehaviour, IInteractable
         if (telescopeCamera == null || targetObject == null || telescopeLight == null)
             return;
 
+        // ONLY check alignment when telescope camera is active (not player camera)
+        if (!telescopeCamera.enabled || !isActive)
+            return;
+
         // Get direction from telescope to target
         Vector3 directionToTarget = (targetObject.transform.position - telescopeCamera.transform.position).normalized;
         Vector3 telescopeForward = telescopeCamera.transform.forward;
@@ -117,21 +124,16 @@ public class Telescope : MonoBehaviour, IInteractable
 
     private void HandleTelescopeRotation()
     {
-        // Get arrow key input using new Input System
-        var keyboard = Keyboard.current;
-        if (keyboard == null) return;
+        // Get mouse input
+        Vector2 lookInput = Vector2.zero;
+        if (lookAction != null)
+        {
+            lookInput = lookAction.ReadValue<Vector2>();
+        }
 
-        float horizontal = 0f;
-        float vertical = 0f;
-
-        if (keyboard.leftArrowKey.isPressed) horizontal = -1f;
-        if (keyboard.rightArrowKey.isPressed) horizontal = 1f;
-        if (keyboard.upArrowKey.isPressed) vertical = 1f;
-        if (keyboard.downArrowKey.isPressed) vertical = -1f;
-
-        // Update angles
-        currentHorizontalAngle += horizontal * rotationSpeed * Time.deltaTime;
-        currentVerticalAngle += vertical * rotationSpeed * Time.deltaTime;
+        // Update angles from mouse delta
+        currentHorizontalAngle += lookInput.x * mouseSensitivity * Time.deltaTime;
+        currentVerticalAngle += lookInput.y * mouseSensitivity * Time.deltaTime;
 
         // Clamp vertical angle
         currentVerticalAngle = Mathf.Clamp(currentVerticalAngle, -verticalLimit, verticalLimit);
@@ -194,7 +196,14 @@ public class Telescope : MonoBehaviour, IInteractable
         {
             // Enter telescope view
             EnterTelescopeView(interactor);
-            AudioManager.Instance.PlayOneShot(interactEventReference, gameObject.transform.position);
+            try
+            {
+                AudioManager.Instance.PlayOneShot(interactEventReference, gameObject.transform.position);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning($"[Telescope] Failed to play sound: {e.Message}");
+            }
         }
         else
         {
@@ -227,14 +236,22 @@ public class Telescope : MonoBehaviour, IInteractable
             telescopeCamera.enabled = true;
         }
 
-        // Disable player movement
-        PlayerController playerController = interactor.GetComponent<PlayerController>();
+        // Get player input for mouse look
+        playerInput = interactor.GetComponent<PlayerInput>();
+        if (playerInput != null)
+        {
+            lookAction = playerInput.actions["Look"];
+        }
+
+        // Lock player movement and controls
+        playerController = interactor.GetComponent<PlayerController>();
         if (playerController != null)
         {
+            playerController.SetMovementLocked(true);
             playerController.enabled = false;
         }
 
-        Debug.Log("Entered telescope view. Use arrow keys to rotate. Press F to exit.");
+        Debug.Log("Entered telescope view. Use mouse to look around. Press F to exit.");
     }
 
     private void ExitTelescopeView()
@@ -259,16 +276,17 @@ public class Telescope : MonoBehaviour, IInteractable
             telescopeCamera.enabled = false;
         }
 
-        // Re-enable player movement
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null)
+        // Re-enable player movement and unlock controls
+        if (playerController != null)
         {
-            PlayerController playerController = player.GetComponent<PlayerController>();
-            if (playerController != null)
-            {
-                playerController.enabled = true;
-            }
+            playerController.enabled = true;
+            playerController.SetMovementLocked(false);
         }
+
+        // Clear references
+        playerController = null;
+        lookAction = null;
+        playerInput = null;
 
         Debug.Log("Exited telescope view.");
     }

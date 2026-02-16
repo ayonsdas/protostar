@@ -19,7 +19,7 @@ public class CameraFollow : MonoBehaviour
     private Vector3 velocity = Vector3.zero; // Used by SmoothDamp
     
     [Header("Camera Rotation Settings")]
-    public float rotationSpeed = 100f;
+    public float rotationSpeed = 50f;
     public float returnDelay = 3f; // Seconds before returning to default
     public float returnSpeed = 2f; // Speed of return to default
 
@@ -119,8 +119,8 @@ public class CameraFollow : MonoBehaviour
             isMouseHeld = mouseHoldAction.ReadValue<float>() > 0.5f;
         }
 
-        // ONLY update camera direction when player is actively moving the camera
-        if (lookInput.magnitude > 0.01f && isMouseHeld)
+        // Update camera direction when player is actively moving the mouse (no RMB requirement)
+        if (lookInput.magnitude > 0.01f)
         {
             // Horizontal: rotate around gravity up axis
             Quaternion yawRot = Quaternion.AngleAxis(lookInput.x * rotationSpeed * Time.deltaTime, gravityUp);
@@ -130,7 +130,7 @@ public class CameraFollow : MonoBehaviour
             Vector3 right = Vector3.Cross(gravityUp, cameraDir).normalized;
             if (right.sqrMagnitude > 0.001f)
             {
-                Quaternion pitchRot = Quaternion.AngleAxis(-lookInput.y * rotationSpeed * Time.deltaTime, right);
+                Quaternion pitchRot = Quaternion.AngleAxis(lookInput.y * rotationSpeed * Time.deltaTime, right);
                 Vector3 newDir = (pitchRot * cameraDir).normalized;
                 
                 // Only accept if within pitch limits
