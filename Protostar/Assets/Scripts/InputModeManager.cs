@@ -12,7 +12,7 @@ public class InputModeManager : MonoBehaviour
 {
     public static InputModeManager Instance { get; private set; }
 
-    public InputMode CurrentInputMode { get; private set; } = InputMode.Mouse;
+    public InputMode CurrentInputMode { get; private set; } = InputMode.Controller;
     public event Action<InputMode> InputModeChanged;
 
     [Range(0f,1f)]

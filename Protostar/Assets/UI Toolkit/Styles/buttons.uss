@@ -1,7 +1,7 @@
 :root {
 }
 
-.button-main-title {
+.menu-button {
     -unity-font-style: bold;
     font-size: 30px;
     background-color: rgb(234, 240, 216);
@@ -29,16 +29,44 @@
     transition-duration: 0.1s;
 }
 
-.mouse-mode .button-main-title:hover{
+.mouse-mode .menu-button:hover {
     scale: 1.05;
-    border-color: rgb(255,215,0);
+    border-color: rgb(255, 215, 0);
 }
 
-.controller-mode .button-main-title:focus{
+.controller-mode .menu-button:focus {
     scale: 1.05;
-    border-color: rgb(255,215,0);
+    border-color: rgb(255, 215, 0);
 }
 
-.button-main-title:active {
+.menu-button:active {
     background-color: rgb(238, 255, 204);
+}
+
+.credits-button {
+    -unity-font-definition: url("project://database/Assets/UI%20Toolkit/Fonts/diffusion-regular.ttf?fileID=12800000&guid=f760a940b7e6de640878ca886a4eb990&type=3#diffusion-regular");
+    -unity-font-style: bold;
+    color: rgb(65, 58, 66);
+    letter-spacing: 10px;
+    -unity-text-outline-color: rgb(150, 162, 179);
+    font-size: 30px;
+    background-color: rgb(188, 188, 188);
+    -unity-text-outline-width: 1px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-top-width: 8px;
+    border-right-width: 8px;
+    border-bottom-width: 8px;
+    border-left-width: 8px;
+    padding-top: 10px;
+    padding-right: 0;
+    padding-bottom: 10px;
+    padding-left: 0;
+    margin-top: 83px;
+    margin-right: 600px;
+    margin-bottom: 25px;
+    margin-left: 600px;
+    -unity-text-align: middle-center;
 }

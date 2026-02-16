@@ -24,6 +24,7 @@ public class StartViewPresenter : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
+            Debug.Log("Duplicate Start View, Destroying");
             Destroy(gameObject);
             return;
         }
@@ -44,10 +45,6 @@ public class StartViewPresenter : MonoBehaviour
         SetupCreditsMenu();
         SetupControlsMenu();
 
-        GameStateManager.Instance.OnStateChanged += OnGameStateChanged;
-        InputModeManager.Instance.InputModeChanged += OnInputModeChanged;
-        OnGameStateChanged(GameStateManager.Instance.CurrentState);
-
         var button = mainMenuView.Q<Button>();
 
         // Force initial focus after UI has fully initialized
@@ -63,21 +60,23 @@ public class StartViewPresenter : MonoBehaviour
 
         button.RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
 
-        // default to mouse input mode
-        SetMouseMode();
+        // Set initial modes
+        OnGameStateChanged(GameStateManager.Instance.CurrentState);
+        OnInputModeChanged(InputModeManager.Instance.CurrentInputMode);
     }
 
-
-    private void OnDestroy()
+    private void OnEnable()
     {
-        if(InputModeManager.Instance != null)
-        {
-            InputModeManager.Instance.InputModeChanged -= OnInputModeChanged;
-        }
-        if (GameStateManager.Instance != null)
-        {
-            GameStateManager.Instance.OnStateChanged -= OnGameStateChanged;
-        }
+        Debug.Log("Start View Enabled");
+        GameStateManager.Instance.OnStateChanged += OnGameStateChanged;
+        InputModeManager.Instance.InputModeChanged += OnInputModeChanged;
+    }
+
+    private void OnDisable()
+    {
+        Debug.Log("Start View Disabled");
+        GameStateManager.Instance.OnStateChanged -= OnGameStateChanged;
+        InputModeManager.Instance.InputModeChanged -= OnInputModeChanged;
     }
 
     private void OnInputModeChanged(InputMode inputMode)
@@ -125,27 +124,13 @@ public class StartViewPresenter : MonoBehaviour
     private void SetupControlsMenu()
     {
         ControlsPresenter controlsPresenter = new ControlsPresenter(root.Q<TemplateContainer>("Controls"));
-        controlsPresenter.BackAction = () =>
-        {
-            var previousState = GameStateManager.Instance.GetPreviousState();
-            if (previousState == GameStateManager.GameState.Paused)
-                GameStateManager.Instance.SetState(GameStateManager.GameState.Paused);
-            else
-                GameStateManager.Instance.SetState(GameStateManager.GameState.Settings);
-        };
+        controlsPresenter.BackAction = () => GameStateManager.Instance.RevertState();
     }
 
     private void SetupSettingsMenu()
     {
         SettingsPresenter settingsPresenter = new SettingsPresenter(root.Q<TemplateContainer>("Settings"));
-        settingsPresenter.BackAction = () =>
-        {
-            var currentState = GameStateManager.Instance.CurrentState;
-            if (currentState == GameStateManager.GameState.Settings)
-                GameStateManager.Instance.SetState(GameStateManager.GameState.MainMenu);
-            else if (currentState == GameStateManager.GameState.Paused)
-                GameStateManager.Instance.SetState(GameStateManager.GameState.InGame);
-        };
+        settingsPresenter.BackAction = () => GameStateManager.Instance.RevertState();
         settingsPresenter.ReturnToMainMenuAction = () => GameStateManager.Instance.ReturnToMainMenu(mainMenuSceneName);
         settingsPresenter.ControlsAction = () => GameStateManager.Instance.SetState(GameStateManager.GameState.Controls);
     }
@@ -153,7 +138,7 @@ public class StartViewPresenter : MonoBehaviour
     private void SetupCreditsMenu()
     {
         CreditsPresenter creditsPresenter = new CreditsPresenter(root.Q<TemplateContainer>("Credits"));
-        creditsPresenter.BackAction = () => GameStateManager.Instance.SetState(GameStateManager.GameState.MainMenu);
+        creditsPresenter.BackAction = () => GameStateManager.Instance.RevertState();
     }
 
     private void OnGameStateChanged(GameStateManager.GameState newState)
