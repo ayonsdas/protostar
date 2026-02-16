@@ -13,7 +13,7 @@ public class SimpleWorldUI : MonoBehaviour {
     // How fast it fades in/out
     public float fadeSmoothTime = 0.2f;
 
-    // Internal Variables (You don't need to touch these)
+
     private Transform mainCameraTransform;
     private CanvasGroup canvasGroup;
     private bool pendingHide;
@@ -37,7 +37,7 @@ public class SimpleWorldUI : MonoBehaviour {
         // 3. Setup the Canvas
         if (canvas) {
             // Force World Space settings
-            canvas.renderMode = RenderMode.WorldSpace;
+            // canvas.renderMode = RenderMode.WorldSpace;
             
             // Add a CanvasGroup if it's missing (needed for fading)
             if (!canvas.TryGetComponent(out canvasGroup)) {
