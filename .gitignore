@@ -10,7 +10,9 @@
 [Bb]uilds/
 [Ll]ogs/
 [Uu]ser[Ss]ettings/
+[Cc]ache/
 *.log
+.cache/
 
 # By default unity supports Blender asset imports, *.blend1 blender files do not need to be commited to version control.
 *.blend1
@@ -97,3 +99,7 @@ InitTestScene*.unity*
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+
+Protostar/windows-build*
+Protostar/Team4*
+Protostar/Assets/Plugins/FMOD/Cache
