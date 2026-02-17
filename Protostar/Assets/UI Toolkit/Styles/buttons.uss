@@ -70,3 +70,61 @@
     margin-left: 600px;
     -unity-text-align: middle-center;
 }
+
+.controls-return-button {
+    margin-top: 10px;
+    margin-right: 500px;
+    margin-bottom: 20px;
+    margin-left: 500px;
+    padding-top: 12px;
+    padding-right: 12px;
+    padding-bottom: 12px;
+    padding-left: 12px;
+    -unity-font-style: bold;
+    -unity-font-definition: url("project://database/Assets/UI%20Toolkit/Fonts/diffusion-regular.ttf?fileID=12800000&guid=f760a940b7e6de640878ca886a4eb990&type=3#diffusion-regular");
+    color: rgb(65, 58, 66);
+    -unity-text-outline-color: rgb(150, 162, 179);
+    font-size: 30px;
+    -unity-text-outline-width: 1px;
+    border-left-color: rgb(150, 162, 179);
+    border-right-color: rgb(150, 162, 179);
+    border-top-color: rgb(150, 162, 179);
+    border-bottom-color: rgb(150, 162, 179);
+    border-top-width: 8px;
+    border-right-width: 8px;
+    border-bottom-width: 8px;
+    border-left-width: 8px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    background-color: rgb(188, 188, 188);
+}
+
+.settings-button {
+    font-size: 30px;
+    -unity-font-definition: url("project://database/Assets/UI%20Toolkit/Fonts/diffusion-regular.ttf?fileID=12800000&guid=f760a940b7e6de640878ca886a4eb990&type=3#diffusion-regular");
+    margin-top: 10px;
+    margin-right: 10px;
+    margin-bottom: 20px;
+    margin-left: 10px;
+    padding-right: 200px;
+    padding-left: 200px;
+    letter-spacing: 10px;
+    color: rgb(65, 58, 66);
+    -unity-text-outline-width: 1px;
+    -unity-text-outline-color: rgb(150, 162, 179);
+    -unity-font-style: bold;
+    border-top-width: 8px;
+    border-right-width: 8px;
+    border-bottom-width: 8px;
+    border-left-width: 8px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-left-color: rgb(150, 162, 179);
+    border-right-color: rgb(150, 162, 179);
+    border-top-color: rgb(150, 162, 179);
+    border-bottom-color: rgb(150, 162, 179);
+}

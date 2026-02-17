@@ -45,20 +45,20 @@ public class StartViewPresenter : MonoBehaviour
         SetupCreditsMenu();
         SetupControlsMenu();
 
-        var button = mainMenuView.Q<Button>();
+        //var button = mainMenuView.Q<Button>();
 
-        // Force initial focus after UI has fully initialized
-        void OnGeometryChanged(GeometryChangedEvent evt)
-        {
-            button.UnregisterCallback<GeometryChangedEvent>(OnGeometryChanged);
+        //// Force initial focus after UI has fully initialized
+        //void OnGeometryChanged(GeometryChangedEvent evt)
+        //{
+        //    button.UnregisterCallback<GeometryChangedEvent>(OnGeometryChanged);
 
-            root.panel?.visualTree.Focus();
-            button.Focus();
+        //    root.panel?.visualTree.Focus();
+        //    button.Focus();
 
-            //Debug.Log("Focused after layout: " + root.panel?.focusController?.focusedElement);
-        }
+        //    //Debug.Log("Focused after layout: " + root.panel?.focusController?.focusedElement);
+        //}
 
-        button.RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
+        //button.RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
 
         // Set initial modes
         OnGameStateChanged(GameStateManager.Instance.CurrentState);
@@ -67,14 +67,12 @@ public class StartViewPresenter : MonoBehaviour
 
     private void OnEnable()
     {
-        Debug.Log("Start View Enabled");
         GameStateManager.Instance.OnStateChanged += OnGameStateChanged;
         InputModeManager.Instance.InputModeChanged += OnInputModeChanged;
     }
 
     private void OnDisable()
     {
-        Debug.Log("Start View Disabled");
         GameStateManager.Instance.OnStateChanged -= OnGameStateChanged;
         InputModeManager.Instance.InputModeChanged -= OnInputModeChanged;
     }
@@ -84,10 +82,12 @@ public class StartViewPresenter : MonoBehaviour
         switch (inputMode)
         {
             case InputMode.Mouse:
+                root.focusController.focusedElement?.Blur();
                 SetMouseMode();
                 break;
             case InputMode.Controller:
                 SetControllerMode();
+                SetButtonFocus(GameStateManager.Instance.CurrentState);
                 break;
         }
     }
@@ -149,9 +149,17 @@ public class StartViewPresenter : MonoBehaviour
         creditsView.Display(newState == GameStateManager.GameState.Credits);
         controlsView.Display(newState == GameStateManager.GameState.Controls);
         root.Display(newState != GameStateManager.GameState.InGame);
+        if(InputModeManager.Instance.CurrentInputMode == InputMode.Controller)
+        {
+            SetButtonFocus(newState);
+        }
+    }
+
+    private void SetButtonFocus(GameStateManager.GameState state)
+    {
 
         // Set initial focus for controller navigation
-        switch (newState)
+        switch (state)
         {
             case GameStateManager.GameState.MainMenu:
                 mainMenuView.Q<Button>()?.Focus();
