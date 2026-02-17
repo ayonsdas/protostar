@@ -89,5 +89,6 @@ public class SettingsPresenter
     {
         PlayerPrefs.SetFloat(MUSIC_MASTER_KEY, volume);
         PlayerPrefs.Save();
+        AudioManager.Instance.masterVolume = volume;
     }
 }

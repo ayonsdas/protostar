@@ -1,10 +1,15 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class GameStateManager : MonoBehaviour
 {
     public static GameStateManager Instance { get; private set; }
+
+    [SerializeField] private InputActionReference toggleMenu;
+    [SerializeField] private InputActionReference cancel;
 
     public enum GameState
     {
@@ -19,7 +24,7 @@ public class GameStateManager : MonoBehaviour
     public GameState CurrentState { get; private set; } = GameState.MainMenu;
     public event Action<GameState> OnStateChanged;
 
-    private GameState previousState;
+    private Stack<GameState> previousStates;
 
     private void Awake()
     {
@@ -30,27 +35,74 @@ public class GameStateManager : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+        previousStates = new Stack<GameState>();
     }
 
-    private void Update()
+    private void OnEnable()
     {
-        // ESC key toggles settings/pause when in-game
-        if (Input.GetKeyDown(KeyCode.Escape))
+        toggleMenu.action.performed += OnToggleMenu;
+        cancel.action.performed += OnCancel;
+    }
+
+    private void OnDisable()
+    {
+        toggleMenu.action.performed -= OnToggleMenu;
+        cancel.action.performed -= OnCancel;
+    }
+
+    // Toggle menu when this action is pressed
+    private void OnToggleMenu(InputAction.CallbackContext _ctx)
+    {
+        switch(CurrentState)
         {
-            if (CurrentState == GameState.InGame)
-            {
+            case GameState.InGame:
                 SetState(GameState.Paused);
-            }
-            else if (CurrentState == GameState.Paused)
-            {
-                SetState(GameState.InGame);
-            }
+                break;
+
+            // If in menus, exit if we were in game
+            case GameState.Paused:
+            case GameState.Settings:
+            case GameState.Controls:
+            case GameState.Credits:
+                //Debug.Log("Previous States " + previousStates);
+                if (previousStates.ToArray()[previousStates.Count - 1] == GameState.InGame)
+                {
+                    SetState(GameState.InGame);
+                }
+                break;
         }
     }
 
-    public void SetState(GameState newState)
+    // On back navigation, revert to previous state if changable
+    private void OnCancel(InputAction.CallbackContext _ctx)
     {
-        previousState = CurrentState;
+        Debug.Log("Cancel");
+        switch(CurrentState)
+        {
+            case GameState.Paused:
+            case GameState.Settings:
+            case GameState.Controls:
+            case GameState.Credits:
+                RevertState();
+                break;
+        }
+    }
+
+    public void SetState(GameState newState, bool reverting=false)
+    {
+        if (CurrentState == newState)
+            return;
+
+        // If resetting to base state, clear stored states, otherwise, add to previous states
+        if(newState == GameState.InGame || newState == GameState.MainMenu)
+        {
+            ClearPreviousStates();
+        }
+        else if(!reverting)
+        {
+            previousStates.Push(CurrentState);
+        }
+
         CurrentState = newState;
         
         // Pause/unpause game time
@@ -59,9 +111,26 @@ public class GameStateManager : MonoBehaviour
         OnStateChanged?.Invoke(newState);
     }
 
-    public GameState GetPreviousState()
+    public void RevertState()
     {
-        return previousState;
+        if(previousStates != null && previousStates.Count > 0)
+        {
+            GameState previousState = previousStates.Pop();
+            SetState(previousState, reverting: true);
+        }
+    }
+
+    public void RevertToBaseState()
+    {
+        while(previousStates.Count > 0)
+        {
+            RevertState();
+        }
+    }
+
+    private void ClearPreviousStates()
+    {
+        previousStates = new Stack<GameState>();
     }
 
     public void StartGame(string sceneName)
