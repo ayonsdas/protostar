@@ -3,7 +3,8 @@
     "rootNamespace": "",
     "references": [
         "FMODUnity",
-        "Unity.InputSystem"
+        "Unity.InputSystem",
+        "Unity.TextMeshPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

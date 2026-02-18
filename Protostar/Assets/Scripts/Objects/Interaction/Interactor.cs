@@ -44,7 +44,7 @@ public class Interactor : MonoBehaviour
             // Debug: do an unfiltered raycast to see if we're hitting something on the wrong layer
             if (Physics.Raycast(origin.position, origin.forward, out var debugHit, range))
             {
-                Debug.Log($"[Interactor] Ray hit '{debugHit.collider.gameObject.name}' on layer {debugHit.collider.gameObject.layer} ({LayerMask.LayerToName(debugHit.collider.gameObject.layer)}), but NOT on interactableMask. Check the layer!");
+                //Debug.Log($"[Interactor] Ray hit '{debugHit.collider.gameObject.name}' on layer {debugHit.collider.gameObject.layer} ({LayerMask.LayerToName(debugHit.collider.gameObject.layer)}), but NOT on interactableMask. Check the layer!");
             }
         }
 

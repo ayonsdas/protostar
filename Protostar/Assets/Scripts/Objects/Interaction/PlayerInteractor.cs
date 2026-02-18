@@ -1,5 +1,7 @@
 using UnityEngine.InputSystem;
 using UnityEngine;
+using Codice.CM.Common;
+using System;
 
 public class PlayerInteractor : Interactor
 {
@@ -7,8 +9,19 @@ public class PlayerInteractor : Interactor
     [SerializeField] private Transform pickupHoldPoint; // Position above player's head
     [SerializeField] private float dropDistance = 2f; // Distance in front to drop
 
-    private GameObject carriedObject;
+    private GameObject _carriedObject;
+    private GameObject carriedObject
+    {
+        set
+        {
+            _carriedObject = value;
+            OnCarriedObjectChange.Invoke(value);
+        }
+        get { return _carriedObject; }
+    }
     private IPickupable carriedPickupable;
+
+    public Action<GameObject> OnCarriedObjectChange;
 
     // Shift state
     private bool isShiftHeld = false;
@@ -47,6 +60,22 @@ public class PlayerInteractor : Interactor
             }
         }
 
+        // TODO refactor seed logic to use generic typing
+        // Priority 1.5: Generalizing seed logic to generic Slot type
+        if (carriedObject != null && HoveredInteractable is IPlaceableSlot slot && !slot.IsFilled)
+        {
+            Debug.Log("Trying to place object " + carriedObject.name + " into slot " + HoveredInteractable?.GetType().Name);
+            if (slot.TryPlace(carriedObject))
+            {
+                Debug.Log("[PlayerInteractor] OnInteract - placing object in slot");
+                // Unparent from hold point, then let the slot take over
+                // In this version, don't reset parent since this is set in slot.TryPlace
+                carriedObject = null;
+                carriedPickupable = null;
+                return;
+            }
+        }
+
         // Priority 2: If not carrying and hovering a filled SeedSlot, remove seed and pick it up
         if (carriedObject == null && HoveredInteractable is SeedSlot filledSlot && filledSlot.IsFilled)
         {
@@ -60,6 +89,24 @@ public class PlayerInteractor : Interactor
                 carriedObject.transform.localPosition = Vector3.zero;
                 carriedObject.transform.localRotation = Quaternion.identity;
                 seed.OnPickup(gameObject);
+                return;
+            }
+        }
+
+        // Priority 2.5: Generalizing seed logic to generic Slot type
+        if (carriedObject == null && HoveredInteractable is IPlaceableSlot fSlot && fSlot.IsFilled)
+        {
+            GameObject obj = fSlot.TryRemove();
+            if (obj != null)
+            {
+                Debug.Log("[PlayerInteractor] OnInteract - removing object from slot, picking up");
+                carriedObject = obj;
+                carriedPickupable = obj.GetComponent<IPickupable>();
+                carriedObject.transform.SetParent(pickupHoldPoint);
+                carriedObject.transform.localPosition = Vector3.zero;
+                carriedObject.transform.localRotation = Quaternion.identity;
+
+                carriedPickupable.OnPickup(gameObject);
                 return;
             }
         }
