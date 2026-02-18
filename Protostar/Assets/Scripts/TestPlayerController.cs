@@ -33,6 +33,7 @@ public class TestPlayerController : MonoBehaviour
             // No GameStateManager present - enable controls by default
             isControlActive = true;
         }
+        
     }
 
     void OnDestroy()
