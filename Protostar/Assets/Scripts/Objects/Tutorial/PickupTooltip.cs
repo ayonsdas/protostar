@@ -7,7 +7,7 @@ public class PickupTooltip : MonoBehaviour
     [SerializeField] private TextMeshProUGUI textMesh;
 
     private const string NO_HELD_TEXT = "Press F to pick up objects. Objects that can be picked up or used will glow!";
-    private const string HELD_TEXT = "Press F again to put place held objects.";
+    private const string HELD_TEXT = "Press F again to put objects down or place them somewhere.";
 
     private void Start()
     {
