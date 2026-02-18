@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
 
-public class AutoCloseVideo : MonoBehaviour
+public class VideoController : MonoBehaviour
 {
     public VideoPlayer videoPlayer;
     public GameObject videoCanvas;
@@ -21,7 +21,7 @@ public class AutoCloseVideo : MonoBehaviour
             playerController = player.GetComponent<PlayerController>();
         }
     }
-    
+
     void OnVideoStarted(VideoPlayer vp)
     {
         // Lock player movement when video starts
@@ -55,5 +55,11 @@ public class AutoCloseVideo : MonoBehaviour
         {
             playerController.SetMovementLocked(false);
         }
+    }
+
+    public void SkipVideo()
+    {
+        Debug.Log("SKIP PRESSED");
+        CloseVideoUI(videoPlayer);
     }
 }
