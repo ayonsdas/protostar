@@ -13,7 +13,10 @@ public class SimpleWorldUI : MonoBehaviour {
     // How fast it fades in/out
     public float fadeSmoothTime = 0.2f;
 
-    // Internal Variables (You don't need to touch these)
+    // Height offset above the object
+    public float heightOffset = 2f;
+
+
     private Transform mainCameraTransform;
     private CanvasGroup canvasGroup;
     private bool pendingHide;
@@ -22,7 +25,7 @@ public class SimpleWorldUI : MonoBehaviour {
     private float alphaVelocity;
 
     void Start() {
-        // 1. Auto-find the Main Camera
+        // 1. Find the Main Camera
         if (Camera.main != null) {
             mainCameraTransform = Camera.main.transform;
         } else {
@@ -37,7 +40,7 @@ public class SimpleWorldUI : MonoBehaviour {
         // 3. Setup the Canvas
         if (canvas) {
             // Force World Space settings
-            canvas.renderMode = RenderMode.WorldSpace;
+            // canvas.renderMode = RenderMode.WorldSpace;
             
             // Add a CanvasGroup if it's missing (needed for fading)
             if (!canvas.TryGetComponent(out canvasGroup)) {
@@ -66,11 +69,16 @@ public class SimpleWorldUI : MonoBehaviour {
     }
 
     void LateUpdate() {
-        // Rotate UI to face camera
         if (canvas && canvas.gameObject.activeSelf && mainCameraTransform) {
-            canvas.transform.rotation = Quaternion.LookRotation(canvas.transform.position - mainCameraTransform.position);
-        }
+            // Keep canvas at a fixed offset above the object (in camera's local up direction)
+            canvas.transform.position = transform.position + mainCameraTransform.up * heightOffset;
+        
+            // Match camera rotation
+            canvas.transform.rotation = mainCameraTransform.rotation;
     }
+}
+
+
 
     void OnTriggerEnter(Collider other) {
         if (other.CompareTag("Player")) {
