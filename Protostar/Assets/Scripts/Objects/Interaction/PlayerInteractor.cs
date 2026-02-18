@@ -1,7 +1,5 @@
 using UnityEngine.InputSystem;
 using UnityEngine;
-using Codice.CM.Common;
-using System;
 
 public class PlayerInteractor : Interactor
 {
