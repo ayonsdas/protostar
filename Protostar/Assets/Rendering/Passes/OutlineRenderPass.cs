@@ -55,7 +55,7 @@ public class OutlineRenderPass : ScriptableRenderPass
         TextureHandle outlineTexture = renderGraph.CreateTexture(outlineDesc);
 
         RenderGraphUtils.BlitMaterialParameters outlineBlitParameters = new(
-            TextureHandle.nullHandle,
+            sourceTexture,
             outlineTexture,
             _outlineMaterial,
             0
@@ -71,7 +71,7 @@ public class OutlineRenderPass : ScriptableRenderPass
 
         // Dilate Pass
         var dilateDesc = renderGraph.GetTextureDesc(sourceTexture);
-        dilateDesc.name = "OutlineTexture";
+        dilateDesc.name = "DilateTexture";
         dilateDesc.clearBuffer = false;
         TextureHandle dilateTexture = renderGraph.CreateTexture(dilateDesc);
 
