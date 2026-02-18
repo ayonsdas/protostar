@@ -31,8 +31,6 @@ public class TestPlayerController : MonoBehaviour
         else
         {
             // No GameStateManager present - enable controls by default
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
             isControlActive = true;
         }
     }

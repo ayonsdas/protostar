@@ -306,11 +306,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7651326815231122360, guid: a4dba55e06a8a5146a8187020e0c1457, type: 3}
       propertyPath: InitialModule.startSize.scalar
-      value: 0.4
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 7651326815231122360, guid: a4dba55e06a8a5146a8187020e0c1457, type: 3}
       propertyPath: InitialModule.startSize.minScalar
-      value: 0.2
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 8621785441971457170, guid: a4dba55e06a8a5146a8187020e0c1457, type: 3}
       propertyPath: m_Name
