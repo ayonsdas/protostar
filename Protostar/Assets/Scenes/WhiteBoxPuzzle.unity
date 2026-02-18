@@ -16173,7 +16173,7 @@ MonoBehaviour:
   cameraOffset: {x: 0, y: 0, z: 0}
   mouseSensitivity: 25
   verticalLimit: 60
-  requiredPuzzle: {fileID: 0}
+  requiredPuzzle: {fileID: 841885481}
   targetObject: {fileID: 1067221746}
   detectionRange: 1000
   alignmentThreshold: 0.99
