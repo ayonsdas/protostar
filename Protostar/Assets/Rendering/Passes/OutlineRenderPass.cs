@@ -30,9 +30,20 @@ public class OutlineRenderPass : ScriptableRenderPass
 
     public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData)
     {
-        if (_outlineMaterial == null) return;
+
+        if (
+            _outlineMaterial == null ||
+            _dilateMaterial == null ||
+            _blurMaterial == null ||
+            _compositeMaterial == null
+        ) return;
 
         UniversalResourceData resourceData = frameData.Get<UniversalResourceData>();
+        UniversalCameraData cameraData = frameData.Get<UniversalCameraData>();
+
+        // Don't display in editor because this can cause issues
+        if (cameraData.cameraType != CameraType.Game)
+            return;
 
         var sourceTexture = resourceData.cameraColor;
 

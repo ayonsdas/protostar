@@ -33,6 +33,10 @@ public class MaskRenderPass : ScriptableRenderPass
         UniversalRenderingData renderingData = frameData.Get<UniversalRenderingData>();
         UniversalLightData lightData = frameData.Get<UniversalLightData>();
 
+        // Don't display in editor because this can cause issues
+        if (cameraData.cameraType != CameraType.Game)
+            return;
+
         using var builder = renderGraph.AddRasterRenderPass<MaskPassData>(
             "Mask Pass",
             out var passData
