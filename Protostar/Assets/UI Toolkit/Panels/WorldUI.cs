@@ -25,7 +25,7 @@ public class SimpleWorldUI : MonoBehaviour {
     private float alphaVelocity;
 
     void Start() {
-        // 1. Find the Main Camera
+        // 1. Auto-find the Main Camera
         if (Camera.main != null) {
             mainCameraTransform = Camera.main.transform;
         } else {
@@ -69,16 +69,19 @@ public class SimpleWorldUI : MonoBehaviour {
     }
 
     void LateUpdate() {
+        // Rotate UI to face camera
         if (canvas && canvas.gameObject.activeSelf && mainCameraTransform) {
+<<<<<<< HEAD
             // Keep canvas at a fixed offset above the object (in camera's local up direction)
             canvas.transform.position = transform.position + mainCameraTransform.up * heightOffset;
         
             // Match camera rotation
             canvas.transform.rotation = mainCameraTransform.rotation;
+=======
+            canvas.transform.rotation = Quaternion.LookRotation(canvas.transform.position - mainCameraTransform.position);
+        }
+>>>>>>> parent of 618f2c4 (Implemented tutorial UI)
     }
-}
-
-
 
     void OnTriggerEnter(Collider other) {
         if (other.CompareTag("Player")) {

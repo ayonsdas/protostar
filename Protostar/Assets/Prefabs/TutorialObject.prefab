@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 6699799253232336805}
   - component: {fileID: 4676236681611052013}
   m_Layer: 0
-  m_Name: InWorldTutorialObject
+  m_Name: TutorialObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 122090866617771699}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.950496, y: 0.4999994, z: 8.431039}
+  m_LocalPosition: {x: 6.39, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -292,7 +292,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Rain Effect
+  m_text: "Tutorial UI testing: \nPress _ to do this mechanic!"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6550655eee1ea6149a16ba68d7b2b318, type: 2}
   m_sharedMaterial: {fileID: -8144822726219610480, guid: 6550655eee1ea6149a16ba68d7b2b318, type: 2}
