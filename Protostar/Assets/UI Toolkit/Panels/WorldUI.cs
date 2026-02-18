@@ -13,6 +13,9 @@ public class SimpleWorldUI : MonoBehaviour {
     // How fast it fades in/out
     public float fadeSmoothTime = 0.2f;
 
+    // Height offset above the object
+    public float heightOffset = 2f;
+
 
     private Transform mainCameraTransform;
     private CanvasGroup canvasGroup;
@@ -68,7 +71,7 @@ public class SimpleWorldUI : MonoBehaviour {
     void LateUpdate() {
         if (canvas && canvas.gameObject.activeSelf && mainCameraTransform) {
             // Keep canvas at a fixed offset above the object (in camera's local up direction)
-            canvas.transform.position = transform.position + mainCameraTransform.up * 2f;
+            canvas.transform.position = transform.position + mainCameraTransform.up * heightOffset;
         
             // Match camera rotation
             canvas.transform.rotation = mainCameraTransform.rotation;
