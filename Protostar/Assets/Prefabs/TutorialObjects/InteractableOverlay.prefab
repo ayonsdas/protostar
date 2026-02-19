@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 4676236681611052013}
   - component: {fileID: 1473938345520354136}
   m_Layer: 0
-  m_Name: InteractableOverlayTutorialObject
+  m_Name: InteractableOverlay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -149,11 +149,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractableUI
   canvas: {fileID: 1148328799444461120}
-  textMesh: {fileID: 7145963474638805246}
   displayDuration: 5
+  textMesh: {fileID: 7145963474638805246}
   fadeSmoothTime: 0.2
   heightOffset: 2
-  interactable: {fileID: 0}
 --- !u!1 &3796653413642911868
 GameObject:
   m_ObjectHideFlags: 0

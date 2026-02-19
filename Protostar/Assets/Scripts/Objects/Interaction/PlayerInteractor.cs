@@ -148,7 +148,7 @@ public class PlayerInteractor : Interactor
     {
         if (!string.IsNullOrEmpty(result.Message))
         {
-            interactionUI.Show(result.Message);
+            interactionUI?.Show(result.Message);
         }
     }
 
