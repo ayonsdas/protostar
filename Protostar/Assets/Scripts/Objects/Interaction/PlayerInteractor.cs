@@ -1,12 +1,17 @@
 using UnityEngine.InputSystem;
 using UnityEngine;
 using System;
+using FMODUnity;
 
 public class PlayerInteractor : Interactor
 {
     [Header("Pickup Settings")]
     [SerializeField] private Transform pickupHoldPoint; // Position above player's head
     [SerializeField] private float dropDistance = 2f; // Distance in front to drop
+
+    [Header("Sound Settings")]
+    [SerializeField] private bool enableShiftSound = true;
+    [SerializeField] private EventReference shiftEvent;
 
     private GameObject _carriedObject;
     private GameObject carriedObject
@@ -26,6 +31,7 @@ public class PlayerInteractor : Interactor
     private bool isShiftHeld = false;
     private IEngageable shiftEngaged = null;
     private IShiftable shiftTarget = null;
+    private GameObject shiftObject = null;
     private Vector2 shiftInput = Vector2.zero; // WASD input accumulated during shift hold
     private PlayerController playerController;
 
@@ -163,6 +169,7 @@ public class PlayerInteractor : Interactor
                 isShiftHeld = true;
                 shiftEngaged = engageable;
                 shiftTarget = shiftable;
+                shiftObject = (engageable as MonoBehaviour)?.gameObject;
                 shiftInput = Vector2.zero;
 
                 // Engage the object
@@ -199,6 +206,16 @@ public class PlayerInteractor : Interactor
 
                 // Disengage
                 shiftEngaged?.Disengage(gameObject);
+
+                // Play sound if needed
+                try
+                {
+                    AudioManager.Instance.PlayOneShot(shiftEvent, shiftObject.transform.position);
+                }
+                catch(Exception e)
+                {
+                    Debug.LogWarning($"[PlayerInteractor] Error playing shift SFX: {e.Message}");
+                }
             }
 
             // Clean up
