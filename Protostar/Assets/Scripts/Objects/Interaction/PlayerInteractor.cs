@@ -7,6 +7,8 @@ public class PlayerInteractor : Interactor
     [Header("Pickup Settings")]
     [SerializeField] private Transform pickupHoldPoint; // Position above player's head
     [SerializeField] private float dropDistance = 2f; // Distance in front to drop
+    [Header("Interaction UI")]
+    [SerializeField] private InteractableUI interactionUI; // UI element to show interaction messages
 
     private GameObject _carriedObject;
     private GameObject carriedObject
@@ -133,11 +135,20 @@ public class PlayerInteractor : Interactor
         if (HoveredInteractable != null)
         {
             Debug.Log($"[PlayerInteractor] OnInteract - calling Interact on {HoveredInteractable.GetType().Name}");
-            HoveredInteractable.Interact(gameObject);
+            InteractionResult result = HoveredInteractable.Interact(gameObject);
+            HandleInteractionResult(result);
         }
         else
         {
             Debug.Log("[PlayerInteractor] OnInteract - nothing to interact with (no HoveredInteractable)");
+        }
+    }
+
+    private void HandleInteractionResult(InteractionResult result)
+    {
+        if (!string.IsNullOrEmpty(result.Message))
+        {
+            interactionUI.Show(result.Message);
         }
     }
 
@@ -149,7 +160,7 @@ public class PlayerInteractor : Interactor
             if (carriedObject != null) return; // Can't shift while carrying
 
             Cast(); // Make sure we have latest raycast
-            
+
             // Look for an engageable+shiftable object
             IEngageable engageable = HoveredEngagable;
             IShiftable shiftable = null;

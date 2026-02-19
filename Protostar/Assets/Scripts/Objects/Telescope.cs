@@ -2,7 +2,7 @@ using FMODUnity;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Telescope : MonoBehaviour, IInteractable
+public class Telescope : BaseInteractable
 {
     [Header("Telescope Settings")]
     [SerializeField] private Camera telescopeCamera;
@@ -71,6 +71,7 @@ public class Telescope : MonoBehaviour, IInteractable
             lightOffset = cameraRoot.InverseTransformPoint(telescopeLight.transform.position);
             lightLocalRotation = Quaternion.Inverse(cameraRoot.rotation) * telescopeLight.transform.rotation;
         }
+
     }
 
     void Update()
@@ -183,15 +184,24 @@ public class Telescope : MonoBehaviour, IInteractable
         }
     }
 
-    public void Interact(GameObject interactor)
+    protected override bool CanInteract(out string message)
     {
-        // Check if puzzle requirement is met
+        message = null;
         if (requiredPuzzle != null && requiredPuzzle.GetState() == 0)
         {
-            Debug.Log("The telescope is locked. Complete the sapling puzzle first!");
-            return;
+            message = "A vast voidlike expanse greets you. You can't see anything through the telescope.";
+            return false;
         }
+        return true;
+    }
 
+    protected override void OnInteractFailure(GameObject interactor)
+    {
+        Debug.Log("The telescope is locked. Complete the sapling puzzle first!");
+    }
+
+    protected override void OnInteractSuccess(GameObject interactor)
+    {
         if (!isActive)
         {
             // Enter telescope view

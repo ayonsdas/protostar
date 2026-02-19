@@ -1,7 +1,7 @@
 using FMODUnity;
 using UnityEngine;
 
-public class Slot<T> : MonoBehaviour, IPlaceableSlot, IInteractable where T : MonoBehaviour, IPlaceable
+public class Slot<T> : BaseInteractable, IPlaceableSlot where T : MonoBehaviour, IPlaceable
 {
 
     [Header("Visuals")]
@@ -32,10 +32,10 @@ public class Slot<T> : MonoBehaviour, IPlaceableSlot, IInteractable where T : Mo
     }
 
     /// <summary>
-    /// IInteractable — not called directly during normal flow;
+    /// IInteractable ï¿½ not called directly during normal flow;
     /// PlayerInteractor intercepts object-slot interactions before reaching here.
     /// </summary>
-    public void Interact(GameObject interactor)
+    protected override void OnInteractSuccess(GameObject interactor)
     {
         Debug.Log($"[Slot] Interact called on {gameObject.name}, IsFilled={IsFilled}");
     }
@@ -67,7 +67,7 @@ public class Slot<T> : MonoBehaviour, IPlaceableSlot, IInteractable where T : Mo
         UpdateVisuals();
         OnSlotChanged?.Invoke();
 
-        // Play sound (completely independent — failure does not affect anything)
+        // Play sound (completely independent ï¿½ failure does not affect anything)
         try
         {
             RuntimeManager.PlayOneShot(objectPlaceSoundEvent, transform.position);
@@ -104,11 +104,11 @@ public class Slot<T> : MonoBehaviour, IPlaceableSlot, IInteractable where T : Mo
     }
 
     /// <summary>
-    /// Called by SaplingPuzzle when the puzzle completes — consume the object permanently.
+    /// Called by SaplingPuzzle when the puzzle completes ï¿½ consume the object permanently.
     /// </summary>
     public void ConsumeObject()
     {
-        if (_placedObject= null)
+        if (_placedObject = null)
         {
             _placedObject.gameObject.SetActive(false);
             _placedObject = null;
@@ -142,5 +142,17 @@ public class Slot<T> : MonoBehaviour, IPlaceableSlot, IInteractable where T : Mo
     public GameObject TryRemove()
     {
         return RemoveObject()?.gameObject;
+    }
+
+    // Shouldn't be called as this is handled separately from Interactable flow, but just in case:
+    protected override bool CanInteract(out string message)
+    {
+        if (IsFilled)
+        {
+            message = "Seed slot is already filled.";
+            return false;
+        }
+
+        return base.CanInteract(out message);
     }
 }

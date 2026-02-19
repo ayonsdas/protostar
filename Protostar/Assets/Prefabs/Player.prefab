@@ -167,6 +167,7 @@ MonoBehaviour:
   gravityRotationSpeed: 15
   disableFootsteps: 0
   footstepSpeedThreshold: 0.1
+  footstepDebounceTime: 0.5
   footstepEventReference:
     Guid:
       Data1: 3354848

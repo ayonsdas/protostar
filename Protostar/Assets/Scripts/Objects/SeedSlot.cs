@@ -6,7 +6,7 @@ using FMODUnity;
 /// Put a collider (trigger or non-trigger) on this object on the Interactable layer.
 /// The player can place a carried seed here with F, or remove it with F.
 /// </summary>
-public class SeedSlot : MonoBehaviour, IInteractable
+public class SeedSlot : BaseInteractable
 {
     [Header("Visuals")]
     [SerializeField] private GameObject emptyVisual;  // Indicator when slot is empty (e.g. glowing circle)
@@ -36,7 +36,7 @@ public class SeedSlot : MonoBehaviour, IInteractable
     /// IInteractable — not called directly during normal flow;
     /// PlayerInteractor intercepts seed-slot interactions before reaching here.
     /// </summary>
-    public void Interact(GameObject interactor)
+    protected override void OnInteractSuccess(GameObject interactor)
     {
         Debug.Log($"[SeedSlot] Interact called on {gameObject.name}, IsFilled={IsFilled}");
     }
@@ -128,5 +128,14 @@ public class SeedSlot : MonoBehaviour, IInteractable
         {
             filledVisual.SetActive(filled);
         }
+    }
+
+    // Should only be called if the player isn't holding a seed and the slot isn't filled
+    // Should probably make this more robust/refactor interactor flow
+    protected override bool CanInteract(out string message)
+    {
+        // only called when empty and not holding seed, can't really interact
+        message = "This mechanical pot seems to be missing an ingredient...";
+        return false;
     }
 }
