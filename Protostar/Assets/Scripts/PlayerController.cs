@@ -33,8 +33,6 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rb;
     private CustomGravityBody gravityBody;
     private Vector2 moveInput;
-    private Vector2 mouseDelta;
-    private bool isMouseHeld = false;
     private bool isGrounded;
     private Quaternion targetRotation;
     private EventInstance footstepEventInstance;
@@ -131,28 +129,32 @@ public class PlayerController : MonoBehaviour
 
     private void OnEnable()
     {
-        PlayerInput playerInput = InputModeManager.Instance?.PlayerInput;
-        if (playerInput != null)
+        if (InputModeManager.Instance == null || InputModeManager.Instance.PlayerInput == null)
         {
+            Debug.LogWarning($"[PlayerController] Cannot find PlayerInput {InputModeManager.Instance}");
+        }
+        else
+        {
+            PlayerInput playerInput = InputModeManager.Instance.PlayerInput;
             playerInput.actions["Move"].performed += OnMove;
-            playerInput.actions["Look"].performed += OnLook;
+            playerInput.actions["Move"].canceled += OnMove;
             playerInput.actions["Jump"].performed += OnJump;
-            playerInput.actions["MouseHold"].performed += OnMouseHold;
-            playerInput.actions["MouseHold"].canceled += OnMouseHold;
             playerInput.actions["RotateGravity"].performed += OnRotateGravity;
         }
     }
 
     private void OnDisable()
     {
-        PlayerInput playerInput = InputModeManager.Instance?.PlayerInput;
-        if (playerInput != null)
+        if (InputModeManager.Instance == null || InputModeManager.Instance.PlayerInput == null)
         {
+            Debug.LogWarning($"[PlayerController] Cannot find PlayerInput {InputModeManager.Instance}");
+        }
+        else
+        {
+            PlayerInput playerInput = InputModeManager.Instance.PlayerInput;
             playerInput.actions["Move"].performed -= OnMove;
-            playerInput.actions["Look"].performed -= OnLook;
+            playerInput.actions["Move"].canceled -= OnMove;
             playerInput.actions["Jump"].performed -= OnJump;
-            playerInput.actions["MouseHold"].performed -= OnMouseHold;
-            playerInput.actions["MouseHold"].canceled -= OnMouseHold;
             playerInput.actions["RotateGravity"].performed -= OnRotateGravity;
         }
     }
@@ -256,8 +258,6 @@ public class PlayerController : MonoBehaviour
         // Smoothly align player to gravity direction (after turning so it doesn't override)
         AlignToGravity();
 
-        // Reset mouse delta each frame so it doesn't persist
-        mouseDelta = Vector2.zero;
     }
 
     // Called by Player Input component (Send Messages behavior)
@@ -266,39 +266,6 @@ public class PlayerController : MonoBehaviour
         if (!movementLocked)
         {
             moveInput = ctx.ReadValue<Vector2>();
-        }
-    }
-    
-    // Called by Player Input component for mouse delta
-    public void OnLook(InputAction.CallbackContext ctx)
-    {
-        // Only accept mouse input if not requiring hold, or if mouse is held
-        if (!requireMouseHold || isMouseHeld)
-        {
-            mouseDelta = ctx.ReadValue<Vector2>();
-        }
-        else
-        {
-            mouseDelta = Vector2.zero;
-        }
-    }
-    
-    // Called when mouse button is pressed/released
-    public void OnMouseHold(InputAction.CallbackContext ctx)
-    {
-        isMouseHeld = ctx.performed;
-        Debug.Log($"[MouseHold] isPressed: {ctx.performed}, isMouseHeld: {isMouseHeld}");
-        
-        // Lock/unlock cursor based on mouse hold state
-        if (isMouseHeld)
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-        }
-        else
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
         }
     }
 

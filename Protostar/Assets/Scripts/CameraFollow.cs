@@ -27,7 +27,6 @@ public class CameraFollow : MonoBehaviour
     public float minPitch = -30f;  // Minimum elevation angle (below horizontal)
     public float maxPitch = 75f;   // Maximum elevation angle (never directly above)
 
-    private PlayerInput playerInput;
     private InputAction lookAction;
     private InputAction mouseHoldAction;
     private CustomGravityBody gravityBody;
@@ -40,18 +39,13 @@ public class CameraFollow : MonoBehaviour
     private float currentDistance = 0f;
     private float distanceVelocity = 0f;
     private Vector3 lastPlayerPosition;
+    private Vector2 lookInput = Vector2.zero;
+    private bool isMouseHeld = false;
 
     void Start()
     {
         if (target != null)
         {
-            playerInput = target.GetComponent<PlayerInput>();
-            if (playerInput != null)
-            {
-                lookAction = playerInput.actions["Look"];
-                mouseHoldAction = playerInput.actions["MouseHold"];
-            }
-            
             // Enable interpolation on the player's Rigidbody to reduce jitter
             Rigidbody targetRb = target.GetComponent<Rigidbody>();
             if (targetRb != null)
@@ -68,6 +62,22 @@ public class CameraFollow : MonoBehaviour
             currentDistance = cameraDistance;
             lastGravityUp = gravityBody != null ? gravityBody.GetUpDirection() : Vector3.up;
             lastPlayerPosition = target.position;
+        }
+    }
+
+    private void OnEnable()
+    {
+        if (InputModeManager.Instance == null || InputModeManager.Instance.PlayerInput == null)
+        {
+            Debug.LogWarning($"[PlayerController] Cannot find PlayerInput {InputModeManager.Instance}");
+        }
+        else
+        {
+            PlayerInput playerInput = InputModeManager.Instance.PlayerInput;
+            playerInput.actions["Look"].performed += OnLook;
+            playerInput.actions["Look"].canceled += OnLook;
+            playerInput.actions["MouseHold"].performed += OnMouseHold;
+            playerInput.actions["MouseHold"].canceled += OnMouseHold;
         }
     }
 
@@ -103,20 +113,6 @@ public class CameraFollow : MonoBehaviour
         else
         {
             timeSinceLastMovement += Time.deltaTime;
-        }
-
-        // Get camera rotation input
-        Vector2 lookInput = Vector2.zero;
-        bool isMouseHeld = false;
-        
-        if (lookAction != null)
-        {
-            lookInput = lookAction.ReadValue<Vector2>();
-        }
-        
-        if (mouseHoldAction != null)
-        {
-            isMouseHeld = mouseHoldAction.ReadValue<float>() > 0.5f;
         }
 
         // Update camera direction when player is actively moving the mouse (no RMB requirement)
@@ -249,5 +245,15 @@ public class CameraFollow : MonoBehaviour
             dir = Quaternion.AngleAxis(maxAngleFromUp, right) * up;
             dir = dir.normalized;
         }
+    }
+
+    private void OnLook(InputAction.CallbackContext ctx)
+    {
+        lookInput = ctx.ReadValue<Vector2>();
+    }
+
+    private void OnMouseHold(InputAction.CallbackContext ctx)
+    {
+        isMouseHeld = ctx.performed;
     }
 }

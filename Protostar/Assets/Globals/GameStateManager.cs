@@ -34,7 +34,6 @@ public class GameStateManager : MonoBehaviour
             return;
         }
         Instance = this;
-        DontDestroyOnLoad(gameObject);
         previousStates = new Stack<GameState>();
     }
 
@@ -88,19 +87,18 @@ public class GameStateManager : MonoBehaviour
         }
     }
 
-    public void SetState(GameState newState, bool reverting=false)
+    public void SetState(GameState newState)
     {
         if (CurrentState == newState)
             return;
 
-        // If resetting to base state, clear stored states, otherwise, add to previous states
-        if(newState == GameState.InGame || newState == GameState.MainMenu)
+        // If we have this state in our history, remove all history up to that point.
+        if(previousStates.Contains(newState))
         {
-            ClearPreviousStates();
-        }
-        else if(!reverting)
-        {
-            previousStates.Push(CurrentState);
+           while (previousStates.Count > 0)
+            {
+                if (previousStates.Pop() == newState) break;
+            }
         }
 
         CurrentState = newState;
@@ -113,18 +111,10 @@ public class GameStateManager : MonoBehaviour
 
     public void RevertState()
     {
-        if(previousStates != null && previousStates.Count > 0)
+        if(previousStates.Count > 0)
         {
             GameState previousState = previousStates.Pop();
-            SetState(previousState, reverting: true);
-        }
-    }
-
-    public void RevertToBaseState()
-    {
-        while(previousStates.Count > 0)
-        {
-            RevertState();
+            SetState(previousState);
         }
     }
 

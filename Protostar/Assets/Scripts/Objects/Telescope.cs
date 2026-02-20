@@ -247,7 +247,7 @@ public class Telescope : BaseInteractable
         }
 
         // Get player input for mouse look
-        playerInput = interactor.GetComponent<PlayerInput>();
+        playerInput = InputModeManager.Instance.PlayerInput;
         if (playerInput != null)
         {
             lookAction = playerInput.actions["Look"];

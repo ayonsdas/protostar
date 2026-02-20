@@ -44,9 +44,13 @@ public class PlayerInteractor : Interactor
 
     private void OnEnable()
     {
-        PlayerInput playerInput = InputModeManager.Instance?.PlayerInput;
-        if (playerInput != null)
+        if (InputModeManager.Instance == null || InputModeManager.Instance.PlayerInput == null)
         {
+            Debug.LogWarning($"[PlayerController] Cannot find PlayerInput {InputModeManager.Instance}");
+        }
+        else
+        {
+            PlayerInput playerInput = InputModeManager.Instance.PlayerInput;
             playerInput.actions["Move"].performed += OnMove;
             playerInput.actions["Interact"].performed += OnInteract;
             playerInput.actions["Shift"].performed += OnShift;
@@ -56,9 +60,13 @@ public class PlayerInteractor : Interactor
 
     private void OnDisable()
     {
-        PlayerInput playerInput = InputModeManager.Instance?.PlayerInput;
-        if (playerInput != null)
+        if (InputModeManager.Instance == null || InputModeManager.Instance.PlayerInput == null)
         {
+            Debug.LogWarning($"[PlayerController] Cannot find PlayerInput {InputModeManager.Instance}");
+        }
+        else
+        {
+            PlayerInput playerInput = InputModeManager.Instance.PlayerInput;
             playerInput.actions["Move"].performed -= OnMove;
             playerInput.actions["Interact"].performed -= OnInteract;
             playerInput.actions["Shift"].performed -= OnShift;

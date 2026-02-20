@@ -15,8 +15,8 @@ public class InputModeManager : MonoBehaviour
     public InputMode CurrentInputMode { get; private set; } = InputMode.Mouse;
     public event Action<InputMode> InputModeChanged;
 
-    [SerializeField] private PlayerInput playerInput;
-    public PlayerInput PlayerInput { get { return playerInput; } }
+    private PlayerInput playerInput;
+    public PlayerInput PlayerInput => playerInput;
 
     [Range(0f,1f)]
     [SerializeField] private float deadzone = 0.05f;
@@ -29,11 +29,19 @@ public class InputModeManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
         }
         else
         {
             Destroy(gameObject);
+        }
+    }
+
+    private void Start()
+    {
+        playerInput = GetComponent<PlayerInput>();
+        if(playerInput == null)
+        {
+            Debug.LogError("[InputManager] cannot find PlayerInput");
         }
     }
 
