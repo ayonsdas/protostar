@@ -42,9 +42,33 @@ public class PlayerInteractor : Interactor
         playerController = GetComponent<PlayerController>();
     }
 
-    public void OnInteract(InputValue value)
+    private void OnEnable()
     {
-        if (!value.isPressed) return;
+        PlayerInput playerInput = InputModeManager.Instance?.PlayerInput;
+        if (playerInput != null)
+        {
+            playerInput.actions["Move"].performed += OnMove;
+            playerInput.actions["Interact"].performed += OnInteract;
+            playerInput.actions["Shift"].performed += OnShift;
+            playerInput.actions["Shift"].canceled += OnShift;
+        }
+    }
+
+    private void OnDisable()
+    {
+        PlayerInput playerInput = InputModeManager.Instance?.PlayerInput;
+        if (playerInput != null)
+        {
+            playerInput.actions["Move"].performed -= OnMove;
+            playerInput.actions["Interact"].performed -= OnInteract;
+            playerInput.actions["Shift"].performed -= OnShift;
+            playerInput.actions["Shift"].canceled -= OnShift;
+        }
+    }
+
+    public void OnInteract(InputAction.CallbackContext ctx)
+    {
+        if (!ctx.performed) return;
         if (isShiftHeld) return; // Don't interact while shifting
 
         Cast(); // Refresh raycast data
@@ -158,9 +182,9 @@ public class PlayerInteractor : Interactor
         }
     }
 
-    public void OnShift(InputValue value)
+    public void OnShift(InputAction.CallbackContext ctx)
     {
-        if (value.isPressed)
+        if (ctx.performed)
         {
             // Shift pressed - try to engage with hovered shiftable
             if (carriedObject != null) return; // Can't shift while carrying
@@ -243,12 +267,12 @@ public class PlayerInteractor : Interactor
         }
     }
 
-    public void OnMove(InputValue value)
+    public void OnMove(InputAction.CallbackContext ctx)
     {
         // When shift is held, capture WASD as shift input instead of movement
         if (isShiftHeld)
         {
-            shiftInput = value.Get<Vector2>();
+            shiftInput = ctx.ReadValue<Vector2>();
         }
     }
 

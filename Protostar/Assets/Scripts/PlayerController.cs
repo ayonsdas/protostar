@@ -129,6 +129,34 @@ public class PlayerController : MonoBehaviour
         UpdateSound();
     }
 
+    private void OnEnable()
+    {
+        PlayerInput playerInput = InputModeManager.Instance?.PlayerInput;
+        if (playerInput != null)
+        {
+            playerInput.actions["Move"].performed += OnMove;
+            playerInput.actions["Look"].performed += OnLook;
+            playerInput.actions["Jump"].performed += OnJump;
+            playerInput.actions["MouseHold"].performed += OnMouseHold;
+            playerInput.actions["MouseHold"].canceled += OnMouseHold;
+            playerInput.actions["RotateGravity"].performed += OnRotateGravity;
+        }
+    }
+
+    private void OnDisable()
+    {
+        PlayerInput playerInput = InputModeManager.Instance?.PlayerInput;
+        if (playerInput != null)
+        {
+            playerInput.actions["Move"].performed -= OnMove;
+            playerInput.actions["Look"].performed -= OnLook;
+            playerInput.actions["Jump"].performed -= OnJump;
+            playerInput.actions["MouseHold"].performed -= OnMouseHold;
+            playerInput.actions["MouseHold"].canceled -= OnMouseHold;
+            playerInput.actions["RotateGravity"].performed -= OnRotateGravity;
+        }
+    }
+
     void AlignToGravity()
     {
         // Get the "up" direction (opposite of gravity)
@@ -233,21 +261,21 @@ public class PlayerController : MonoBehaviour
     }
 
     // Called by Player Input component (Send Messages behavior)
-    public void OnMove(InputValue value)
+    public void OnMove(InputAction.CallbackContext ctx)
     {
         if (!movementLocked)
         {
-            moveInput = value.Get<Vector2>();
+            moveInput = ctx.ReadValue<Vector2>();
         }
     }
     
     // Called by Player Input component for mouse delta
-    public void OnLook(InputValue value)
+    public void OnLook(InputAction.CallbackContext ctx)
     {
         // Only accept mouse input if not requiring hold, or if mouse is held
         if (!requireMouseHold || isMouseHeld)
         {
-            mouseDelta = value.Get<Vector2>();
+            mouseDelta = ctx.ReadValue<Vector2>();
         }
         else
         {
@@ -256,10 +284,10 @@ public class PlayerController : MonoBehaviour
     }
     
     // Called when mouse button is pressed/released
-    public void OnMouseHold(InputValue value)
+    public void OnMouseHold(InputAction.CallbackContext ctx)
     {
-        isMouseHeld = value.isPressed;
-        Debug.Log($"[MouseHold] isPressed: {value.isPressed}, isMouseHeld: {isMouseHeld}");
+        isMouseHeld = ctx.performed;
+        Debug.Log($"[MouseHold] isPressed: {ctx.performed}, isMouseHeld: {isMouseHeld}");
         
         // Lock/unlock cursor based on mouse hold state
         if (isMouseHeld)
@@ -275,9 +303,9 @@ public class PlayerController : MonoBehaviour
     }
 
     // Called by Player Input component (Send Messages behavior)
-    public void OnJump(InputValue value)
+    public void OnJump(InputAction.CallbackContext ctx)
     {
-        if (isGrounded && rb != null && value.isPressed)
+        if (isGrounded && rb != null && ctx.performed)
         {
             // Jump in the opposite direction of gravity
             Vector3 jumpDirection = gravityBody.GetUpDirection();
@@ -287,11 +315,11 @@ public class PlayerController : MonoBehaviour
     }
 
     // Called by Player Input component (Send Messages behavior)
-    public void OnRotateGravity(InputValue value)
+    public void OnRotateGravity(InputAction.CallbackContext ctx)
     {
-        Debug.Log($"OnRotateGravity called! isPressed: {value.isPressed}");
+        Debug.Log($"OnRotateGravity called! isPressed: {ctx.performed}");
 
-        if (value.isPressed && GravityController.Instance != null)
+        if (ctx.performed && GravityController.Instance != null)
         {
             Debug.Log("Rotating gravity!");
             // Rotate gravity 90 degrees around the X axis

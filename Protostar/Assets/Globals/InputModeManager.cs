@@ -15,6 +15,9 @@ public class InputModeManager : MonoBehaviour
     public InputMode CurrentInputMode { get; private set; } = InputMode.Mouse;
     public event Action<InputMode> InputModeChanged;
 
+    [SerializeField] private PlayerInput playerInput;
+    public PlayerInput PlayerInput { get { return playerInput; } }
+
     [Range(0f,1f)]
     [SerializeField] private float deadzone = 0.05f;
 
