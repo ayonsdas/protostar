@@ -6,7 +6,7 @@ using UnityEngine.Rendering;
 /// <summary>
 /// Sapling that shifts into a tree when all four seed slots are filled.
 /// </summary>
-public class SaplingPuzzle : MonoBehaviour, IEngageable, IShiftable
+public class SaplingPuzzle : BaseInteractable, IEngageable, IShiftable
 {
     [Header("Puzzle Settings")]
     [SerializeField] private SeedSlot[] seedSlots; // Assign exactly 4 in the Inspector
@@ -282,5 +282,33 @@ public class SaplingPuzzle : MonoBehaviour, IEngageable, IShiftable
     public int GetState()
     {
         return isShifted ? 1 : 0;
+    }
+
+    protected override void OnInteractSuccess(GameObject interactor)
+    {
+        Debug.Log("[SaplingPuzzle] Got interaction");
+    }
+
+    protected override bool CanInteract(out string message)
+    {
+        message = null;
+
+        if (isShifted)
+        {
+            message = "The omni-tree you grew bears the leaves of a whole new universe!";
+            return false;
+        }
+
+        else if(canInteract)
+        {
+            message = "The maleable course of time has been altered for this tree, it's ready to be shifted!";
+            return false;
+        }
+
+        else
+        {
+            message = "This tree sapling needs more energy to grow, it can't be shifted yet.";
+            return false;
+        }
     }
 }
