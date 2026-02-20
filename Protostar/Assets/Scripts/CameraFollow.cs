@@ -76,22 +76,10 @@ public class CameraFollow : MonoBehaviour
         if (target == null)
             return;
 
-        Vector3 gravityUp = (gravityBody != null) ? gravityBody.GetUpDirection() : Vector3.up;
-
-        // --- Gravity change detection ---
-        // When gravity rotates, rotate the camera direction by the same amount
-        // so the camera stays in the same relative position from the player's POV
-        float gravityAngleDiff = Vector3.Angle(lastGravityUp, gravityUp);
-        if (gravityAngleDiff > 0.01f)
-        {
-            Quaternion gravityRotation = Quaternion.FromToRotation(lastGravityUp, gravityUp);
-            cameraDir = (gravityRotation * cameraDir).normalized;
-            
-            // Clamp pitch after gravity rotation in case it ended up out of bounds
-            ClampPitch(ref cameraDir, gravityUp);
-            
-            lastGravityUp = gravityUp;
-        }
+        // Camera no longer rotates to match gravity changes
+        Vector3 gravityUp = Vector3.up; // Always use world up for camera orientation
+        // Do not rotate cameraDir when gravity changes
+        // lastGravityUp = gravityUp; // Not needed
 
         // Check if player has moved
         bool playerMoved = Vector3.Distance(target.position, lastPlayerPosition) > 0.01f;
@@ -209,11 +197,11 @@ public class CameraFollow : MonoBehaviour
         // Smoothly move camera
         transform.position = Vector3.SmoothDamp(transform.position, finalPosition, ref velocity, smoothTime);
 
-        // Camera looks at player, using gravity up for correct orientation
+        // Camera looks at player, using world up for orientation
         Vector3 directionToTarget = target.position - transform.position;
         if (directionToTarget.sqrMagnitude > 0.01f)
         {
-            Quaternion lookRotation = Quaternion.LookRotation(directionToTarget, gravityUp);
+            Quaternion lookRotation = Quaternion.LookRotation(directionToTarget, Vector3.up);
             transform.rotation = lookRotation;
         }
     }
