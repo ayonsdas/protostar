@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.InputSystem;
 using UnityEngine.Video;
 
 public class VideoController : MonoBehaviour
@@ -7,7 +7,7 @@ public class VideoController : MonoBehaviour
     public VideoPlayer videoPlayer;
     public GameObject videoCanvas;
     
-    private PlayerController playerController;
+    private PlayerInput playerInput;
     
     void Start()
     {
@@ -18,17 +18,17 @@ public class VideoController : MonoBehaviour
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
         {
-            playerController = player.GetComponent<PlayerController>();
+            playerInput = player.GetComponent<PlayerInput>();
         }
     }
 
     void OnVideoStarted(VideoPlayer vp)
     {
         // Lock player movement when video starts
-        if (playerController != null)
+        if (playerInput != null)
         {
-            playerController.SetMovementLocked(true);
-            Debug.Log("[AutoCloseVideo] Player movement locked");
+            playerInput.currentActionMap.Disable();
+            Debug.Log("[AutoCloseVideo] Player input disabled");
         }
     }
     
@@ -38,10 +38,10 @@ public class VideoController : MonoBehaviour
         videoPlayer.Stop();
         
         // Unlock player movement when video ends
-        if (playerController != null)
+        if (playerInput != null)
         {
-            playerController.SetMovementLocked(false);
-            Debug.Log("[AutoCloseVideo] Player movement unlocked");
+            playerInput.currentActionMap.Enable();
+            Debug.Log("[AutoCloseVideo] Player input enabled");
         }
     }
     
@@ -51,9 +51,9 @@ public class VideoController : MonoBehaviour
         videoPlayer.started -= OnVideoStarted;
         
         // Ensure movement is unlocked if script is destroyed
-        if (playerController != null)
+        if (playerInput != null)
         {
-            playerController.SetMovementLocked(false);
+            playerInput.currentActionMap.Enable();
         }
     }
 

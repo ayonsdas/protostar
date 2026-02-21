@@ -175,33 +175,25 @@ public class PlayerController : MonoBehaviour
             cameraTransform = Camera.main.transform;
         }
         
-        // Calculate movement direction relative to camera
+        // Calculate movement direction relative to camera or gravity
         Vector3 moveDirection = Vector3.zero;
-        
         if (cameraTransform != null && moveInput.magnitude > 0.01f)
         {
-            // Get camera's forward and right directions
-            Vector3 cameraForward = cameraTransform.forward;
-            Vector3 cameraRight = cameraTransform.right;
-            
-            // Project camera directions onto the plane perpendicular to gravity
             Vector3 upDirection = gravityBody.GetUpDirection();
-            cameraForward = Vector3.ProjectOnPlane(cameraForward, upDirection).normalized;
-            cameraRight = Vector3.ProjectOnPlane(cameraRight, upDirection).normalized;
-            
-            // Calculate movement direction based on input
-            // For pure A or D input (x axis only), use 90-degree angle from camera
-            if (Mathf.Abs(moveInput.x) > 0.01f && Mathf.Abs(moveInput.y) < 0.01f)
-            {
-                // Pure strafe left or right (90 degrees from camera forward)
-                moveDirection = cameraRight * Mathf.Sign(moveInput.x);
-            }
-            else
-            {
-                // Combined input or forward/back - calculate normally
-                moveDirection = (cameraForward * moveInput.y + cameraRight * moveInput.x).normalized;
-            }
-            
+            // If gravity is normal, use camera-relative movement as before
+            // Always calculate camera-relative movement
+            // Always calculate camera-relative movement, but project onto gravity plane first
+            // Calculate the rotation from natural gravity (Vector3.down) to current gravity
+            Quaternion gravityDelta = Quaternion.FromToRotation(Vector3.down, -upDirection);
+            // Rotate the camera's orientation by this delta
+            Vector3 rotatedForward = gravityDelta * cameraTransform.forward;
+            Vector3 rotatedRight = gravityDelta * cameraTransform.right;
+            // Project onto the plane perpendicular to gravity
+            rotatedForward = Vector3.ProjectOnPlane(rotatedForward, upDirection).normalized;
+            rotatedRight = Vector3.ProjectOnPlane(rotatedRight, upDirection).normalized;
+            Vector3 camMove = (rotatedForward * moveInput.y + rotatedRight * moveInput.x);
+            if (camMove.sqrMagnitude > 0.01f) camMove.Normalize();
+            moveDirection = camMove;
             // Rotate player to face movement direction
             if (moveDirection.magnitude > 0.01f)
             {

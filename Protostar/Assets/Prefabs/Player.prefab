@@ -167,6 +167,7 @@ MonoBehaviour:
   gravityRotationSpeed: 15
   disableFootsteps: 0
   footstepSpeedThreshold: 0.1
+  footstepDebounceTime: 0.5
   footstepEventReference:
     Guid:
       Data1: 3354848
@@ -269,6 +270,14 @@ MonoBehaviour:
   origin: {fileID: 116889316238556093}
   pickupHoldPoint: {fileID: 1271199352196247041}
   dropDistance: 2
+  enableShiftSound: 1
+  shiftEvent:
+    Guid:
+      Data1: -1990641014
+      Data2: 1170111252
+      Data3: 18289802
+      Data4: -1714419739
+    Path: event:/Player/Timeshift
 --- !u!1 &7352152883732015007
 GameObject:
   m_ObjectHideFlags: 0
