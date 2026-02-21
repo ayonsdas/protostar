@@ -11,16 +11,6 @@ public class GameStateManager : MonoBehaviour
     [SerializeField] private InputActionReference toggleMenu;
     [SerializeField] private InputActionReference cancel;
 
-    public enum GameState
-    {
-        MainMenu,
-        InGame,
-        Paused,   // Settings open while in-game
-        Settings, // Settings from main menu
-        Credits,  // Credits screen
-        Controls  // Controls screen (from settings)
-    }
-
     public GameState CurrentState { get; private set; } = GameState.MainMenu;
     public event Action<GameState> OnStateChanged;
 

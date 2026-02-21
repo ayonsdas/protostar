@@ -251,13 +251,16 @@ public class PlayerInteractor : Interactor
                 shiftEngaged?.Disengage(gameObject);
 
                 // Play sound if needed
-                try
+                if (enableShiftSound)
                 {
-                    AudioManager.Instance.PlayOneShot(shiftEvent, shiftObject.transform.position);
-                }
-                catch(Exception e)
-                {
-                    Debug.LogWarning($"[PlayerInteractor] Error playing shift SFX: {e.Message}");
+                    try
+                    {
+                        AudioManager.Instance.PlayOneShot(shiftEvent, shiftObject.transform.position);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogWarning($"[PlayerInteractor] Error playing shift SFX: {e.Message}");
+                    }
                 }
             }
 
