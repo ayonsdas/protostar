@@ -1,4 +1,5 @@
 using UnityEngine;
+using FMODUnity;
 
 /// <summary>
 /// Moving bookshelf object in the tutorial.
@@ -41,7 +42,7 @@ public class MovingBookshelf : MonoBehaviour
             triggered = true;
             slot.Lock();
             animator.SetTrigger(trigger);
-            
+            AudioManager.Instance.SetMusicParameter("Tutorial completion", 1);
         }
     }
 

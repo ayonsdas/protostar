@@ -93,6 +93,12 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    public void SetMusicParameter(string parameterName, float value)
+    {
+        musicEventInstance.setParameterByName(parameterName, value);
+        Debug.Log($"[AudioManager] Set music parameter {parameterName} to {value}");
+    }
+
     private void InitializeAmbience(EventReference eventReference)
     {
         ambienceEventInstance = CreateEventInstance(eventReference);
