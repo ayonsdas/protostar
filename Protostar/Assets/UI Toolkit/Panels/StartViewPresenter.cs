@@ -18,15 +18,15 @@ public class StartViewPresenter : MonoBehaviour, IMenuView
     void Awake()
     {
         root = GetComponent<UIDocument>().rootVisualElement;
-    }
 
-    void Start()
-    {
         settingsView = root.Q<TemplateContainer>("Settings");
         mainMenuView = root.Q<TemplateContainer>("MainMenu");
         creditsView = root.Q<TemplateContainer>("Credits");
         controlsView = root.Q<TemplateContainer>("Controls");
+    }
 
+    void Start()
+    {
         SetupMainMenu();
         SetupSettingsMenu();
         SetupCreditsMenu();

@@ -82,15 +82,31 @@ public class GameStateManager : MonoBehaviour
         if (CurrentState == newState)
             return;
 
+        // When returning to menu or game, clear menu navigation history
+        if(newState == GameState.MainMenu || newState == GameState.InGame)
+        {
+            ClearPreviousStates();
+        }
+
         // If we have this state in our history, remove all history up to that point.
-        if(previousStates.Contains(newState))
+        else if(previousStates.Contains(newState))
         {
            while (previousStates.Count > 0)
             {
                 if (previousStates.Pop() == newState) break;
             }
         }
+        // Otherwise, add it to the history
+        else
+        {
+            previousStates.Push(CurrentState);
+        }
 
+        Debug.Log($"[GameStateManager] Set state to {newState} from {CurrentState}");
+        foreach(var state in previousStates)
+        {
+            Debug.Log($"[GameStateManager] Previous state: {state}");
+        }
         CurrentState = newState;
         
         // Pause/unpause game time
@@ -103,14 +119,14 @@ public class GameStateManager : MonoBehaviour
     {
         if(previousStates.Count > 0)
         {
-            GameState previousState = previousStates.Pop();
+            GameState previousState = previousStates.Peek();
             SetState(previousState);
         }
     }
 
     private void ClearPreviousStates()
     {
-        previousStates = new Stack<GameState>();
+        previousStates.Clear();
     }
 
     public void StartGame(string sceneName)
