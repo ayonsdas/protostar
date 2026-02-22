@@ -8,9 +8,6 @@ public class GameStateManager : MonoBehaviour
 {
     public static GameStateManager Instance { get; private set; }
 
-    [SerializeField] private InputActionReference toggleMenu;
-    [SerializeField] private InputActionReference cancel;
-
     public GameState CurrentState { get; private set; } = GameState.MainMenu;
     public event Action<GameState> OnStateChanged;
 
@@ -29,14 +26,30 @@ public class GameStateManager : MonoBehaviour
 
     private void OnEnable()
     {
-        toggleMenu.action.performed += OnToggleMenu;
-        cancel.action.performed += OnCancel;
+        if (InputModeManager.Instance == null || InputModeManager.Instance.PlayerInput == null)
+        {
+            Debug.LogWarning($"[GameStateManager] Cannot find PlayerInput on {InputModeManager.Instance}");
+        }
+        else
+        {
+            PlayerInput playerInput = InputModeManager.Instance.PlayerInput;
+            playerInput.actions["ToggleMenu"].performed += OnToggleMenu;
+            playerInput.actions["Cancel"].performed += OnCancel;
+        }
     }
 
     private void OnDisable()
     {
-        toggleMenu.action.performed -= OnToggleMenu;
-        cancel.action.performed -= OnCancel;
+        if (InputModeManager.Instance == null || InputModeManager.Instance.PlayerInput == null)
+        {
+            Debug.LogWarning($"[GameStateManager] Cannot find PlayerInput on {InputModeManager.Instance}");
+        }
+        else
+        {
+            PlayerInput playerInput = InputModeManager.Instance.PlayerInput;
+            playerInput.actions["ToggleMenu"].performed -= OnToggleMenu;
+            playerInput.actions["Cancel"].performed -= OnCancel;
+        }
     }
 
     // Toggle menu when this action is pressed
@@ -44,19 +57,20 @@ public class GameStateManager : MonoBehaviour
     {
         switch(CurrentState)
         {
+            case GameState.MainMenu:
+                break;
+
             case GameState.InGame:
+            case GameState.Cutscene:
                 SetState(GameState.Paused);
                 break;
 
             // If in menus, exit if we were in game
-            case GameState.Paused:
-            case GameState.Settings:
-            case GameState.Controls:
-            case GameState.Credits:
-                //Debug.Log("Previous States " + previousStates);
-                if (previousStates.ToArray()[previousStates.Count - 1] == GameState.InGame)
+            default:
+                if (previousStates.Contains(GameState.InGame))
                 {
-                    SetState(GameState.InGame);
+                    GameState nextState = previousStates.Contains(GameState.Cutscene) ? GameState.Cutscene : GameState.InGame;
+                    SetState(nextState);
                 }
                 break;
         }
@@ -81,6 +95,17 @@ public class GameStateManager : MonoBehaviour
     {
         if (CurrentState == newState)
             return;
+
+        // If going into game, close the UI, use player controls, lock cursor, etc
+        if (newState == GameState.InGame)
+        {
+            CloseUI();
+        }
+        // If leaving in game state, open the UI, use UI controls, unlock cursor, etc
+        else if (CurrentState == GameState.InGame)
+        {
+            OpenUI();
+        }
 
         // When returning to menu or game, clear menu navigation history
         if(newState == GameState.MainMenu || newState == GameState.InGame)
@@ -139,5 +164,20 @@ public class GameStateManager : MonoBehaviour
     {
         SceneManager.LoadScene(mainMenuSceneName);
         SetState(GameState.MainMenu);
+    }
+    private void OpenUI()
+    {
+        Time.timeScale = 0f;
+        InputModeManager.Instance.PlayerInput.actions.FindActionMap("Player").Disable();
+        InputModeManager.Instance.PlayerInput.actions.FindActionMap("UI").Enable();
+        Cursor.lockState = CursorLockMode.Confined;
+    }
+
+    private void CloseUI()
+    {
+        Time.timeScale = 1f;
+        InputModeManager.Instance.PlayerInput.actions.FindActionMap("UI").Disable();
+        InputModeManager.Instance.PlayerInput.actions.FindActionMap("Player").Enable();
+        Cursor.lockState = CursorLockMode.Locked;
     }
 }

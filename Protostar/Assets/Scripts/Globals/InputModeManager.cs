@@ -14,9 +14,6 @@ public class InputModeManager : MonoBehaviour
     private PlayerInput playerInput;
     public PlayerInput PlayerInput => playerInput;
 
-    [SerializeField] private InputActionReference navigateAction;
-    [SerializeField] private InputActionReference pointAction;
-
     private const string PATTERN = @"{([A-Za-z0-9_]+)}";
     private static Regex regex = new Regex(PATTERN);
 
@@ -26,10 +23,17 @@ public class InputModeManager : MonoBehaviour
         {
             Instance = this;
             playerInput = GetComponent<PlayerInput>();
+
             if (playerInput == null)
             {
                 Debug.LogError("[InputManager] cannot find PlayerInput");
+                return;
             }
+            foreach(InputActionMap map in playerInput.actions.actionMaps)
+            {
+                map.Disable();
+            }
+            playerInput.actions.FindActionMap("Global").Enable();
         }
         else
         {
@@ -46,7 +50,6 @@ public class InputModeManager : MonoBehaviour
     {
         playerInput.onControlsChanged -= HandleControlsChanged;
     }
-
 
     private void HandleControlsChanged(PlayerInput _playerInput)
     {

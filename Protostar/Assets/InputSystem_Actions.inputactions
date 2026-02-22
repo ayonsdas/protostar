@@ -441,15 +441,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "ToggleMenu",
-                    "type": "Button",
-                    "id": "f74fd549-a62f-4031-b49b-9fc5a6666c0b",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -870,10 +861,27 @@
                     "action": "TrackedDeviceOrientation",
                     "isComposite": false,
                     "isPartOfComposite": false
-                },
+                }
+            ]
+        },
+        {
+            "name": "Global",
+            "id": "450896e2-fbba-4132-8303-14657ee533b2",
+            "actions": [
+                {
+                    "name": "ToggleMenu",
+                    "type": "Button",
+                    "id": "e50054a9-ee72-4fe7-af83-c0cb1c055b95",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
                 {
                     "name": "",
-                    "id": "c8aba441-a2b8-4b27-8c5f-cf02697cc1b6",
+                    "id": "f66a67bc-c7c6-456f-ab74-cbec0c3a6d34",
                     "path": "<Gamepad>/start",
                     "interactions": "",
                     "processors": "",
@@ -884,7 +892,7 @@
                 },
                 {
                     "name": "",
-                    "id": "1d4735cc-1e9e-4bfd-9a12-d3fdab75cffa",
+                    "id": "78eca1de-20e2-4c1c-b78c-bec2d6c776fc",
                     "path": "<Keyboard>/escape",
                     "interactions": "",
                     "processors": "",
