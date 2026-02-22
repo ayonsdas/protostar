@@ -13,7 +13,6 @@ public class TestPlayerController : MonoBehaviour
     private float yInput;
     private float rotationX = 0f;
     
-    // We now track this based on the GameState, not a local toggle
     private bool isControlActive = false;
 
     public Camera playerCamera;
