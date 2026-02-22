@@ -31,7 +31,7 @@ public class OrbVFX : MonoBehaviour
     public float excitedOrbitRadius = 0.6f;
     [Tooltip("Vertical bob speed when excited.")]
     public float excitedFloatSpeed = 2.5f;
-    [Tooltip("Vertical bob amplitude when excited.")]
+    [Tooltip("Vertical bob height when excited.")]
     public float excitedFloatAmount = 0.25f;
 
     [Header("Proximity")]
