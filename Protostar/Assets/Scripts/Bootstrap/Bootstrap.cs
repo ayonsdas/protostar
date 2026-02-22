@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -6,23 +7,23 @@ public class Bootstrap : MonoBehaviour
     [SerializeField] private string initializeScene = "Initialize";
     [SerializeField] private string startScene = "MainMenu";
 
-    void Awake()
+    private IEnumerator Start()
     {
         // Loads managers in initializeScene
-        SceneManager.LoadSceneAsync(initializeScene, LoadSceneMode.Additive);
-    }
+        yield return SceneManager.LoadSceneAsync(initializeScene, LoadSceneMode.Additive);
 
-    void Start()
-    {
-        
 #if UNITY_EDITOR
         // If in editor, load boot scene then selected scene, otherwise use default startScene
         var start = PlayerPrefs.GetString("BootSceneFirstScene", null);
-        if (start != null)
+        if (start != null && start != gameObject.scene.path)
         {
+            Debug.Log($"[Bootstrap] requested scene {start} boot scene {gameObject.scene.path}");
             startScene = start;
         }
 #endif
-        SceneManager.LoadSceneAsync(startScene, LoadSceneMode.Single);
+        yield return SceneManager.LoadSceneAsync(startScene, LoadSceneMode.Single);
+
+        // Unload bootstrap scene
+        SceneManager.UnloadSceneAsync(gameObject.scene);
     }
 }

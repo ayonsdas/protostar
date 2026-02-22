@@ -3347,6 +3347,63 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 183777608}
   m_Mesh: {fileID: -3043674779153691958, guid: f6d9fe44e96a0a041a431d459fb185b5, type: 3}
+--- !u!1001 &187107639
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4691800928832479825, guid: b40233012ea350943b8698854f80500b, type: 3}
+      propertyPath: m_Name
+      value: MenuUIDocument
+      objectReference: {fileID: 0}
+    - target: {fileID: 7155144982404518604, guid: b40233012ea350943b8698854f80500b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 22.96734
+      objectReference: {fileID: 0}
+    - target: {fileID: 7155144982404518604, guid: b40233012ea350943b8698854f80500b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 31.48891
+      objectReference: {fileID: 0}
+    - target: {fileID: 7155144982404518604, guid: b40233012ea350943b8698854f80500b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -19.16593
+      objectReference: {fileID: 0}
+    - target: {fileID: 7155144982404518604, guid: b40233012ea350943b8698854f80500b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7155144982404518604, guid: b40233012ea350943b8698854f80500b, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7155144982404518604, guid: b40233012ea350943b8698854f80500b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7155144982404518604, guid: b40233012ea350943b8698854f80500b, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7155144982404518604, guid: b40233012ea350943b8698854f80500b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7155144982404518604, guid: b40233012ea350943b8698854f80500b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7155144982404518604, guid: b40233012ea350943b8698854f80500b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b40233012ea350943b8698854f80500b, type: 3}
 --- !u!1 &197546303
 GameObject:
   m_ObjectHideFlags: 0
@@ -31063,13 +31120,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7145963474638805246, guid: 6d660e13b2b617a4b8b846e6b846fee4, type: 3}
       propertyPath: m_text
-      value: Time is navigable in strange ways here, press Shift to shift objects
-        in time!
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 122090866617771699, guid: 6d660e13b2b617a4b8b846e6b846fee4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1110755521}
   m_SourcePrefab: {fileID: 100100000, guid: 6d660e13b2b617a4b8b846e6b846fee4, type: 3}
 --- !u!4 &956840383 stripped
 Transform:
@@ -32749,6 +32808,51 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1017640646}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1019311253
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1019311255}
+  - component: {fileID: 1019311254}
+  m_Layer: 0
+  m_Name: Setup
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1019311254
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1019311253}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb3a70549874d244593fc0df07c7418e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Protostar::SceneGameStateSetter
+  stateOnLoad: 1
+--- !u!4 &1019311255
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1019311253}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1022900428
 GameObject:
   m_ObjectHideFlags: 0
@@ -34949,6 +35053,26 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1109930160}
   m_Mesh: {fileID: -8849341956894920351, guid: f6d9fe44e96a0a041a431d459fb185b5, type: 3}
+--- !u!1 &1110755515 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 122090866617771699, guid: 6d660e13b2b617a4b8b846e6b846fee4, type: 3}
+  m_PrefabInstance: {fileID: 956840382}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1110755521
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1110755515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bf5c202f9dd7a440a77a062fe161f4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Protostar.UI::ActionBindingText
+  textMesh: {fileID: 2125325924}
+  message: Time is navigable in strange ways here, press {Shift} to shift objects
+    in time!
 --- !u!1 &1112567277
 GameObject:
   m_ObjectHideFlags: 0
@@ -51229,7 +51353,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 122090866617771699, guid: 6d660e13b2b617a4b8b846e6b846fee4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1500185150}
   m_SourcePrefab: {fileID: 100100000, guid: 6d660e13b2b617a4b8b846e6b846fee4, type: 3}
 --- !u!4 &1373222870 stripped
 Transform:
@@ -51461,6 +51588,17 @@ Transform:
   - {fileID: 1530233778}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1396422763 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7145963474638805246, guid: 6d660e13b2b617a4b8b846e6b846fee4, type: 3}
+  m_PrefabInstance: {fileID: 1373222869}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1 &1407148662
 GameObject:
   m_ObjectHideFlags: 0
@@ -53995,6 +54133,25 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1498777974}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1500185144 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 122090866617771699, guid: 6d660e13b2b617a4b8b846e6b846fee4, type: 3}
+  m_PrefabInstance: {fileID: 1373222869}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1500185150
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1500185144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4bf5c202f9dd7a440a77a062fe161f4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Protostar.UI::ActionBindingText
+  textMesh: {fileID: 1396422763}
+  message: Press {Move} to move and {Jump} to jump
 --- !u!1001 &1501361163
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -77870,6 +78027,17 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2124805822}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &2125325924 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7145963474638805246, guid: 6d660e13b2b617a4b8b846e6b846fee4, type: 3}
+  m_PrefabInstance: {fileID: 956840382}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1 &2128698399
 GameObject:
   m_ObjectHideFlags: 0
@@ -79123,8 +79291,10 @@ PrefabInstance:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 1169296509}
+  - {fileID: 187107639}
+  - {fileID: 1019311255}
   - {fileID: 1153958623}
+  - {fileID: 1169296509}
   - {fileID: 999536821}
   - {fileID: 1505024538}
   - {fileID: 246980347}
