@@ -42,10 +42,10 @@ MonoBehaviour:
   Path: FMOD/protostar/Banks/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 639063588657057535
+  lastModified: 639073037091843705
   FileSizes:
   - Name: 
-    Value: 1336
+    Value: 1396
   Exists: 1
 --- !u!114 &-4221883667984755971
 MonoBehaviour:
@@ -89,7 +89,7 @@ MonoBehaviour:
   Path: FMOD/protostar/Banks/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 639063622188075365
+  lastModified: 639073037091823287
   FileSizes: []
   Exists: 1
 --- !u!114 &-358465970052557339
@@ -152,7 +152,7 @@ MonoBehaviour:
   StringsBanks:
   - {fileID: -6323928327803451181}
   cacheVersion: 131848
-  cacheTime: 639063622188075365
+  cacheTime: 639073037091843705
   SerializableEventsDict:
   - key: event:/Ambience/LivingSpaceAmbience
     index: 0
@@ -297,8 +297,32 @@ MonoBehaviour:
   Path: FMOD/protostar/Banks/Desktop/Living Space.bank
   Name: Living Space
   StudioPath: bank:/Living Space
-  lastModified: 639063588656917529
+  lastModified: 639073037091436023
   FileSizes: []
+  Exists: 1
+--- !u!114 &7152044793976993968
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/LivingSpaceMusic/Tutorial completion
+  m_EditorClassIdentifier: FMODUnityEditor::FMODUnity.EditorParamRef
+  Name: Tutorial completion
+  StudioPath: 
+  Min: 0
+  Max: 1
+  Default: 0
+  ID:
+    data1: 1621753363
+    data2: 1200284845
+  Type: 0
+  IsGlobal: 0
+  Labels: []
   Exists: 1
 --- !u!114 &7353914500591581820
 MonoBehaviour:
@@ -351,10 +375,11 @@ MonoBehaviour:
   IsStream: 1
   Is3D: 0
   IsOneShot: 0
-  Parameters: []
+  Parameters:
+  - {fileID: 7152044793976993968}
   MinDistance: 1
   MaxDistance: 20
-  Length: 104727
+  Length: 174545
 --- !u!114 &8546727034300618241
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -381,4 +406,4 @@ MonoBehaviour:
   Parameters: []
   MinDistance: 1
   MaxDistance: 20
-  Length: 375
+  Length: 250
