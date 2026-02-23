@@ -16264,6 +16264,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: a9282c5e476cb1441b58b7f3fdce468f, type: 3}
       insertIndex: -1
       addedObject: {fileID: 686298020}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: a9282c5e476cb1441b58b7f3fdce468f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1805682348}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: a9282c5e476cb1441b58b7f3fdce468f, type: 3}
       insertIndex: -1
@@ -60210,6 +60213,77 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10, y: 0.5, z: 10}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &1805682347
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1805682348}
+  - component: {fileID: 1805682350}
+  - component: {fileID: 1805682349}
+  m_Layer: 6
+  m_Name: Orbs
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1805682348
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1805682347}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 551275048}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1805682349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1805682347}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4787f41990cd674899a7bef4b3e89ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Protostar.VFX::OrbVFX
+  orbPrefab: {fileID: 4068359505893267654, guid: 628cd93737a91844c8bc95fb1048d957, type: 3}
+  orbCount: 6
+  orbitSpeed: 25
+  idleOrbitRadius: 2
+  idleFloatSpeed: 1
+  idleFloatAmount: 0.5
+  excitedOrbitRadius: 3
+  excitedFloatSpeed: 8
+  excitedFloatAmount: 1
+  detectionRange: 8
+  transitionSpeed: 2
+  absorptionDuration: 0.8
+--- !u!114 &1805682350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1805682347}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb8e175c5cf31c4428d8cdb37cbb1bce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Protostar::InteractionOrbs
+  interactable: {fileID: 551275047}
+  orbVFX: {fileID: 1805682349}
 --- !u!1 &1820344934
 GameObject:
   m_ObjectHideFlags: 0

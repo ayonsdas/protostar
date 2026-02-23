@@ -1,5 +1,7 @@
 using UnityEngine.VFX;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering;
+using System.Collections;
 
 
 /// Spawns a ring of orb prefabs and orbits them around this GameObject.
@@ -17,6 +19,12 @@ public class OrbVFX : MonoBehaviour
 
     [Tooltip("Base rotational speed of the orbit.")]
     public float orbitSpeed = 25f;
+
+    [Tooltip("The minimum of scale of orbs to spawn with")]
+    public float minSize = 1f;
+
+    [Tooltip("The minimum of scale of orbs to spawn with")]
+    public float maxSize = 1f;
 
     [Header("Idle State")]
     [Tooltip("Orbit radius when the player is far away.")]
@@ -40,6 +48,10 @@ public class OrbVFX : MonoBehaviour
     [Tooltip("How quickly the orbs blend between idle and excited states.")]
     public float transitionSpeed = 2f;
 
+    [Header("Absorption Settings")]
+    [Tooltip("Time in seconds for each orb to travel to the player and shrink away.")]
+    public float absorptionDuration = 0.8f;
+
 
     private GameObject[] orbs;
     private float[] angleOffsets;      // Starting angle per orb (evenly spaced)
@@ -61,6 +73,9 @@ public class OrbVFX : MonoBehaviour
             // Spawn each orb as a child so it follows this parent transform.
             orbs[i] = Instantiate(orbPrefab, transform.position, Quaternion.identity);
             orbs[i].transform.SetParent(transform);
+
+            float scale = Random.Range(minSize, maxSize);
+            orbs[i].transform.localScale = new Vector3(scale, scale, scale);
 
             // Distribute orbs evenly around the circle.
             angleOffsets[i] = (360f / orbCount) * i;
@@ -133,6 +148,21 @@ public class OrbVFX : MonoBehaviour
         }
     }
 
+    public IEnumerator AbsorbOrbs()
+    {
+        // Attach an absorb behaviour to every active orb.
+        foreach (var orb in orbs)
+        {
+            if (orb != null)
+            {
+                var absorb = orb.AddComponent<OrbAbsorb>();
+                absorb.AbsorbToTarget(player, absorptionDuration);
+            }
+        }
+
+        // Wait for all orbs to finish absorbing
+        yield return new WaitForSeconds(absorptionDuration + 0.2f);
+    }
 
     void OnDrawGizmos()
     {
