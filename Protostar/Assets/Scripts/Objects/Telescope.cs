@@ -1,8 +1,9 @@
 using FMODUnity;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Telescope : BaseInteractable
+public class Telescope : BaseInteractable, IInteractionCandidate
 {
     [Header("Telescope Settings")]
     [SerializeField] private Camera telescopeCamera;
@@ -299,5 +300,17 @@ public class Telescope : BaseInteractable
         playerInput = null;
 
         Debug.Log("Exited telescope view.");
+    }
+
+    public void CollectOptions(PlayerInteractionContext context, List<InteractionOption> options)
+    {
+        if (requiredPuzzle == null || requiredPuzzle.GetState() != 0)
+        {
+            options.Add(InteractionBuilder.Create(
+                InteractionType.Interact,
+                this,
+                () => { }
+            ));
+        }
     }
 }

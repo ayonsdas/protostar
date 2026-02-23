@@ -1,7 +1,12 @@
 using FMODUnity;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class Slot<T> : BaseInteractable, IPlaceableSlot where T : MonoBehaviour, IPlaceable
+public class Slot<T> :
+    BaseInteractable,
+    IPlaceableSlot,
+    IInteractionCandidate
+    where T : MonoBehaviour, IPlaceable
 {
 
     [Header("Visuals")]
@@ -32,7 +37,7 @@ public class Slot<T> : BaseInteractable, IPlaceableSlot where T : MonoBehaviour,
     }
 
     /// <summary>
-    /// IInteractable � not called directly during normal flow;
+    /// IInteractable not called directly during normal flow;
     /// PlayerInteractor intercepts object-slot interactions before reaching here.
     /// </summary>
     protected override void OnInteractSuccess(GameObject interactor)
@@ -108,7 +113,7 @@ public class Slot<T> : BaseInteractable, IPlaceableSlot where T : MonoBehaviour,
     /// </summary>
     public void ConsumeObject()
     {
-        if (_placedObject = null)
+        if (_placedObject == null)
         {
             _placedObject.gameObject.SetActive(false);
             _placedObject = null;
@@ -154,5 +159,49 @@ public class Slot<T> : BaseInteractable, IPlaceableSlot where T : MonoBehaviour,
         }
 
         return base.CanInteract(out message);
+    }
+
+    public void CollectOptions(PlayerInteractionContext context, List<InteractionOption> options)
+    {
+        // If locked, then cannot interact
+        if (_isLocked)
+        {
+            return;
+        }
+
+        // If carrying an object, try to place it
+        if (context.IsCarrying && !IsFilled)
+        {
+            T placeable = context.CarriedObject?.GetComponentInChildren<T>();
+            // Correct type for the slot, give interaction
+            if (placeable != null)
+            {
+                options.Add(InteractionBuilder.Create(
+                    InteractionType.Place,
+                    this,
+                    () =>
+                    {
+                        context.ClearCarriedObject();
+                    }
+                ));
+            }
+        }
+
+        // If slot is filled, and no carried object
+        if (!context.IsCarrying && IsFilled)
+        {
+            options.Add(InteractionBuilder.Create(
+                InteractionType.Place,
+                this,
+                () =>
+                {
+                    var obj = RemoveObject();
+                    if (obj != null)
+                    {
+                        context.SetCarriedObject(obj.gameObject);
+                    }
+                }
+            ));
+        }
     }
 }

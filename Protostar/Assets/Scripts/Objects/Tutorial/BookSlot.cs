@@ -1,5 +1,1 @@
-using UnityEngine;
-
-public class BookSlot : Slot<BookObject>
-{
-}
+public class BookSlot : Slot<BookObject> { }

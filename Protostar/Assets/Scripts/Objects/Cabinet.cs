@@ -1,4 +1,5 @@
 using FMODUnity;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -6,7 +7,7 @@ using UnityEngine.SceneManagement;
 /// Cabinet that opens when the telescope puzzle is completed
 /// Can be interacted with to end the demo
 /// </summary>
-public class Cabinet : BaseInteractable
+public class Cabinet : BaseInteractable, IInteractionCandidate
 {
     [Header("Cabinet Models")]
     [SerializeField] private GameObject closedModel;
@@ -156,5 +157,17 @@ public class Cabinet : BaseInteractable
 #else
             Application.Quit();
 #endif
+    }
+
+    public void CollectOptions(PlayerInteractionContext context, List<InteractionOption> options)
+    {
+        if(isOpen)
+        {
+            options.Add(InteractionBuilder.Create(
+                InteractionType.Interact,
+                this,
+                () => { }
+            ));
+        }
     }
 }

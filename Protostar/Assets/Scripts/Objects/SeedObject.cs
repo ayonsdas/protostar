@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 /// <summary>
 /// Seed object that can be picked up and has custom gravity.
@@ -6,7 +7,7 @@ using UnityEngine;
 /// Can be shifted (Left Shift) to grow into a tree the player can jump on.
 /// </summary>
 [RequireComponent(typeof(CustomGravityBody))]
-public class SeedObject : MonoBehaviour, IPickupable, IEngageable, IShiftable
+public class SeedObject : MonoBehaviour, IPickupable, IPlaceable, IEngageable, IShiftable, IInteractionCandidate
 {
     [Header("Colliders")]
     [SerializeField] private Collider pickupTrigger; // Optional: separate trigger collider for easier pickup
@@ -23,7 +24,11 @@ public class SeedObject : MonoBehaviour, IPickupable, IEngageable, IShiftable
     private bool isShifted = false;
     private bool isInSlot = false;
     private bool _engaged = false;
-    
+
+    private bool IsHeld => isPickedUp;
+    public bool IsInSlot => isInSlot;
+    private bool IsFree => !isPickedUp && !isInSlot && !isShifted;
+
     private void Awake()
     {
         gravityBody = GetComponent<CustomGravityBody>();
@@ -149,13 +154,12 @@ public class SeedObject : MonoBehaviour, IPickupable, IEngageable, IShiftable
     }
 
     // --- Slot placement ---
-    public bool IsInSlot => isInSlot;
 
     /// <summary>
     /// Called when this seed is placed into a SeedSlot.
     /// Keeps the seed kinematic with colliders off.
     /// </summary>
-    public void OnPlaceInSlot()
+    public void OnPlace()
     {
         isInSlot = true;
         isPickedUp = false;
@@ -176,7 +180,7 @@ public class SeedObject : MonoBehaviour, IPickupable, IEngageable, IShiftable
     /// Called when this seed is removed from a SeedSlot.
     /// Re-enables physics so it can be picked up again.
     /// </summary>
-    public void OnRemoveFromSlot()
+    public void OnRemove()
     {
         isInSlot = false;
 
@@ -305,6 +309,41 @@ public class SeedObject : MonoBehaviour, IPickupable, IEngageable, IShiftable
         foreach (Transform child in obj.transform)
         {
             SetLayerRecursive(child.gameObject, layer);
+        }
+    }
+
+    public void CollectOptions(PlayerInteractionContext context, List<InteractionOption> options)
+    {
+        options.Add(InteractionBuilder.Create(
+            InteractionType.Shift,
+            this,
+            () => { }
+        ));
+
+        // If free on ground then pickup
+        if (IsFree)
+        {
+            options.Add(InteractionBuilder.Create(
+                InteractionType.Pickup,
+                this,
+                () =>
+                {
+                    context.SetCarriedObject(gameObject);
+                }
+            ));
+        }
+
+        // If currently held by this interactor then can drop
+        if (IsHeld && gameObject.Equals(context.CarriedObject))
+        {
+            options.Add(InteractionBuilder.Create(
+                InteractionType.Drop,
+                this,
+                () =>
+                {
+                    context.DropCarriedObject();
+                }
+            ));
         }
     }
 }

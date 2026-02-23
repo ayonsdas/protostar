@@ -270,6 +270,11 @@ MonoBehaviour:
   origin: {fileID: 116889316238556093}
   pickupHoldPoint: {fileID: 1271199352196247041}
   dropDistance: 2
+  interactionRadius: 3
+  interactionMask:
+    serializedVersion: 2
+    m_Bits: 64
+  interactionUI: {fileID: 0}
   enableShiftSound: 1
   shiftEvent:
     Guid:

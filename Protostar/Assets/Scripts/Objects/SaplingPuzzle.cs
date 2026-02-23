@@ -6,7 +6,7 @@ using UnityEngine.Rendering;
 /// <summary>
 /// Sapling that shifts into a tree when all four seed slots are filled.
 /// </summary>
-public class SaplingPuzzle : BaseInteractable, IEngageable, IShiftable
+public class SaplingPuzzle : BaseInteractable, IEngageable, IShiftable, IInteractionCandidate
 {
     [Header("Puzzle Settings")]
     [SerializeField] private SeedSlot[] seedSlots; // Assign exactly 4 in the Inspector
@@ -251,7 +251,7 @@ public class SaplingPuzzle : BaseInteractable, IEngageable, IShiftable
             {
                 if (slot != null)
                 {
-                    slot.ConsumeSeed();
+                    slot.ConsumeObject();
                 }
             }
         }
@@ -310,5 +310,14 @@ public class SaplingPuzzle : BaseInteractable, IEngageable, IShiftable
             message = "This tree sapling needs more energy to grow, it can't be shifted yet.";
             return false;
         }
+    }
+
+    public void CollectOptions(PlayerInteractionContext context, List<InteractionOption> options)
+    {
+        options.Add(InteractionBuilder.Create(
+            InteractionType.Shift,
+            this,
+            () => { }
+        ));
     }
 }

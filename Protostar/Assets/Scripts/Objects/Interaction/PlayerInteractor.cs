@@ -2,12 +2,18 @@ using UnityEngine.InputSystem;
 using UnityEngine;
 using System;
 using FMODUnity;
+using System.Collections.Generic;
 
 public class PlayerInteractor : Interactor
 {
     [Header("Pickup Settings")]
     [SerializeField] private Transform pickupHoldPoint; // Position above player's head
     [SerializeField] private float dropDistance = 2f; // Distance in front to drop
+
+    [Header("Interaction Settings")]
+    [SerializeField] private float interactionRadius = 3f;
+    [SerializeField] private LayerMask interactionMask;
+
     [Header("Interaction UI")]
     [SerializeField] private InteractableUI interactionUI; // UI element to show interaction messages
 
@@ -31,256 +37,82 @@ public class PlayerInteractor : Interactor
 
     // Shift state
     private bool isShiftHeld = false;
-    private IEngageable shiftEngaged = null;
-    private IShiftable shiftTarget = null;
-    private GameObject shiftObject = null;
+    private IEngageable activeShiftEngageable = null;
+    private IShiftable activeShiftTarget = null;
     private Vector2 shiftInput = Vector2.zero; // WASD input accumulated during shift hold
     private PlayerController playerController;
+    private SphereCollider triggerCollider;
 
-    private void Start()
+    private void Awake()
     {
         playerController = GetComponent<PlayerController>();
+        triggerCollider = GetComponent<SphereCollider>();
+
+        if (triggerCollider == null)
+            triggerCollider = gameObject.AddComponent<SphereCollider>();
+
+        triggerCollider.isTrigger = true;
+        triggerCollider.radius = interactionRadius;
     }
 
-    public void OnInteract(InputValue value)
+    private void OnTriggerEnter(Collider other)
     {
-        if (!value.isPressed) return;
-        if (isShiftHeld) return; // Don't interact while shifting
-
-        Cast(); // Refresh raycast data
-
-        Debug.Log($"[PlayerInteractor] OnInteract: carried={carriedObject != null}, HoveredInteractable={HoveredInteractable?.GetType().Name ?? "null"}");
-
-        // Priority 1: If carrying a seed and hovering an empty SeedSlot, place seed
-        if (carriedObject != null && HoveredInteractable is SeedSlot emptySlot && !emptySlot.IsFilled)
+        if (((1 << other.gameObject.layer) & interactionMask) == 0)
         {
-            SeedObject seed = carriedObject.GetComponent<SeedObject>();
-            if (seed != null)
-            {
-                Debug.Log("[PlayerInteractor] OnInteract - placing seed in slot");
-                // Unparent from hold point, then let the slot take over
-                carriedObject.transform.SetParent(null);
-                emptySlot.PlaceSeed(seed);
-                carriedObject = null;
-                carriedPickupable = null;
-                return;
-            }
-        }
-
-        // TODO refactor seed logic to use generic typing
-        // Priority 1.5: Generalizing seed logic to generic Slot type
-        if (carriedObject != null && HoveredInteractable is IPlaceableSlot slot && !slot.IsFilled)
-        {
-            Debug.Log("Trying to place object " + carriedObject.name + " into slot " + HoveredInteractable?.GetType().Name);
-            if (slot.TryPlace(carriedObject))
-            {
-                Debug.Log("[PlayerInteractor] OnInteract - placing object in slot");
-                // Unparent from hold point, then let the slot take over
-                // In this version, don't reset parent since this is set in slot.TryPlace
-                carriedObject = null;
-                carriedPickupable = null;
-                return;
-            }
-        }
-
-        // Priority 2: If not carrying and hovering a filled SeedSlot, remove seed and pick it up
-        if (carriedObject == null && HoveredInteractable is SeedSlot filledSlot && filledSlot.IsFilled)
-        {
-            SeedObject seed = filledSlot.RemoveSeed();
-            if (seed != null)
-            {
-                Debug.Log("[PlayerInteractor] OnInteract - removing seed from slot, picking up");
-                carriedObject = seed.gameObject;
-                carriedPickupable = seed;
-                carriedObject.transform.SetParent(pickupHoldPoint);
-                carriedObject.transform.localPosition = Vector3.zero;
-                carriedObject.transform.localRotation = Quaternion.identity;
-                seed.OnPickup(gameObject);
-                return;
-            }
-        }
-
-        // Priority 2.5: Generalizing seed logic to generic Slot type
-        if (carriedObject == null && HoveredInteractable is IPlaceableSlot fSlot && fSlot.IsFilled)
-        {
-            GameObject obj = fSlot.TryRemove();
-            if (obj != null)
-            {
-                Debug.Log("[PlayerInteractor] OnInteract - removing object from slot, picking up");
-                carriedObject = obj;
-                carriedPickupable = obj.GetComponent<IPickupable>();
-                carriedObject.transform.SetParent(pickupHoldPoint);
-                carriedObject.transform.localPosition = Vector3.zero;
-                carriedObject.transform.localRotation = Quaternion.identity;
-
-                carriedPickupable.OnPickup(gameObject);
-                return;
-            }
-        }
-
-        // Priority 3: If carrying something, drop it
-        if (carriedObject != null)
-        {
-            Debug.Log("[PlayerInteractor] OnInteract - dropping carried object");
-            DropObject();
             return;
         }
 
-        // Priority 4: If hovering a pickupable, pick it up
-        if (HoveredPickupable != null)
+        var candidate = other.GetComponentInParent<IInteractionCandidate>();
+        if (candidate != null && !nearby.Contains(candidate))
         {
-            Debug.Log("[PlayerInteractor] OnInteract - picking up object");
-            TryPickupObject();
+            nearby.Add(candidate);
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        var candidate = other.GetComponentInParent<IInteractionCandidate>();
+        if (candidate != null)
+        {
+            nearby.Remove(candidate);
+        }
+    }
+
+    protected override PlayerInteractionContext BuildContext()
+    {
+        return new PlayerInteractionContext
+        {
+            Player = gameObject,
+            CarriedObject = carriedObject,
+            IsCarrying = carriedObject != null,
+            SetCarriedObject = SetCarriedObjectInternal,
+            DropCarriedObject = DropCarriedObjectInternal,
+            ClearCarriedObject = ClearCarriedObjectInternal
+        };
+    }
+
+    private void SetCarriedObjectInternal(GameObject obj)
+    {
+        carriedObject = obj;
+        carriedPickupable = obj.GetComponent<IPickupable>();
+
+        obj.transform.SetParent(pickupHoldPoint);
+        obj.transform.localPosition = Vector3.zero;
+        obj.transform.localRotation = Quaternion.identity;
+
+        carriedPickupable?.OnPickup(gameObject);
+    }
+
+    private void ClearCarriedObjectInternal()
+    {
+        carriedObject = null;
+        carriedPickupable = null;
+    }
+
+    private void DropCarriedObjectInternal()
+    {
+        if (carriedObject == null)
             return;
-        }
-
-        // Priority 5: Normal interact (telescope, cabinet, book, etc.)
-        // Call HoveredInteractable directly to avoid engage/disengage logic
-        Cast();
-        Debug.Log($"[PlayerInteractor] Priority 5 check: HoveredInteractable={HoveredInteractable?.GetType().Name ?? "null"}, HoveredEngagable={HoveredEngagable?.GetType().Name ?? "null"}, HoveredPickupable={HoveredPickupable?.GetType().Name ?? "null"}");
-        if (HoveredInteractable != null)
-        {
-            Debug.Log($"[PlayerInteractor] OnInteract - calling Interact on {HoveredInteractable.GetType().Name}");
-            InteractionResult result = HoveredInteractable.Interact(gameObject);
-            HandleInteractionResult(result);
-        }
-        else
-        {
-            Debug.Log("[PlayerInteractor] OnInteract - nothing to interact with (no HoveredInteractable)");
-        }
-    }
-
-    private void HandleInteractionResult(InteractionResult result)
-    {
-        if (!string.IsNullOrEmpty(result.Message))
-        {
-            interactionUI?.Show(result.Message);
-        }
-    }
-
-    public void OnShift(InputValue value)
-    {
-        if (value.isPressed)
-        {
-            // Shift pressed - try to engage with hovered shiftable
-            if (carriedObject != null) return; // Can't shift while carrying
-
-            Cast(); // Make sure we have latest raycast
-
-            // Look for an engageable+shiftable object
-            IEngageable engageable = HoveredEngagable;
-            IShiftable shiftable = null;
-            if (engageable != null)
-            {
-                shiftable = (engageable as MonoBehaviour)?.GetComponent<IShiftable>();
-            }
-
-            if (engageable != null && shiftable != null)
-            {
-                isShiftHeld = true;
-                shiftEngaged = engageable;
-                shiftTarget = shiftable;
-                shiftObject = (engageable as MonoBehaviour)?.gameObject;
-                shiftInput = Vector2.zero;
-
-                // Engage the object
-                engageable.Engage(gameObject);
-
-                // Lock player movement
-                if (playerController != null)
-                {
-                    playerController.SetMovementLocked(true);
-                }
-
-                Debug.Log($"[PlayerInteractor] Shift engaged with {(engageable as MonoBehaviour)?.gameObject.name}");
-            }
-        }
-        else
-        {
-            // Shift released - apply shift and disengage
-            if (isShiftHeld && shiftTarget != null)
-            {
-                // Determine shift direction from accumulated WASD input
-                // W/D = forward (+1), S/A = backward (-1), no input = forward (+1) default
-                int direction = 1;
-                if (Mathf.Abs(shiftInput.y) > Mathf.Abs(shiftInput.x))
-                {
-                    direction = shiftInput.y >= 0 ? 1 : -1;
-                }
-                else if (Mathf.Abs(shiftInput.x) > 0.01f)
-                {
-                    direction = shiftInput.x >= 0 ? 1 : -1;
-                }
-
-                Debug.Log($"[PlayerInteractor] Shift released, direction={direction}, input=({shiftInput.x},{shiftInput.y})");
-                shiftTarget.Shift(direction);
-
-                // Disengage
-                shiftEngaged?.Disengage(gameObject);
-
-                // Play sound if needed
-                try
-                {
-                    AudioManager.Instance.PlayOneShot(shiftEvent, shiftObject.transform.position);
-                }
-                catch(Exception e)
-                {
-                    Debug.LogWarning($"[PlayerInteractor] Error playing shift SFX: {e.Message}");
-                }
-            }
-
-            // Clean up
-            isShiftHeld = false;
-            shiftEngaged = null;
-            shiftTarget = null;
-            shiftInput = Vector2.zero;
-
-            // Unlock player movement
-            if (playerController != null)
-            {
-                playerController.SetMovementLocked(false);
-            }
-        }
-    }
-
-    public void OnMove(InputValue value)
-    {
-        // When shift is held, capture WASD as shift input instead of movement
-        if (isShiftHeld)
-        {
-            shiftInput = value.Get<Vector2>();
-        }
-    }
-
-    private void TryPickupObject()
-    {
-        Debug.Log($"TryPickupObject - HoveredPickupable: {(HoveredPickupable != null ? "found" : "null")}");
-
-        IPickupable pickupable = HoveredPickupable;
-
-        if (pickupable != null)
-        {
-            carriedObject = (pickupable as MonoBehaviour).gameObject;
-            carriedPickupable = pickupable;
-
-            Debug.Log($"Picking up {carriedObject.name}");
-
-            // Parent to hold point
-            carriedObject.transform.SetParent(pickupHoldPoint);
-            carriedObject.transform.localPosition = Vector3.zero;
-            carriedObject.transform.localRotation = Quaternion.identity;
-
-            pickupable.OnPickup(gameObject);
-        }
-        else
-        {
-            Debug.Log("No pickupable object found to pick up");
-        }
-    }
-
-    private void DropObject()
-    {
-        if (carriedObject == null) return;
 
         // Calculate drop position in front of player in local space
         Vector3 dropPosition = transform.position + transform.forward * dropDistance;
@@ -292,7 +124,124 @@ public class PlayerInteractor : Interactor
         // Notify the object
         carriedPickupable?.OnDrop(gameObject);
 
-        carriedObject = null;
-        carriedPickupable = null;
+        ClearCarriedObjectInternal();
+    }
+
+    public void OnInteract(InputValue value)
+    {
+        if (!value.isPressed)
+        {
+            return;
+        }
+
+        if(!string.IsNullOrEmpty(currentOption.Prompt))
+        {
+            interactionUI?.Show(currentOption.Prompt);
+        }
+
+        currentOption.Execute?.Invoke();
+    }
+
+    public void OnShift(InputValue value)
+    {
+        if (value.isPressed)
+        {
+            TryBeginShift();
+        }
+        else
+        {
+            EndShift();
+        }
+    }
+
+    private void TryBeginShift()
+    {
+        if (isShiftHeld)
+            return;
+
+        // Use the current resolved option
+        if (currentOption.Type != InteractionType.Shift)
+            return;
+
+        if (currentOption.Source == null)
+            return;
+
+        activeShiftTarget = currentOption.Source.GetComponent<IShiftable>();
+        activeShiftEngageable = currentOption.Source.GetComponent<IEngageable>();
+
+        if (activeShiftTarget == null)
+            return;
+
+        isShiftHeld = true;
+
+        activeShiftEngageable?.Engage(gameObject);
+        playerController?.SetMovementLocked(true);
+    }
+
+    private void EndShift()
+    {
+        if (!isShiftHeld)
+            return;
+
+        int direction = CalculateShiftDirection();
+        activeShiftTarget.Shift(direction);
+        PlayShiftSound();
+
+        activeShiftEngageable?.Disengage(gameObject);
+
+        isShiftHeld = false;
+        activeShiftTarget = null;
+        activeShiftEngageable = null;
+        shiftInput = Vector2.zero;
+
+        playerController?.SetMovementLocked(false);
+    }
+
+    private int CalculateShiftDirection()
+    {
+        // Determine shift direction from accumulated WASD input
+        // W/D = forward (+1), S/A = backward (-1), no input = forward (+1) default
+        int direction = 1;
+        if (Mathf.Abs(shiftInput.y) > Mathf.Abs(shiftInput.x))
+        {
+            direction = shiftInput.y >= 0 ? 1 : -1;
+        }
+        else if (Mathf.Abs(shiftInput.x) > 0.01f)
+        {
+            direction = shiftInput.x >= 0 ? 1 : -1;
+        }
+        return direction;
+    }
+
+    private void PlayShiftSound()
+    {
+        MonoBehaviour mb = activeShiftTarget as MonoBehaviour;
+        if(mb != null)
+            return;
+
+        Vector3 pos = mb.gameObject.transform.position;
+        // Play sound if needed
+        try
+        {
+            AudioManager.Instance.PlayOneShot(shiftEvent, pos);
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"[PlayerInteractor] Error playing shift SFX: {e.Message}");
+        }
+    }
+
+    public void OnMove(InputValue value)
+    {
+        // When shift is held, capture WASD as shift input instead of movement
+        if (isShiftHeld)
+        {
+            shiftInput = value.Get<Vector2>();
+        }
+    }
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position, interactionRadius);
     }
 }

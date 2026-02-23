@@ -1,102 +1,93 @@
+using System.Collections.Generic;
 using UnityEngine;
 
-public class Interactor : MonoBehaviour
+public abstract class Interactor : MonoBehaviour
 {
 
     [SerializeField] private float range = 4f;
     [SerializeField] private LayerMask interactableMask;
     [SerializeField] private Transform origin;
 
-    public IEngageable Engaged;
-    public IInteractable HoveredInteractable;
-    public IEngageable HoveredEngagable;
-    public IFocusable Focused;
-    public IPickupable HoveredPickupable;
+    protected readonly List<IInteractionCandidate> nearby = new();
+    protected InteractionOption currentOption;
+    protected IFocusable currentFocus;
+
+    private readonly List<InteractionOption> _options = new();
+    private readonly Dictionary<InteractionInputType, InteractionOption> _bestByInput
+    = new Dictionary<InteractionInputType, InteractionOption>();
+
+    protected abstract PlayerInteractionContext BuildContext();
 
     public virtual void Update()
     {
-        Cast();
+        ResolveInteraction();
     }
 
-    protected void Cast()
+    // Find the most relevant interaction around us.
+    private void ResolveInteraction()
     {
-        IInteractable newHoveredInteractable = null;
-        IEngageable newHoveredEngagable = null;
-        IFocusable newFocused = null;
-        IPickupable newHoveredPickupable = null;
+        var context = BuildContext();
 
+        _options.Clear();
 
-        if (Physics.Raycast(origin.position, origin.forward, out var hit, range, interactableMask, QueryTriggerInteraction.Collide))
+        foreach (var candidate in nearby)
         {
-            newHoveredInteractable = hit.collider.GetComponentInParent<IInteractable>();
-            newHoveredEngagable = hit.collider.GetComponentInParent<IEngageable>();
-            newFocused = hit.collider.GetComponentInParent<IFocusable>();
-            newHoveredPickupable = hit.collider.GetComponentInParent<IPickupable>();
-            
-            // Filter out pickupables that can't currently be picked up
-            if (newHoveredPickupable != null && !newHoveredPickupable.CanPickup())
+            candidate.CollectOptions(context, _options);
+        }
+
+        foreach (var option in _options)
+        {
+            if (!option.IsValid)
+                continue;
+
+            float score = CalculateScore(option);
+            InteractionOption bestOption;
+            if (_bestByInput.TryGetValue(option.InputType, out var currentBest))
             {
-                newHoveredPickupable = null;
+                if (score > currentBest.Score)
+                {
+                    _bestByInput[option.InputType] = option;
+                }
             }
-        }
-        else
-        {
-            // Debug: do an unfiltered raycast to see if we're hitting something on the wrong layer
-            if (Physics.Raycast(origin.position, origin.forward, out var debugHit, range))
+            else
             {
-                //Debug.Log($"[Interactor] Ray hit '{debugHit.collider.gameObject.name}' on layer {debugHit.collider.gameObject.layer} ({LayerMask.LayerToName(debugHit.collider.gameObject.layer)}), but NOT on interactableMask. Check the layer!");
+                _bestByInput.Add(option.InputType, option);
             }
-        }
 
-        if (newFocused != Focused)
-        {
-            Focused?.Unfocus(gameObject);
-            newFocused?.Focus(gameObject);
-            Focused = newFocused;
-        }
-
-        HoveredInteractable = newHoveredInteractable;
-        HoveredEngagable = newHoveredEngagable;
-        HoveredPickupable = newHoveredPickupable;
+            ApplyFocus(best);
+        currentOption = best;
     }
 
-
-    public void Interact()
+    // Shift focus to new best InteractionOption
+    private void ApplyFocus(InteractionOption interaction)
     {
-        // Make sure we have the latest raycast data
-        Cast();
-        
-        Debug.Log($"[Interactor] Interact() called. Engaged={Engaged != null}, HoveredEngagable={HoveredEngagable != null}, HoveredInteractable={HoveredInteractable != null}");
-        
-        if (Engaged != null)
+        IFocusable newFocus = null;
+        if (interaction.Source)
+            newFocus = interaction.Source.gameObject.GetComponentInParent<IFocusable>();
+
+        if (newFocus == currentFocus)
         {
-            Debug.Log("[Interactor] Disengaging");
-            Engaged.Disengage(gameObject);
-            Engaged = null;
             return;
         }
 
-        if (HoveredEngagable != null)
-        {
-            Debug.Log("[Interactor] Engaging HoveredEngagable");
-            HoveredEngagable.Engage(gameObject);
-            Engaged = HoveredEngagable;
-        }
+        currentFocus?.Unfocus(gameObject);
+        newFocus?.Focus(gameObject);
 
-        Debug.Log($"[Interactor] About to call HoveredInteractable.Interact, HoveredInteractable is null: {HoveredInteractable == null}");
-        if (HoveredInteractable != null)
-        {
-            Debug.Log($"[Interactor] HoveredInteractable type: {HoveredInteractable.GetType().Name}");
-        }
-        HoveredInteractable?.Interact(gameObject);
-        Debug.Log("[Interactor] After calling HoveredInteractable.Interact");
+        currentFocus = newFocus;
     }
 
-    public void Scroll(int direction)
+    private float CalculateScore(InteractionOption option)
     {
-        if (Engaged is IShiftable shiftable)
-        {
-            shiftable.Shift(direction);
-        }
+        int basePriority = InteractionPriority.Get(option.Type);
+
+        // Distance weighting
+        var mb = option.Source;
+        float distance = Vector3.Distance(transform.position, mb.transform.position);
+
+        // Angle weighting
+        Vector3 dir = (mb.transform.position - transform.position).normalized;
+        float dot = Vector3.Dot(transform.forward, dir);
+
+        return basePriority * 1000f + dot * 10f - distance;
     }
 }
