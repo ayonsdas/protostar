@@ -3,18 +3,15 @@ using FMOD.Studio;
 using FMODUnity;
 using UnityEngine;
 
+public enum AudioBus
+{
+    Master,
+    Music,
+    SFX
+}
+
 public class AudioManager : MonoBehaviour
 {
-    [SerializeField] private EventReference musicEventReference;
-    [SerializeField] private EventReference ambienceEventReference;
-    [Range(0, 1)]
-    public float masterVolume = 0.5f;
-    [Range(0, 1)]
-    public float musicVolume = 1;
-
-    [Range(0, 1)]
-    public float sfxVolume = 1;
-
     private Bus masterBus;
     private Bus musicBus;
     private Bus sfxBus;
@@ -40,19 +37,36 @@ public class AudioManager : MonoBehaviour
         masterBus = RuntimeManager.GetBus("bus:/");
         musicBus = RuntimeManager.GetBus("bus:/Music Bus");
         sfxBus = RuntimeManager.GetBus("bus:/SFX Bus");
+
+        InitializeBusVolumes();
     }
 
-    private void Start()
+    private void InitializeBusVolumes()
     {
-        InitializeMusic(musicEventReference);
-        InitializeAmbience(ambienceEventReference);
+        float masterVolume = PlayerPrefs.GetFloat(PlayerPrefKeys.MASTER_VOLUME_KEY, 1f);
+        SetBusVolume(AudioBus.Master, masterVolume);
+
+        float musicVolume = PlayerPrefs.GetFloat(PlayerPrefKeys.MUSIC_VOLUME_KEY, 1f);
+        SetBusVolume(AudioBus.Music, musicVolume);
+
+        float sfxVolume = PlayerPrefs.GetFloat(PlayerPrefKeys.SFX_VOLUME_KEY, 1f);
+        SetBusVolume(AudioBus.SFX, sfxVolume);
     }
 
-    private void Update()
+    public void SetBusVolume(AudioBus bus, float volume)
     {
-        masterBus.setVolume(masterVolume);
-        musicBus.setVolume(musicVolume);
-        sfxBus.setVolume(sfxVolume);
+        switch (bus)
+        {
+            case AudioBus.Master:
+                masterBus.setVolume(volume);
+                break;
+            case AudioBus.Music:
+                musicBus.setVolume(volume);
+                break;
+            case AudioBus.SFX:
+                sfxBus.setVolume(volume);
+                break;
+        }
     }
 
     public void PlayOneShot(EventReference eventReference, Vector3 position)
@@ -75,7 +89,7 @@ public class AudioManager : MonoBehaviour
         return eventEmitter;
     }
 
-    private void InitializeMusic(EventReference eventReference)
+    public void PlayMusic(EventReference eventReference)
     {
         musicEventInstance = CreateEventInstance(eventReference);
         musicEventInstance.start();
@@ -99,7 +113,7 @@ public class AudioManager : MonoBehaviour
         Debug.Log($"[AudioManager] Set music parameter {parameterName} to {value}");
     }
 
-    private void InitializeAmbience(EventReference eventReference)
+    public void PlayAmbience(EventReference eventReference)
     {
         ambienceEventInstance = CreateEventInstance(eventReference);
         ambienceEventInstance.start();
@@ -119,14 +133,20 @@ public class AudioManager : MonoBehaviour
 
     private void Cleanup()
     {
-        foreach (EventInstance eventInstance in eventInstances)
+        if (eventInstances != null)
         {
-            eventInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
-            eventInstance.release();
+            foreach (EventInstance eventInstance in eventInstances)
+            {
+                eventInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+                eventInstance.release();
+            }
         }
-        foreach (StudioEventEmitter emitter in eventEmitters)
+        if (eventEmitters != null)
         {
-            emitter.Stop();
+            foreach (StudioEventEmitter emitter in eventEmitters)
+            {
+                emitter.Stop();
+            }
         }
     }
 

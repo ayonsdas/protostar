@@ -9,15 +9,15 @@ public class CameraFollow : MonoBehaviour
     [Header("Camera Settings")]
     public Vector3 offset = new Vector3(0f, 5f, -10f); // Position behind and above player
     public float smoothTime = 0.05f; // How smoothly camera follows
-    
+
     [Header("Camera Collision")]
     public LayerMask collisionLayers; // Layers to check for obstacles
     public float collisionRadius = 0.3f; // Radius of the camera sphere for collision
     public float collisionSmoothTime = 0.1f; // How smoothly camera adjusts to obstacles
     public float minDistance = 0.5f; // Minimum distance camera can be from player
-    
+
     private Vector3 velocity = Vector3.zero; // Used by SmoothDamp
-    
+
     [Header("Camera Rotation Settings")]
     public float rotationSpeed = 50f;
     public float returnDelay = 3f; // Seconds before returning to default
@@ -52,9 +52,9 @@ public class CameraFollow : MonoBehaviour
             {
                 targetRb.interpolation = RigidbodyInterpolation.Interpolate;
             }
-            
+
             gravityBody = target.GetComponent<CustomGravityBody>();
-            
+
             // Initialize camera direction from the local offset converted to world space
             Vector3 worldOffset = target.TransformDirection(offset);
             cameraDir = worldOffset.normalized;
@@ -107,16 +107,18 @@ public class CameraFollow : MonoBehaviour
         if (lookInput.magnitude > 0.01f)
         {
             // Horizontal: rotate around gravity up axis
-            Quaternion yawRot = Quaternion.AngleAxis(lookInput.x * rotationSpeed * Time.deltaTime, gravityUp);
+            float mouseSensitivity = SettingsManager.Instance.MouseSensitivity;
+            Debug.Log($"[CameraFollow] moving camera with sensetivity {mouseSensitivity}");
+            Quaternion yawRot = Quaternion.AngleAxis(lookInput.x * mouseSensitivity * rotationSpeed * Time.deltaTime, gravityUp);
             cameraDir = (yawRot * cameraDir).normalized;
-            
+
             // Vertical: rotate around the right axis (perpendicular to gravity up and camera dir)
             Vector3 right = Vector3.Cross(gravityUp, cameraDir).normalized;
             if (right.sqrMagnitude > 0.001f)
             {
-                Quaternion pitchRot = Quaternion.AngleAxis(lookInput.y * rotationSpeed * Time.deltaTime, right);
+                Quaternion pitchRot = Quaternion.AngleAxis(lookInput.y * mouseSensitivity * rotationSpeed * Time.deltaTime, right);
                 Vector3 newDir = (pitchRot * cameraDir).normalized;
-                
+
                 // Only accept if within pitch limits
                 float angle = Vector3.Angle(newDir, gravityUp);
                 float minAngleFromUp = 90f - maxPitch; // e.g. 15° from straight up
@@ -126,7 +128,7 @@ public class CameraFollow : MonoBehaviour
                     cameraDir = newDir;
                 }
             }
-            
+
             // Reset both timers when camera is moved
             timeSinceLastInput = 0f;
             timeSinceLastMovement = 0f;
@@ -135,7 +137,7 @@ public class CameraFollow : MonoBehaviour
         else
         {
             timeSinceLastInput += Time.deltaTime;
-            
+
             // Start returning ONLY after 3 seconds of BOTH no input AND no player movement
             if (timeSinceLastInput >= returnDelay && timeSinceLastMovement >= returnDelay)
             {
@@ -157,10 +159,10 @@ public class CameraFollow : MonoBehaviour
             {
                 // Target direction: behind player in world space
                 Vector3 targetDir = target.TransformDirection(offset).normalized;
-                
+
                 // Smooth interpolation
                 cameraDir = Vector3.Slerp(cameraDir, targetDir, returnSpeed * Time.deltaTime);
-                
+
                 // Stop returning when close enough
                 if (Vector3.Angle(cameraDir, targetDir) < 1f)
                 {
@@ -173,7 +175,7 @@ public class CameraFollow : MonoBehaviour
         // --- Position camera ---
         float desiredDistance = cameraDistance;
         float targetDistance = desiredDistance;
-        
+
         // Check for obstacles between camera and player
         if (collisionLayers.value != 0)
         {
@@ -183,10 +185,10 @@ public class CameraFollow : MonoBehaviour
                 targetDistance = Mathf.Max(hit.distance - collisionRadius, minDistance);
             }
         }
-        
+
         // Smoothly adjust distance
         currentDistance = Mathf.SmoothDamp(currentDistance, targetDistance, ref distanceVelocity, collisionSmoothTime);
-        
+
         // Apply adjusted distance
         Vector3 finalPosition = target.position + cameraDir * currentDistance;
 
@@ -210,7 +212,7 @@ public class CameraFollow : MonoBehaviour
         float angle = Vector3.Angle(dir, up);
         float minAngleFromUp = 90f - maxPitch;
         float maxAngleFromUp = 90f - minPitch;
-        
+
         if (angle < minAngleFromUp)
         {
             // Too close to straight up — push away from up

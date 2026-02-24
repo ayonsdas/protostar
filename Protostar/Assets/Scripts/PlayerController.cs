@@ -9,10 +9,6 @@ public class PlayerController : MonoBehaviour
     [Header("Movement Settings")]
     public float moveSpeed = 5f;
     public float turnSpeed = 100f;
-    
-    [Header("Mouse Look Settings")]
-    public float mouseSensitivity = 2f;
-    public bool requireMouseHold = true; // If true, must hold mouse button to look
 
     [Header("Jump Settings")]
     public float jumpForce = 5f;
@@ -91,7 +87,7 @@ public class PlayerController : MonoBehaviour
     {
         footstepEventInstance = AudioManager.Instance.CreateEventInstance(footstepEventReference);
         footstepStartTime = Time.time;
-        
+
         // Get reference to main camera
         if (Camera.main != null)
         {
@@ -103,11 +99,11 @@ public class PlayerController : MonoBehaviour
     {
         // Get gravity direction for proper orientation
         Vector3 gravityDown = gravityBody.GetGravityDirection();
-        
+
         // Use OverlapSphere to check for ground, excluding player's own collider
         Collider[] colliders = Physics.OverlapSphere(groundCheck.position, groundCheckRadius, groundLayer, QueryTriggerInteraction.Ignore);
         isGrounded = false;
-        
+
         // Check if any of the overlapping colliders are NOT the player's own collider
         Collider playerCollider = GetComponent<Collider>();
         foreach (Collider col in colliders)
@@ -204,7 +200,7 @@ public class PlayerController : MonoBehaviour
         {
             cameraTransform = Camera.main.transform;
         }
-        
+
         // Calculate movement direction relative to camera or gravity
         Vector3 moveDirection = Vector3.zero;
         if (cameraTransform != null && moveInput.magnitude > 0.01f)
@@ -232,18 +228,18 @@ public class PlayerController : MonoBehaviour
                 rb.MoveRotation(newRotation);
             }
         }
-        
+
         // Calculate desired velocity
         Vector3 desiredVelocity = moveDirection * moveSpeed;
-        
+
         // Use linearVelocity for proper collision detection
         Vector3 currentVelocity = rb.linearVelocity;
         Vector3 gravityDirection = gravityBody.GetGravityDirection();
-        
+
         // Keep the vertical (gravity-aligned) component of velocity
         float verticalComponent = Vector3.Dot(currentVelocity, gravityDirection);
         Vector3 verticalVelocity = gravityDirection * verticalComponent;
-        
+
         // Apply new velocity (horizontal movement + vertical velocity from gravity/jump)
         rb.linearVelocity = desiredVelocity + verticalVelocity;
 

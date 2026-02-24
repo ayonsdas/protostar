@@ -39,7 +39,14 @@ public class StartViewPresenter : MonoBehaviour, IMenuView
 
     private void OnEnable()
     {
-        MenuManager.Instance.RegisterView(this);
+        if (MenuManager.Instance)
+        {
+            MenuManager.Instance.RegisterView(this);
+        }
+        else
+        {
+            Debug.LogWarning("[StartViewPresenter] cannot find MenuManger to register with");
+        }
     }
 
     private void OnDisable()
@@ -79,7 +86,7 @@ public class StartViewPresenter : MonoBehaviour, IMenuView
     private void SetControllerMode()
     {
         // If already in controller mode, dont need to switch
-        if(root.ClassListContains(CONTROLLER_MODE_CLASS)) return;
+        if (root.ClassListContains(CONTROLLER_MODE_CLASS)) return;
 
         //Debug.Log("Set to controller mode");
         root.RemoveFromClassList(MOUSE_MODE_CLASS);
