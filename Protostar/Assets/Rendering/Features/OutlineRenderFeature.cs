@@ -8,39 +8,41 @@ using UnityEngine.Rendering.Universal;
 public class OutlineRenderFeatureSettings
 {
     [Header("Shaders")]
-    public Shader NormalsShader;
+    public Shader MaskShader;
     public Shader OutlineShader;
+    public Shader DilateShader;
+    public Shader BlurShader;
+    public Shader CompositeShader;
     public RenderingLayerMask OutlineLayer;
     [Header("Outline Settings")]
     public Color OutlineColor;
-    [Range(0f, 1f)]
-    public float DepthThreshold = 0.5f;
-
-    [Range(0f, 1f)]
-    public float NormalThreshold = 0.5f;
-
-    [Range(0f, 2f)]
-    public float OutlineScale = 1f;
-    [Range(0f, 2f)]
-    public float Multiplier = 1f;
+    [Range(0f, 5f)]
+    public float EdgeRadius = 2f;
+    [Range(0f, 5f)]
+    public float DilateRadius = 2f;
+    [Range(0f, 5f)]
+    public float BlurRadius = 2f;
 }
 
 public class OutlineRenderFeature : ScriptableRendererFeature
 {
     [SerializeField] private RenderPassEvent _renderPassEvent = RenderPassEvent.AfterRenderingOpaques;
     [SerializeField] private OutlineRenderFeatureSettings _settings = new OutlineRenderFeatureSettings();
-    private MaskedNormalsRenderPass _maskedNormalsRenderPass;
+    private MaskRenderPass _maskRenderPass;
     private OutlineRenderPass _outlineRenderPass;
-    private Material _normalsMaterial;
+    private Material _maskMaterial;
     private Material _outlineMaterial;
+    private Material _dilateMaterial;
+    private Material _blurMaterial;
+    private Material _compositeMaterial;
 
     public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
     {
         // Create outline and normals materials from shaders if not initialized
-        if (_normalsMaterial == null && _settings.NormalsShader != null)
+        if (_maskMaterial == null && _settings.MaskShader != null)
         {
-            _normalsMaterial = CoreUtils.CreateEngineMaterial(_settings.NormalsShader);
-            _maskedNormalsRenderPass?.SetMaterial(_normalsMaterial);
+            _maskMaterial = CoreUtils.CreateEngineMaterial(_settings.MaskShader);
+            _maskRenderPass?.SetMaterial(_maskMaterial);
         }
 
         if (_outlineMaterial == null && _settings.OutlineShader != null)
@@ -49,26 +51,55 @@ public class OutlineRenderFeature : ScriptableRendererFeature
             _outlineRenderPass?.SetOutlineMaterial(_outlineMaterial);
         }
 
+        if (_dilateMaterial == null && _settings.DilateShader != null)
+        {
+            _dilateMaterial = CoreUtils.CreateEngineMaterial(_settings.DilateShader);
+            _outlineRenderPass?.SetDilateMaterial(_dilateMaterial);
+        }
+
+        if (_blurMaterial == null && _settings.BlurShader != null)
+        {
+            _blurMaterial = CoreUtils.CreateEngineMaterial(_settings.BlurShader);
+            _outlineRenderPass?.SetBlurMaterial(_blurMaterial);
+        }
+
+        if (_compositeMaterial == null && _settings.CompositeShader != null)
+        {
+            _compositeMaterial = CoreUtils.CreateEngineMaterial(_settings.CompositeShader);
+            _outlineRenderPass?.SetCompositeMaterial(_compositeMaterial);
+        }
+
         // Update shader settings from serialize properties
         if (_outlineMaterial != null)
         {
-            _outlineMaterial.SetColor("_OutlineColor", _settings.OutlineColor);
-            _outlineMaterial.SetFloat("_OutlineScale", _settings.OutlineScale);
-            _outlineMaterial.SetFloat("_DepthThreshold", _settings.DepthThreshold);
-            _outlineMaterial.SetFloat("_NormalThreshold", _settings.NormalThreshold);
-            _outlineMaterial.SetFloat("_RobertsCrossMultiplier", _settings.Multiplier);
+            _outlineMaterial.SetFloat("_EdgeRadius", _settings.EdgeRadius);
         }
+        if (_outlineMaterial != null)
+        {
+            _outlineMaterial.SetFloat("_DilateRadius", _settings.DilateRadius);
+        }
+        if (_blurMaterial != null)
+        {
+            _blurMaterial.SetFloat("_BlurRadius", _settings.BlurRadius);
+        }
+        if (_compositeMaterial != null)
+        {
+            _compositeMaterial.SetColor("_OutlineColor", _settings.OutlineColor);
+        }
+        
 
         // Set main passes
-        renderer.EnqueuePass(_maskedNormalsRenderPass);
+        renderer.EnqueuePass(_maskRenderPass);
+
+        _outlineRenderPass.ConfigureInput(ScriptableRenderPassInput.Depth | ScriptableRenderPassInput.Normal);
         renderer.EnqueuePass(_outlineRenderPass);
     }
 
     public override void Create()
     {
 
-        _maskedNormalsRenderPass = new MaskedNormalsRenderPass(_settings.OutlineLayer);
-        _maskedNormalsRenderPass.renderPassEvent = _renderPassEvent;
+        _maskRenderPass = new MaskRenderPass(_settings.OutlineLayer);
+        _maskRenderPass.renderPassEvent = _renderPassEvent;
 
         _outlineRenderPass = new OutlineRenderPass();
         _outlineRenderPass.renderPassEvent = _renderPassEvent;
@@ -76,10 +107,16 @@ public class OutlineRenderFeature : ScriptableRendererFeature
 
     protected override void Dispose(bool disposing)
     {
-        CoreUtils.Destroy(_normalsMaterial);
+        CoreUtils.Destroy(_maskMaterial);
         CoreUtils.Destroy(_outlineMaterial);
+        CoreUtils.Destroy(_dilateMaterial);
+        CoreUtils.Destroy(_blurMaterial);
+        CoreUtils.Destroy(_compositeMaterial);
 
-        _normalsMaterial = null;
+        _maskMaterial = null;
         _outlineMaterial = null;
+        _dilateMaterial = null;
+        _blurMaterial = null;
+        _compositeMaterial = null;
     }
 }

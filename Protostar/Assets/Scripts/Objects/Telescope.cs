@@ -1,8 +1,9 @@
 using FMODUnity;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Telescope : MonoBehaviour, IInteractable
+public class Telescope : MonoBehaviour, IInteractionCandidate, IEngageable
 {
     [Header("Telescope Settings")]
     [SerializeField] private Camera telescopeCamera;
@@ -30,6 +31,7 @@ public class Telescope : MonoBehaviour, IInteractable
     [SerializeField] private EventReference interactEventReference;
 
     private bool isActive = false;
+    private bool isCompleted = false;
     private Camera playerCamera;
     private CameraFollow cameraFollow;
     private PlayerController playerController;
@@ -37,6 +39,15 @@ public class Telescope : MonoBehaviour, IInteractable
     private InputAction lookAction;
     private float currentHorizontalAngle = 0f;
     private float currentVerticalAngle = 0f;
+
+    private bool IsUnlocked => requiredPuzzle == null || requiredPuzzle.GetState() != 0;
+    private bool IsFinished => isCompleted && !isActive;
+    private bool CanStartEngage => !isCompleted && IsUnlocked;
+    private bool CanEndEngage => isActive;
+    private bool CanChangeEngage => CanStartEngage || CanEndEngage;
+    private const string LOCKED_INSPECT_MESSAGE = "A vast voidlike expanse greets you. You can't see anything through the telescope.";
+    private const string COMPLETED_INSPECT_MESSAGE = "You recall growing and viewing this crafted universe before, and the click of the lock it opened";
+
 
     void Start()
     {
@@ -71,6 +82,7 @@ public class Telescope : MonoBehaviour, IInteractable
             lightOffset = cameraRoot.InverseTransformPoint(telescopeLight.transform.position);
             lightLocalRotation = Quaternion.Inverse(cameraRoot.rotation) * telescopeLight.transform.rotation;
         }
+
     }
 
     void Update()
@@ -111,6 +123,8 @@ public class Telescope : MonoBehaviour, IInteractable
         if (alignment >= alignmentThreshold)
         {
             // Pointing at target - turn light on and make it red
+            // This will stop player from interacting after completing puzzle
+            isCompleted = true;
             telescopeLight.enabled = true;
             telescopeLight.color = targetColor;
             Debug.Log("TARGET ALIGNED - Light ON");
@@ -183,15 +197,8 @@ public class Telescope : MonoBehaviour, IInteractable
         }
     }
 
-    public void Interact(GameObject interactor)
+    public void Engage(GameObject interactor)
     {
-        // Check if puzzle requirement is met
-        if (requiredPuzzle != null && requiredPuzzle.GetState() == 0)
-        {
-            Debug.Log("The telescope is locked. Complete the sapling puzzle first!");
-            return;
-        }
-
         if (!isActive)
         {
             // Enter telescope view
@@ -205,9 +212,12 @@ public class Telescope : MonoBehaviour, IInteractable
                 Debug.LogWarning($"[Telescope] Failed to play sound: {e.Message}");
             }
         }
-        else
+    }
+
+    public void Disengage(GameObject interactor)
+    {
+        if (isActive)
         {
-            // Exit telescope view
             ExitTelescopeView();
         }
     }
@@ -237,7 +247,7 @@ public class Telescope : MonoBehaviour, IInteractable
         }
 
         // Get player input for mouse look
-        playerInput = interactor.GetComponent<PlayerInput>();
+        playerInput = InputModeManager.Instance.PlayerInput;
         if (playerInput != null)
         {
             lookAction = playerInput.actions["Look"];
@@ -289,5 +299,41 @@ public class Telescope : MonoBehaviour, IInteractable
         playerInput = null;
 
         Debug.Log("Exited telescope view.");
+    }
+
+    public void CollectOptions(PlayerInteractionContext context, List<InteractionOption> options)
+    {
+        // If able to start interaction or active, so player doesn't get stuck in telescope
+        if (CanChangeEngage)
+        {
+            options.Add(InteractionOptionBuilder.Create(
+                InteractionType.Engage,
+                this,
+                onPressedOverride: interactor =>
+                {
+                    interactor.ToggleEngage(this, lockMovement: false);
+                }
+            ));
+        }
+
+        // If not unlocked from finishing sapling puzzle, tell player
+        if (!IsUnlocked)
+        {
+            options.Add(InteractionOptionBuilder.Create(
+                InteractionType.Inspect,
+                this,
+                LOCKED_INSPECT_MESSAGE
+            ));
+        }
+
+        // If completed, then notify player, and direct to cabinet
+        if (IsFinished)
+        {
+            options.Add(InteractionOptionBuilder.Create(
+                InteractionType.Inspect,
+                this,
+                COMPLETED_INSPECT_MESSAGE
+            ));
+        }
     }
 }

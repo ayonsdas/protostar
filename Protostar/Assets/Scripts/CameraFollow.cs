@@ -27,7 +27,6 @@ public class CameraFollow : MonoBehaviour
     public float minPitch = -30f;  // Minimum elevation angle (below horizontal)
     public float maxPitch = 75f;   // Maximum elevation angle (never directly above)
 
-    private PlayerInput playerInput;
     private InputAction lookAction;
     private InputAction mouseHoldAction;
     private CustomGravityBody gravityBody;
@@ -40,18 +39,13 @@ public class CameraFollow : MonoBehaviour
     private float currentDistance = 0f;
     private float distanceVelocity = 0f;
     private Vector3 lastPlayerPosition;
+    private Vector2 lookInput = Vector2.zero;
+    private bool isMouseHeld = false;
 
     void Start()
     {
         if (target != null)
         {
-            playerInput = target.GetComponent<PlayerInput>();
-            if (playerInput != null)
-            {
-                lookAction = playerInput.actions["Look"];
-                mouseHoldAction = playerInput.actions["MouseHold"];
-            }
-            
             // Enable interpolation on the player's Rigidbody to reduce jitter
             Rigidbody targetRb = target.GetComponent<Rigidbody>();
             if (targetRb != null)
@@ -71,27 +65,31 @@ public class CameraFollow : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        if (InputModeManager.Instance == null || InputModeManager.Instance.PlayerInput == null)
+        {
+            Debug.LogWarning($"[PlayerController] Cannot find PlayerInput {InputModeManager.Instance}");
+        }
+        else
+        {
+            PlayerInput playerInput = InputModeManager.Instance.PlayerInput;
+            playerInput.actions["Look"].performed += OnLook;
+            playerInput.actions["Look"].canceled += OnLook;
+            playerInput.actions["MouseHold"].performed += OnMouseHold;
+            playerInput.actions["MouseHold"].canceled += OnMouseHold;
+        }
+    }
+
     void LateUpdate()
     {
         if (target == null)
             return;
 
-        Vector3 gravityUp = (gravityBody != null) ? gravityBody.GetUpDirection() : Vector3.up;
-
-        // --- Gravity change detection ---
-        // When gravity rotates, rotate the camera direction by the same amount
-        // so the camera stays in the same relative position from the player's POV
-        float gravityAngleDiff = Vector3.Angle(lastGravityUp, gravityUp);
-        if (gravityAngleDiff > 0.01f)
-        {
-            Quaternion gravityRotation = Quaternion.FromToRotation(lastGravityUp, gravityUp);
-            cameraDir = (gravityRotation * cameraDir).normalized;
-            
-            // Clamp pitch after gravity rotation in case it ended up out of bounds
-            ClampPitch(ref cameraDir, gravityUp);
-            
-            lastGravityUp = gravityUp;
-        }
+        // Camera no longer rotates to match gravity changes
+        Vector3 gravityUp = Vector3.up; // Always use world up for camera orientation
+        // Do not rotate cameraDir when gravity changes
+        // lastGravityUp = gravityUp; // Not needed
 
         // Check if player has moved
         bool playerMoved = Vector3.Distance(target.position, lastPlayerPosition) > 0.01f;
@@ -103,20 +101,6 @@ public class CameraFollow : MonoBehaviour
         else
         {
             timeSinceLastMovement += Time.deltaTime;
-        }
-
-        // Get camera rotation input
-        Vector2 lookInput = Vector2.zero;
-        bool isMouseHeld = false;
-        
-        if (lookAction != null)
-        {
-            lookInput = lookAction.ReadValue<Vector2>();
-        }
-        
-        if (mouseHoldAction != null)
-        {
-            isMouseHeld = mouseHoldAction.ReadValue<float>() > 0.5f;
         }
 
         // Update camera direction when player is actively moving the mouse (no RMB requirement)
@@ -209,11 +193,11 @@ public class CameraFollow : MonoBehaviour
         // Smoothly move camera
         transform.position = Vector3.SmoothDamp(transform.position, finalPosition, ref velocity, smoothTime);
 
-        // Camera looks at player, using gravity up for correct orientation
+        // Camera looks at player, using world up for orientation
         Vector3 directionToTarget = target.position - transform.position;
         if (directionToTarget.sqrMagnitude > 0.01f)
         {
-            Quaternion lookRotation = Quaternion.LookRotation(directionToTarget, gravityUp);
+            Quaternion lookRotation = Quaternion.LookRotation(directionToTarget, Vector3.up);
             transform.rotation = lookRotation;
         }
     }
@@ -249,5 +233,15 @@ public class CameraFollow : MonoBehaviour
             dir = Quaternion.AngleAxis(maxAngleFromUp, right) * up;
             dir = dir.normalized;
         }
+    }
+
+    private void OnLook(InputAction.CallbackContext ctx)
+    {
+        lookInput = ctx.ReadValue<Vector2>();
+    }
+
+    private void OnMouseHold(InputAction.CallbackContext ctx)
+    {
+        isMouseHeld = ctx.performed;
     }
 }

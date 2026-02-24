@@ -3,8 +3,11 @@
   <Project Path="FMODUnityResonanceEditor.csproj" />
   <Project Path="FMODUnityEditor.csproj" />
   <Project Path="FMODUnity.csproj" />
+  <Project Path="Protostar.UI.csproj" />
   <Project Path="Assembly-CSharp.csproj" />
   <Project Path="Assembly-CSharp-Editor.csproj" />
+  <Project Path="Protostar.Core.csproj" />
   <Project Path="NewAssembly.csproj" />
   <Project Path="FMODUnityResonance.csproj" />
+  <Project Path="Protostar.Globals.csproj" />
 </Solution>

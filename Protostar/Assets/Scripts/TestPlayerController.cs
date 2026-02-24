@@ -13,7 +13,6 @@ public class TestPlayerController : MonoBehaviour
     private float yInput;
     private float rotationX = 0f;
     
-    // We now track this based on the GameState, not a local toggle
     private bool isControlActive = false;
 
     public Camera playerCamera;
@@ -31,10 +30,9 @@ public class TestPlayerController : MonoBehaviour
         else
         {
             // No GameStateManager present - enable controls by default
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
             isControlActive = true;
         }
+        
     }
 
     void OnDestroy()
@@ -46,9 +44,9 @@ public class TestPlayerController : MonoBehaviour
     }
 
     // This function automatically runs whenever the State Manager changes states
-    private void OnGameStateChanged(GameStateManager.GameState newState)
+    private void OnGameStateChanged(GameState newState)
     {
-        if (newState == GameStateManager.GameState.InGame)
+        if (newState == GameState.InGame)
         {
             // Resume Game: Lock cursor and enable movement
             Cursor.lockState = CursorLockMode.Locked;
@@ -73,7 +71,7 @@ public class TestPlayerController : MonoBehaviour
         {
             if (GameStateManager.Instance != null)
             {
-                GameStateManager.Instance.SetState(GameStateManager.GameState.Paused);
+                GameStateManager.Instance.SetState(GameState.Paused);
                 return; // Stop processing this frame
             }
         }

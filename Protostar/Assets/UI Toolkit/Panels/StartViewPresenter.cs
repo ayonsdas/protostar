@@ -1,13 +1,8 @@
-using System;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.UIElements;
 
-public class StartViewPresenter : MonoBehaviour
+public class StartViewPresenter : MonoBehaviour, IMenuView
 {
-    public static StartViewPresenter Instance { get; private set; }
-
     private const string CONTROLLER_MODE_CLASS = "controller-mode";
     private const string MOUSE_MODE_CLASS = "mouse-mode";
 
@@ -22,43 +17,20 @@ public class StartViewPresenter : MonoBehaviour
 
     void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Debug.Log("Duplicate Start View, Destroying");
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
-        DontDestroyOnLoad(gameObject);
-    }
-
-    void Start()
-    {
         root = GetComponent<UIDocument>().rootVisualElement;
+
         settingsView = root.Q<TemplateContainer>("Settings");
         mainMenuView = root.Q<TemplateContainer>("MainMenu");
         creditsView = root.Q<TemplateContainer>("Credits");
         controlsView = root.Q<TemplateContainer>("Controls");
+    }
 
+    void Start()
+    {
         SetupMainMenu();
         SetupSettingsMenu();
         SetupCreditsMenu();
         SetupControlsMenu();
-
-        //var button = mainMenuView.Q<Button>();
-
-        //// Force initial focus after UI has fully initialized
-        //void OnGeometryChanged(GeometryChangedEvent evt)
-        //{
-        //    button.UnregisterCallback<GeometryChangedEvent>(OnGeometryChanged);
-
-        //    root.panel?.visualTree.Focus();
-        //    button.Focus();
-
-        //    //Debug.Log("Focused after layout: " + root.panel?.focusController?.focusedElement);
-        //}
-
-        //button.RegisterCallback<GeometryChangedEvent>(OnGeometryChanged);
 
         // Set initial modes
         OnGameStateChanged(GameStateManager.Instance.CurrentState);
@@ -67,17 +39,16 @@ public class StartViewPresenter : MonoBehaviour
 
     private void OnEnable()
     {
-        GameStateManager.Instance.OnStateChanged += OnGameStateChanged;
-        InputModeManager.Instance.InputModeChanged += OnInputModeChanged;
+        MenuManager.Instance.RegisterView(this);
     }
 
     private void OnDisable()
     {
-        GameStateManager.Instance.OnStateChanged -= OnGameStateChanged;
-        InputModeManager.Instance.InputModeChanged -= OnInputModeChanged;
+        if (MenuManager.Instance != null)
+            MenuManager.Instance.UnregisterView(this);
     }
 
-    private void OnInputModeChanged(InputMode inputMode)
+    public void OnInputModeChanged(InputMode inputMode)
     {
         switch (inputMode)
         {
@@ -89,6 +60,19 @@ public class StartViewPresenter : MonoBehaviour
                 SetControllerMode();
                 SetButtonFocus(GameStateManager.Instance.CurrentState);
                 break;
+        }
+    }
+    public void OnGameStateChanged(GameState newState)
+    {
+        mainMenuView.Display(newState == GameState.MainMenu);
+        settingsView.Display(newState == GameState.Settings ||
+                            newState == GameState.Paused);
+        creditsView.Display(newState == GameState.Credits);
+        controlsView.Display(newState == GameState.Controls);
+        root.Display(newState != GameState.InGame);
+        if (InputModeManager.Instance.CurrentInputMode == InputMode.Controller)
+        {
+            SetButtonFocus(newState);
         }
     }
 
@@ -115,9 +99,9 @@ public class StartViewPresenter : MonoBehaviour
     private void SetupMainMenu()
     {
         MainMenuPresenter menuPresenter = new MainMenuPresenter(mainMenuView);
-        menuPresenter.OpenSettings = () => GameStateManager.Instance.SetState(GameStateManager.GameState.Settings);
+        menuPresenter.OpenSettings = () => GameStateManager.Instance.SetState(GameState.Settings);
         menuPresenter.StartGame = () => GameStateManager.Instance.StartGame(gameSceneName);
-        menuPresenter.OpenCredits = () => GameStateManager.Instance.SetState(GameStateManager.GameState.Credits);
+        menuPresenter.OpenCredits = () => GameStateManager.Instance.SetState(GameState.Credits);
         menuPresenter.QuitGame = () => Application.Quit();
     }
 
@@ -132,7 +116,7 @@ public class StartViewPresenter : MonoBehaviour
         SettingsPresenter settingsPresenter = new SettingsPresenter(root.Q<TemplateContainer>("Settings"));
         settingsPresenter.BackAction = () => GameStateManager.Instance.RevertState();
         settingsPresenter.ReturnToMainMenuAction = () => GameStateManager.Instance.ReturnToMainMenu(mainMenuSceneName);
-        settingsPresenter.ControlsAction = () => GameStateManager.Instance.SetState(GameStateManager.GameState.Controls);
+        settingsPresenter.ControlsAction = () => GameStateManager.Instance.SetState(GameState.Controls);
     }
 
     private void SetupCreditsMenu()
@@ -141,37 +125,23 @@ public class StartViewPresenter : MonoBehaviour
         creditsPresenter.BackAction = () => GameStateManager.Instance.RevertState();
     }
 
-    private void OnGameStateChanged(GameStateManager.GameState newState)
-    {
-        mainMenuView.Display(newState == GameStateManager.GameState.MainMenu);
-        settingsView.Display(newState == GameStateManager.GameState.Settings || 
-                            newState == GameStateManager.GameState.Paused);
-        creditsView.Display(newState == GameStateManager.GameState.Credits);
-        controlsView.Display(newState == GameStateManager.GameState.Controls);
-        root.Display(newState != GameStateManager.GameState.InGame);
-        if(InputModeManager.Instance.CurrentInputMode == InputMode.Controller)
-        {
-            SetButtonFocus(newState);
-        }
-    }
-
-    private void SetButtonFocus(GameStateManager.GameState state)
+    private void SetButtonFocus(GameState state)
     {
 
         // Set initial focus for controller navigation
         switch (state)
         {
-            case GameStateManager.GameState.MainMenu:
+            case GameState.MainMenu:
                 mainMenuView.Q<Button>()?.Focus();
                 break;
-            case GameStateManager.GameState.Settings:
-            case GameStateManager.GameState.Paused:
+            case GameState.Settings:
+            case GameState.Paused:
                 settingsView.Q<Button>()?.Focus();
                 break;
-            case GameStateManager.GameState.Credits:
+            case GameState.Credits:
                 creditsView.Q<Button>()?.Focus();
                 break;
-            case GameStateManager.GameState.Controls:
+            case GameState.Controls:
                 controlsView.Q<Button>()?.Focus();
                 break;
         }

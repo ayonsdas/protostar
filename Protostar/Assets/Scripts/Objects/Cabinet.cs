@@ -1,4 +1,5 @@
 using FMODUnity;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -6,7 +7,7 @@ using UnityEngine.SceneManagement;
 /// Cabinet that opens when the telescope puzzle is completed
 /// Can be interacted with to end the demo
 /// </summary>
-public class Cabinet : MonoBehaviour, IInteractable
+public class Cabinet : BaseInteractable, IInteractionCandidate
 {
     [Header("Cabinet Models")]
     [SerializeField] private GameObject closedModel;
@@ -16,16 +17,19 @@ public class Cabinet : MonoBehaviour, IInteractable
 
     [Header("Telescope Requirement")]
     [SerializeField] private Telescope requiredTelescope; // Telescope that must complete its puzzle
-    
+
     [Header("Demo End Trigger")]
     [SerializeField] private string nextSceneName = "MainMenu"; // Scene to load when demo ends
-    
+
     [Header("Sound Effects")]
     [SerializeField] private EventReference cabinetOpenEventReference;
     [SerializeField] private EventReference bookOpenEventReference;
 
     private bool isOpen = false;
     private bool wasLightOn = false;
+
+    private bool CanInteract => isOpen;
+    private const string INSPECT_MESSAGE = "The Cabinet is locked using a mechanism with four colorful circular symbols on it";
 
     private void Start()
     {
@@ -39,7 +43,7 @@ public class Cabinet : MonoBehaviour, IInteractable
         {
             openModel.SetActive(false);
         }
-        
+
         // Hide book initially
         if (bookModel != null)
         {
@@ -85,7 +89,7 @@ public class Cabinet : MonoBehaviour, IInteractable
         {
             openModel.SetActive(true);
         }
-        
+
         // Show book inside cabinet
         if (bookModel != null)
         {
@@ -111,42 +115,54 @@ public class Cabinet : MonoBehaviour, IInteractable
 
         Debug.Log("Cabinet opened! You can now interact with it to complete the demo.");
     }
-    
-    public void Interact(GameObject interactor)
-    {
-        // Only allow interaction if cabinet is open
-        if (isOpen)
-        {
-            try
-            {
-                AudioManager.Instance.PlayOneShot(bookOpenEventReference, gameObject.transform.position);
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogWarning($"[Cabinet] Failed to play book sound: {e.Message}");
-            }
 
-            EndDemo();
-        }
-        else
+
+    protected override void OnInteract(GameObject interactor)
+    {
+        try
         {
-            Debug.Log("The cabinet is still locked. Complete the telescope puzzle first!");
+            AudioManager.Instance.PlayOneShot(bookOpenEventReference, gameObject.transform.position);
         }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning($"[Cabinet] Failed to play book sound: {e.Message}");
+        }
+
+        EndDemo();
     }
-    
+
     private void EndDemo()
     {
         Debug.Log("Demo Complete! Closing game...");
-        
+
         // Show cursor
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        
+
         // Quit the application
-        #if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
-        #else
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
             Application.Quit();
-        #endif
+#endif
+    }
+
+    public void CollectOptions(PlayerInteractionContext context, List<InteractionOption> options)
+    {
+        if (CanInteract)
+        {
+            options.Add(InteractionOptionBuilder.Create(
+                InteractionType.Interact,
+                this
+            ));
+        }
+        else
+        {
+            options.Add(InteractionOptionBuilder.Create(
+                InteractionType.Inspect,
+                this,
+                INSPECT_MESSAGE
+            ));
+        }
     }
 }

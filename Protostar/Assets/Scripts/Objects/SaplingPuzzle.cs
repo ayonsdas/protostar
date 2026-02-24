@@ -6,7 +6,7 @@ using UnityEngine.Rendering;
 /// <summary>
 /// Sapling that shifts into a tree when all four seed slots are filled.
 /// </summary>
-public class SaplingPuzzle : MonoBehaviour, IEngageable, IShiftable
+public class SaplingPuzzle : MonoBehaviour, IEngageable, IShiftable, IInteractionCandidate
 {
     [Header("Puzzle Settings")]
     [SerializeField] private SeedSlot[] seedSlots; // Assign exactly 4 in the Inspector
@@ -17,10 +17,16 @@ public class SaplingPuzzle : MonoBehaviour, IEngageable, IShiftable
     [SerializeField] private bool startWithBlackSkybox = true; // Toggle whether to start with black skybox
     [SerializeField] private Material targetSkybox;
     [SerializeField] private GameObject sun;
-    
+
     [Header("Sound")]
     private bool isShifted = false;
     [field: SerializeField] public EventReference treeGrowSoundEvent { get; private set; }
+
+    private const string UNSHIFTABLE_INSPECT_MESSAGE = "This tree sapling needs more energy to grow, it can't be shifted yet.";
+    private const string SHIFTABLE_INSPECT_MESSAGE = "The maleable course of time has been altered for this tree, it's ready to be shifted!";
+    private const string SHIFTED_INSPECT_MESSAGE = "The omni-tree you grew bears the leaves of a whole new universe!";
+
+    private bool CanShift => canInteract && !isShifted;
 
     private bool canInteract = false;
     private bool _engaged = false;
@@ -52,7 +58,7 @@ public class SaplingPuzzle : MonoBehaviour, IEngageable, IShiftable
         }
 
         UpdateInteractableState();
-        
+
         // Set skybox to black at start (if enabled)
         if (startWithBlackSkybox)
         {
@@ -74,34 +80,34 @@ public class SaplingPuzzle : MonoBehaviour, IEngageable, IShiftable
             }
         }
     }
-    
+
     private void SetBlackSkybox()
     {
         // Set skybox to null for pure black
         RenderSettings.skybox = null;
-        
+
         // Set ambient lighting to black
         RenderSettings.ambientMode = AmbientMode.Flat;
         RenderSettings.ambientLight = Color.black;
         RenderSettings.ambientIntensity = 0f;
-        
+
         // Disable reflection probes and environment reflections
         RenderSettings.defaultReflectionMode = UnityEngine.Rendering.DefaultReflectionMode.Custom;
         RenderSettings.customReflectionTexture = null;
         RenderSettings.reflectionIntensity = 0f;
-        
+
         // Disable fog completely
         RenderSettings.fog = false;
-        
+
         // Disable subtractive ambient (prevents light bleeding)
         RenderSettings.subtractiveShadowColor = Color.black;
-        
+
         // Hide the sun
         if (sun != null)
         {
             sun.SetActive(false);
         }
-        
+
         // Set camera background to pure black with no environment influence
         Camera mainCamera = Camera.main;
         if (mainCamera != null)
@@ -109,33 +115,33 @@ public class SaplingPuzzle : MonoBehaviour, IEngageable, IShiftable
             mainCamera.backgroundColor = Color.black;
             mainCamera.clearFlags = CameraClearFlags.SolidColor;
         }
-        
+
         DynamicGI.UpdateEnvironment();
     }
-    
+
     private void SetTargetSkybox()
     {
         if (targetSkybox != null)
         {
             RenderSettings.skybox = targetSkybox;
             RenderSettings.ambientMode = AmbientMode.Skybox;
-            
+
             // Disable fog when skybox is enabled
             RenderSettings.fog = false;
-            
+
             // Show the sun
             if (sun != null)
             {
                 sun.SetActive(true);
             }
-            
+
             // Reset camera to skybox mode
             Camera mainCamera = Camera.main;
             if (mainCamera != null)
             {
                 mainCamera.clearFlags = CameraClearFlags.Skybox;
             }
-            
+
             DynamicGI.UpdateEnvironment();
             Debug.Log("Skybox changed to target skybox");
         }
@@ -251,7 +257,7 @@ public class SaplingPuzzle : MonoBehaviour, IEngageable, IShiftable
             {
                 if (slot != null)
                 {
-                    slot.ConsumeSeed();
+                    slot.ConsumeObject();
                 }
             }
         }
@@ -269,18 +275,47 @@ public class SaplingPuzzle : MonoBehaviour, IEngageable, IShiftable
         }
 
         Debug.Log("Sapling shifted into tree! Seeds consumed.");
-        
+
         // Change skybox to target skybox
         SetTargetSkybox();
-    }
-
-    public bool CanShift()
-    {
-        return canInteract && !isShifted;
     }
 
     public int GetState()
     {
         return isShifted ? 1 : 0;
+    }
+
+    public void CollectOptions(PlayerInteractionContext context, List<InteractionOption> options)
+    {
+        if (CanShift)
+        {
+            options.Add(InteractionOptionBuilder.Create(
+                InteractionType.Shift,
+                this
+            ));
+            options.Add(InteractionOptionBuilder.Create(
+                InteractionType.Inspect,
+                this,
+                SHIFTABLE_INSPECT_MESSAGE
+            ));
+        }
+
+        if (isShifted)
+        {
+            options.Add(InteractionOptionBuilder.Create(
+                InteractionType.Inspect,
+                this,
+                SHIFTED_INSPECT_MESSAGE
+            ));
+        }
+
+        if (!CanShift)
+        {
+            options.Add(InteractionOptionBuilder.Create(
+                InteractionType.Inspect,
+                this,
+                UNSHIFTABLE_INSPECT_MESSAGE
+            ));
+        }
     }
 }
