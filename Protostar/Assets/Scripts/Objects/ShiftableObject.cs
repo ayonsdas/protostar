@@ -63,7 +63,7 @@ public class ShiftableObject : MonoBehaviour, IEngageable, IShiftable, IInteract
 
     public void CollectOptions(PlayerInteractionContext context, List<InteractionOption> options)
     {
-        options.Add(InteractionBuilder.Create(
+        options.Add(InteractionOptionBuilder.Create(
             InteractionType.Shift,
             this
         ));

@@ -41,7 +41,10 @@ public class Telescope : MonoBehaviour, IInteractionCandidate, IEngageable
     private float currentVerticalAngle = 0f;
 
     private bool IsUnlocked => requiredPuzzle == null || requiredPuzzle.GetState() != 0;
-    private bool CanInteract => !isCompleted && IsUnlocked;
+    private bool IsFinished => isCompleted && !isActive;
+    private bool CanStartEngage => !isCompleted && IsUnlocked;
+    private bool CanEndEngage => isActive;
+    private bool CanChangeEngage => CanStartEngage || CanEndEngage;
     private const string LOCKED_INSPECT_MESSAGE = "A vast voidlike expanse greets you. You can't see anything through the telescope.";
     private const string COMPLETED_INSPECT_MESSAGE = "You recall growing and viewing this crafted universe before, and the click of the lock it opened";
 
@@ -301,9 +304,9 @@ public class Telescope : MonoBehaviour, IInteractionCandidate, IEngageable
     public void CollectOptions(PlayerInteractionContext context, List<InteractionOption> options)
     {
         // If able to start interaction or active, so player doesn't get stuck in telescope
-        if (CanInteract || isActive)
+        if (CanChangeEngage)
         {
-            options.Add(InteractionBuilder.Create(
+            options.Add(InteractionOptionBuilder.Create(
                 InteractionType.Engage,
                 this,
                 onPressedOverride: interactor =>
@@ -313,18 +316,20 @@ public class Telescope : MonoBehaviour, IInteractionCandidate, IEngageable
             ));
         }
 
+        // If not unlocked from finishing sapling puzzle, tell player
         if (!IsUnlocked)
         {
-            options.Add(InteractionBuilder.Create(
+            options.Add(InteractionOptionBuilder.Create(
                 InteractionType.Inspect,
                 this,
                 LOCKED_INSPECT_MESSAGE
             ));
         }
 
-        if (isCompleted)
+        // If completed, then notify player, and direct to cabinet
+        if (IsFinished)
         {
-            options.Add(InteractionBuilder.Create(
+            options.Add(InteractionOptionBuilder.Create(
                 InteractionType.Inspect,
                 this,
                 COMPLETED_INSPECT_MESSAGE

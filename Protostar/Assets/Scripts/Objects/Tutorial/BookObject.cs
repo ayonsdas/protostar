@@ -141,13 +141,13 @@ public class BookObject : MonoBehaviour, IPickupable, IPlaceable, IInteractionCa
 
         Debug.Log($"[BookObject] {gameObject.name} removed from slot.");
     }
-    
+
     public void CollectOptions(PlayerInteractionContext context, List<InteractionOption> options)
     {
         // If free on ground then pickup
         if (IsFree)
         {
-            options.Add(InteractionBuilder.Create(
+            options.Add(InteractionOptionBuilder.Create(
                 InteractionType.Pickup,
                 this
             ));
@@ -156,7 +156,7 @@ public class BookObject : MonoBehaviour, IPickupable, IPlaceable, IInteractionCa
         // If currently held by this interactor then can drop
         if (IsHeld && gameObject.Equals(context.CarriedObject))
         {
-            options.Add(InteractionBuilder.Create(
+            options.Add(InteractionOptionBuilder.Create(
                 InteractionType.Drop,
                 this
             ));

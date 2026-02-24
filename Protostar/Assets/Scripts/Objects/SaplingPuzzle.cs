@@ -17,7 +17,7 @@ public class SaplingPuzzle : MonoBehaviour, IEngageable, IShiftable, IInteractio
     [SerializeField] private bool startWithBlackSkybox = true; // Toggle whether to start with black skybox
     [SerializeField] private Material targetSkybox;
     [SerializeField] private GameObject sun;
-    
+
     [Header("Sound")]
     private bool isShifted = false;
     [field: SerializeField] public EventReference treeGrowSoundEvent { get; private set; }
@@ -58,7 +58,7 @@ public class SaplingPuzzle : MonoBehaviour, IEngageable, IShiftable, IInteractio
         }
 
         UpdateInteractableState();
-        
+
         // Set skybox to black at start (if enabled)
         if (startWithBlackSkybox)
         {
@@ -80,34 +80,34 @@ public class SaplingPuzzle : MonoBehaviour, IEngageable, IShiftable, IInteractio
             }
         }
     }
-    
+
     private void SetBlackSkybox()
     {
         // Set skybox to null for pure black
         RenderSettings.skybox = null;
-        
+
         // Set ambient lighting to black
         RenderSettings.ambientMode = AmbientMode.Flat;
         RenderSettings.ambientLight = Color.black;
         RenderSettings.ambientIntensity = 0f;
-        
+
         // Disable reflection probes and environment reflections
         RenderSettings.defaultReflectionMode = UnityEngine.Rendering.DefaultReflectionMode.Custom;
         RenderSettings.customReflectionTexture = null;
         RenderSettings.reflectionIntensity = 0f;
-        
+
         // Disable fog completely
         RenderSettings.fog = false;
-        
+
         // Disable subtractive ambient (prevents light bleeding)
         RenderSettings.subtractiveShadowColor = Color.black;
-        
+
         // Hide the sun
         if (sun != null)
         {
             sun.SetActive(false);
         }
-        
+
         // Set camera background to pure black with no environment influence
         Camera mainCamera = Camera.main;
         if (mainCamera != null)
@@ -115,33 +115,33 @@ public class SaplingPuzzle : MonoBehaviour, IEngageable, IShiftable, IInteractio
             mainCamera.backgroundColor = Color.black;
             mainCamera.clearFlags = CameraClearFlags.SolidColor;
         }
-        
+
         DynamicGI.UpdateEnvironment();
     }
-    
+
     private void SetTargetSkybox()
     {
         if (targetSkybox != null)
         {
             RenderSettings.skybox = targetSkybox;
             RenderSettings.ambientMode = AmbientMode.Skybox;
-            
+
             // Disable fog when skybox is enabled
             RenderSettings.fog = false;
-            
+
             // Show the sun
             if (sun != null)
             {
                 sun.SetActive(true);
             }
-            
+
             // Reset camera to skybox mode
             Camera mainCamera = Camera.main;
             if (mainCamera != null)
             {
                 mainCamera.clearFlags = CameraClearFlags.Skybox;
             }
-            
+
             DynamicGI.UpdateEnvironment();
             Debug.Log("Skybox changed to target skybox");
         }
@@ -275,7 +275,7 @@ public class SaplingPuzzle : MonoBehaviour, IEngageable, IShiftable, IInteractio
         }
 
         Debug.Log("Sapling shifted into tree! Seeds consumed.");
-        
+
         // Change skybox to target skybox
         SetTargetSkybox();
     }
@@ -287,31 +287,31 @@ public class SaplingPuzzle : MonoBehaviour, IEngageable, IShiftable, IInteractio
 
     public void CollectOptions(PlayerInteractionContext context, List<InteractionOption> options)
     {
-        if(CanShift)
+        if (CanShift)
         {
-            options.Add(InteractionBuilder.Create(
+            options.Add(InteractionOptionBuilder.Create(
                 InteractionType.Shift,
                 this
             ));
-            options.Add(InteractionBuilder.Create(
+            options.Add(InteractionOptionBuilder.Create(
                 InteractionType.Inspect,
                 this,
                 SHIFTABLE_INSPECT_MESSAGE
             ));
         }
 
-        if(isShifted)
+        if (isShifted)
         {
-            options.Add(InteractionBuilder.Create(
+            options.Add(InteractionOptionBuilder.Create(
                 InteractionType.Inspect,
                 this,
                 SHIFTED_INSPECT_MESSAGE
             ));
         }
 
-        if(!CanShift)
+        if (!CanShift)
         {
-            options.Add(InteractionBuilder.Create(
+            options.Add(InteractionOptionBuilder.Create(
                 InteractionType.Inspect,
                 this,
                 UNSHIFTABLE_INSPECT_MESSAGE

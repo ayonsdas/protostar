@@ -29,7 +29,7 @@ public struct InteractionOption
 /// Builder class to more easily create standard InteractionOptions by Type
 /// Defines defaults, needing Type, and source to be specified
 /// </summary>
-public static class InteractionBuilder
+public static class InteractionOptionBuilder
 {
     /// <summary>
     /// Internal struct to store defaults to be used in InteractionOption construction
@@ -119,7 +119,6 @@ public static class InteractionBuilder
                 DefaultOnReleased = (interactor, source) => { }
             }
         },
-        // TODO Change this if we actually plan to have any engagable, non-shiftable objects  
         {
             InteractionType.Engage,
             new InteractionDefinition

@@ -123,16 +123,12 @@ public class PlayerInteractor : Interactor
             return;
         }
 
-        // Display overlay prompt if present
-        if (!string.IsNullOrEmpty(bestOption.Prompt))
-        {
-            interactionUI?.Show(bestOption.Prompt);
-        }
-
         // Shift button is pressed
         if (ctx.performed)
         {
             // Debug.Log($"[PlayerInteractor] Invoking shift press, Best option: {bestOption} Source: {bestOption.Source.name}");
+            // Display UI prompt only on press so it doesn't get called twice
+            DisplayPrompt(bestOption);
             bestOption.OnPressed?.Invoke(this);
         }
         // Shift button is released
@@ -156,13 +152,10 @@ public class PlayerInteractor : Interactor
             return;
         }
 
-        if (!string.IsNullOrEmpty(bestOption.Prompt))
-        {
-            interactionUI?.Show(bestOption.Prompt);
-        }
-
         if (ctx.performed)
         {
+            // Display UI prompt only on press so it doesn't get called twice
+            DisplayPrompt(bestOption);
             bestOption.OnPressed?.Invoke(this);
         }
         else if (ctx.canceled)
@@ -184,6 +177,15 @@ public class PlayerInteractor : Interactor
     }
 
     // FUNCTIONS TO BE USED IN INTERACTION OPTIONS
+
+    private void DisplayPrompt(InteractionOption option)
+    {
+        if (!string.IsNullOrEmpty(option.Prompt))
+        {
+            interactionUI?.Show(option.Prompt);
+        }
+    }
+
     /// <summary>
     /// Builds player state context information for interactables to evaluate
     /// and then choose available options
