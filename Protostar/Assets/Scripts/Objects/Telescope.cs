@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Telescope : BaseInteractable, IInteractionCandidate
+public class Telescope : MonoBehaviour, IInteractionCandidate, IEngageable
 {
     [Header("Telescope Settings")]
     [SerializeField] private Camera telescopeCamera;
@@ -194,7 +194,7 @@ public class Telescope : BaseInteractable, IInteractionCandidate
         }
     }
 
-    protected override void OnInteract(GameObject interactor)
+    public void Engage(GameObject interactor)
     {
         if (!isActive)
         {
@@ -209,9 +209,12 @@ public class Telescope : BaseInteractable, IInteractionCandidate
                 Debug.LogWarning($"[Telescope] Failed to play sound: {e.Message}");
             }
         }
-        else
+    }
+
+    public void Disengage(GameObject interactor)
+    {
+        if (isActive)
         {
-            // Exit telescope view
             ExitTelescopeView();
         }
     }
@@ -301,12 +304,16 @@ public class Telescope : BaseInteractable, IInteractionCandidate
         if (CanInteract || isActive)
         {
             options.Add(InteractionBuilder.Create(
-                InteractionType.Interact,
-                this
+                InteractionType.Engage,
+                this,
+                onPressedOverride: interactor =>
+                {
+                    interactor.ToggleEngage(this, lockMovement: false);
+                }
             ));
         }
 
-        if(!IsUnlocked)
+        if (!IsUnlocked)
         {
             options.Add(InteractionBuilder.Create(
                 InteractionType.Inspect,
@@ -315,7 +322,7 @@ public class Telescope : BaseInteractable, IInteractionCandidate
             ));
         }
 
-        if(isCompleted)
+        if (isCompleted)
         {
             options.Add(InteractionBuilder.Create(
                 InteractionType.Inspect,

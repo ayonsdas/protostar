@@ -10,6 +10,9 @@ public abstract class Interactor : MonoBehaviour
     protected readonly List<IInteractionCandidate> nearby = new();
     protected IFocusable currentFocus;
     private IInteractionCandidate _focusedCandidate;
+    protected IEngageable activeEngageable;
+    protected IInteractionCandidate engagedCandidate;
+    protected bool IsEngaged => activeEngageable != null && engagedCandidate != null;
 
     private readonly List<InteractionOption> _options = new();
     protected readonly Dictionary<InteractionInputType, InteractionOption> _bestOptionByInput
@@ -25,23 +28,29 @@ public abstract class Interactor : MonoBehaviour
     // Find the most relevant interaction around us.
     private void ResolveInteraction()
     {
+        IInteractionCandidate newFocus = null;
         var context = BuildContext();
 
-        IInteractionCandidate newFocus = null;
-        float bestFocusScore = float.MinValue;
-
-
-        foreach (var candidate in nearby)
+        if (IsEngaged)
         {
-            if(!candidate.HasAnyValidInteraction(context))
-                continue;
-                
-            float score = CalculateFocusScore(candidate, context);
+            newFocus = engagedCandidate;
+        }
+        else
+        {
+            float bestFocusScore = float.MinValue;
 
-            if (score > bestFocusScore)
+            foreach (var candidate in nearby)
             {
-                bestFocusScore = score;
-                newFocus = candidate;
+                if (!candidate.HasAnyValidInteraction(context))
+                    continue;
+
+                float score = CalculateFocusScore(candidate, context);
+
+                if (score > bestFocusScore)
+                {
+                    bestFocusScore = score;
+                    newFocus = candidate;
+                }
             }
         }
 
@@ -100,10 +109,10 @@ public abstract class Interactor : MonoBehaviour
     }
 
     private float CalculateFocusScore(IInteractionCandidate candidate, PlayerInteractionContext context)
-    {            
+    {
 
         var mb = candidate as MonoBehaviour;
-        if(!mb) 
+        if (!mb)
             return float.MinValue;
 
 

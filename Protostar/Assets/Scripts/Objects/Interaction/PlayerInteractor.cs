@@ -32,7 +32,6 @@ public class PlayerInteractor : Interactor
 
     // Shift state
     private bool isShiftHeld = false;
-    private IEngageable activeShiftEngageable = null;
     private IShiftable activeShiftTarget = null;
     private Vector2 shiftInput = Vector2.zero; // WASD input accumulated during shift hold
     private PlayerController playerController;
@@ -297,14 +296,14 @@ public class PlayerInteractor : Interactor
             return;
 
         activeShiftTarget = source.GetComponent<IShiftable>();
-        activeShiftEngageable = source.GetComponent<IEngageable>();
+        activeEngageable = source.GetComponent<IEngageable>();
 
-        if (activeShiftTarget == null)
+        if (activeShiftTarget == null || activeEngageable == null)
             return;
 
         isShiftHeld = true;
 
-        activeShiftEngageable?.Engage(gameObject);
+        activeEngageable.Engage(gameObject);
         playerController?.SetMovementLocked(true);
     }
 
@@ -321,12 +320,60 @@ public class PlayerInteractor : Interactor
         activeShiftTarget.Shift(direction);
         PlayShiftSound();
 
-        activeShiftEngageable?.Disengage(gameObject);
+        activeEngageable?.Disengage(gameObject);
 
         isShiftHeld = false;
         activeShiftTarget = null;
-        activeShiftEngageable = null;
+        activeEngageable = null;
         shiftInput = Vector2.zero;
+
+        playerController?.SetMovementLocked(false);
+    }
+
+    public void ToggleEngage(MonoBehaviour source, bool lockMovement = true)
+    {
+        if (!IsEngaged)
+        {
+            StartEngage(source, lockMovement);
+        }
+        else
+        {
+            EndEngage();
+        }
+    }
+
+    /// <summary>
+    /// Handles logic of starting engagement with an object
+    /// </summary>
+    public void StartEngage(MonoBehaviour source, bool lockMovement = true)
+    {
+        if (IsEngaged)
+            return;
+
+        activeEngageable = source.GetComponent<IEngageable>();
+        engagedCandidate = source.GetComponent<IInteractionCandidate>();
+
+        if (activeEngageable == null || engagedCandidate == null)
+        {
+            activeEngageable = null;
+            engagedCandidate = null;
+            return;
+        }
+
+        activeEngageable.Engage(gameObject);
+        playerController?.SetMovementLocked(lockMovement);
+    }
+
+    /// <summary>
+    /// Handles logic of ending engagement with an object
+    /// </summary>
+    public void EndEngage()
+    {
+        if (!IsEngaged)
+            return;
+
+        activeEngageable?.Disengage(gameObject);
+        activeEngageable = null;
 
         playerController?.SetMovementLocked(false);
     }

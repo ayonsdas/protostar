@@ -127,7 +127,10 @@ public static class InteractionBuilder
                 Type = InteractionType.Engage,
                 InputType = InteractionInputType.Interact,
                 DefaultPrompt = "",
-                DefaultOnPressed = (interactor, source) => { },
+                DefaultOnPressed = (interactor, source) =>
+                {
+                    interactor.ToggleEngage(source, lockMovement: true);
+                },
                 DefaultOnReleased = (interactor, source) => { }
             }
         },
@@ -169,7 +172,10 @@ public static class InteractionBuilder
     public static InteractionOption Create(
         InteractionType type,
         MonoBehaviour source,
-        string promptOverride = null)
+        string promptOverride = null,
+        Action<PlayerInteractor> onPressedOverride = null,
+        Action<PlayerInteractor> onReleasedOverride = null
+    )
     {
         var def = _definitions[type];
 
@@ -179,8 +185,8 @@ public static class InteractionBuilder
             InputType = def.InputType,
             Source = source,
             Prompt = promptOverride ?? def.DefaultPrompt,
-            OnPressed = interactor => def.DefaultOnPressed(interactor, source),
-            OnReleased = interactor => def.DefaultOnReleased(interactor, source)
+            OnPressed = onPressedOverride ?? (interactor => def.DefaultOnPressed(interactor, source)),
+            OnReleased = onReleasedOverride ?? (interactor => def.DefaultOnReleased(interactor, source)),
         };
     }
 }
