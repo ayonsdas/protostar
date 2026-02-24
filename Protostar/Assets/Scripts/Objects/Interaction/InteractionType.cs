@@ -7,5 +7,6 @@ public enum InteractionType
     Pickup,
     Drop,
     Engage,
-    Interact
+    Interact,
+    Inspect
 }

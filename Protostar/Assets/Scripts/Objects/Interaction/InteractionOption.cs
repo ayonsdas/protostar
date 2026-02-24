@@ -131,6 +131,17 @@ public static class InteractionBuilder
                 },
                 DefaultOnReleased = (interactor, source) => { }
             }
+        },
+        {
+            InteractionType.Inspect,
+            new InteractionDefinition
+            {
+                Type = InteractionType.Inspect,
+                InputType = InteractionInputType.Interact,
+                DefaultPrompt = "",
+                DefaultOnPressed = (interactor, source) => { },
+                DefaultOnReleased = (interactor, source) => { }
+            }
         }
     };
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Slot<T> :
-    BaseInteractable,
+    MonoBehaviour,
     IPlaceableSlot,
     IInteractionCandidate
     where T : MonoBehaviour, IPlaceable
@@ -22,6 +22,7 @@ public class Slot<T> :
 
     public System.Action OnSlotChanged;
     public bool IsFilled => _placedObject != null;
+    protected virtual string EmptyInteractMessage => "";
 
     private T _placedObject;
     private bool _isLocked = false;
@@ -34,15 +35,6 @@ public class Slot<T> :
     public void Lock(bool val = true)
     {
         _isLocked = val;
-    }
-
-    /// <summary>
-    /// IInteractable not called directly during normal flow;
-    /// PlayerInteractor intercepts object-slot interactions before reaching here.
-    /// </summary>
-    protected override void OnInteractSuccess(GameObject interactor)
-    {
-        Debug.Log($"[Slot] Interact called on {gameObject.name}, IsFilled={IsFilled}");
     }
 
     /// <summary>
@@ -149,19 +141,7 @@ public class Slot<T> :
         return RemoveObject()?.gameObject;
     }
 
-    // Shouldn't be called as this is handled separately from Interactable flow, but just in case:
-    protected override bool CanInteract(out string message)
-    {
-        if (IsFilled)
-        {
-            message = "Seed slot is already filled.";
-            return false;
-        }
-
-        return base.CanInteract(out message);
-    }
-
-    public void CollectOptions(PlayerInteractionContext context, List<InteractionOption> options)
+    public virtual void CollectOptions(PlayerInteractionContext context, List<InteractionOption> options)
     {
         // If locked, then cannot interact
         if (_isLocked)
@@ -189,6 +169,16 @@ public class Slot<T> :
             options.Add(InteractionBuilder.Create(
                 InteractionType.SlotRemove,
                 this
+            ));
+        }
+
+        // If provided with an interaction message then have an inspect option
+        if(!context.IsCarrying && !IsFilled && !string.IsNullOrEmpty(EmptyInteractMessage))
+        {
+            options.Add(InteractionBuilder.Create(
+                InteractionType.Inspect,
+                this,
+                EmptyInteractMessage
             ));
         }
     }

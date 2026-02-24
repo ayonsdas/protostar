@@ -31,6 +31,7 @@ public class Telescope : BaseInteractable, IInteractionCandidate
     [SerializeField] private EventReference interactEventReference;
 
     private bool isActive = false;
+    private bool isCompleted = false;
     private Camera playerCamera;
     private CameraFollow cameraFollow;
     private PlayerController playerController;
@@ -40,6 +41,10 @@ public class Telescope : BaseInteractable, IInteractionCandidate
     private float currentVerticalAngle = 0f;
 
     private bool IsUnlocked => requiredPuzzle == null || requiredPuzzle.GetState() != 0;
+    private bool CanInteract => !isCompleted && IsUnlocked;
+    private const string LOCKED_INSPECT_MESSAGE = "A vast voidlike expanse greets you. You can't see anything through the telescope.";
+    private const string COMPLETED_INSPECT_MESSAGE = "You recall growing and viewing this crafted universe before, and the click of the lock it opened";
+
 
     void Start()
     {
@@ -115,6 +120,8 @@ public class Telescope : BaseInteractable, IInteractionCandidate
         if (alignment >= alignmentThreshold)
         {
             // Pointing at target - turn light on and make it red
+            // This will stop player from interacting after completing puzzle
+            isCompleted = true;
             telescopeLight.enabled = true;
             telescopeLight.color = targetColor;
             Debug.Log("TARGET ALIGNED - Light ON");
@@ -187,23 +194,7 @@ public class Telescope : BaseInteractable, IInteractionCandidate
         }
     }
 
-    protected override bool CanInteract(out string message)
-    {
-        message = null;
-        if (requiredPuzzle != null && requiredPuzzle.GetState() == 0)
-        {
-            message = "A vast voidlike expanse greets you. You can't see anything through the telescope.";
-            return false;
-        }
-        return true;
-    }
-
-    protected override void OnInteractFailure(GameObject interactor)
-    {
-        Debug.Log("The telescope is locked. Complete the sapling puzzle first!");
-    }
-
-    protected override void OnInteractSuccess(GameObject interactor)
+    protected override void OnInteract(GameObject interactor)
     {
         if (!isActive)
         {
@@ -306,11 +297,30 @@ public class Telescope : BaseInteractable, IInteractionCandidate
 
     public void CollectOptions(PlayerInteractionContext context, List<InteractionOption> options)
     {
-        if (IsUnlocked)
+        // If able to start interaction or active, so player doesn't get stuck in telescope
+        if (CanInteract || isActive)
         {
             options.Add(InteractionBuilder.Create(
                 InteractionType.Interact,
                 this
+            ));
+        }
+
+        if(!IsUnlocked)
+        {
+            options.Add(InteractionBuilder.Create(
+                InteractionType.Inspect,
+                this,
+                LOCKED_INSPECT_MESSAGE
+            ));
+        }
+
+        if(isCompleted)
+        {
+            options.Add(InteractionBuilder.Create(
+                InteractionType.Inspect,
+                this,
+                COMPLETED_INSPECT_MESSAGE
             ));
         }
     }

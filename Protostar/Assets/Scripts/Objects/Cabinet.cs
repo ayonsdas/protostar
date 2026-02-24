@@ -28,6 +28,9 @@ public class Cabinet : BaseInteractable, IInteractionCandidate
     private bool isOpen = false;
     private bool wasLightOn = false;
 
+    private bool CanInteract => isOpen;
+    private const string INSPECT_MESSAGE = "The Cabinet is locked using a mechanism with four colorful circular symbols on it";
+
     private void Start()
     {
         // Start in closed state
@@ -113,18 +116,8 @@ public class Cabinet : BaseInteractable, IInteractionCandidate
         Debug.Log("Cabinet opened! You can now interact with it to complete the demo.");
     }
 
-    protected override bool CanInteract(out string message)
-    {
-        message = null;
-        if (!isOpen)
-        {
-            message = "The cabinet is locked using a mechanism with four colorful circle symbols on it.";
-            return false;
-        }
-        return true;
-    }
 
-    protected override void OnInteractSuccess(GameObject interactor)
+    protected override void OnInteract(GameObject interactor)
     {
         try
         {
@@ -136,11 +129,6 @@ public class Cabinet : BaseInteractable, IInteractionCandidate
         }
 
         EndDemo();
-    }
-
-    protected override void OnInteractFailure(GameObject interactor)
-    {
-        Debug.Log($"[Cabinet] Interaction failed, cannot open yet");
     }
 
     private void EndDemo()
@@ -161,11 +149,19 @@ public class Cabinet : BaseInteractable, IInteractionCandidate
 
     public void CollectOptions(PlayerInteractionContext context, List<InteractionOption> options)
     {
-        if(isOpen)
+        if(CanInteract)
         {
             options.Add(InteractionBuilder.Create(
                 InteractionType.Interact,
                 this
+            ));
+        }
+        else
+        {
+            options.Add(InteractionBuilder.Create(
+                InteractionType.Inspect,
+                this,
+                INSPECT_MESSAGE
             ));
         }
     }

@@ -11,6 +11,7 @@ public static class InteractionPriority
         { InteractionType.Drop, 700 },
         { InteractionType.Engage, 600 },
         { InteractionType.Interact, 500 },
+        { InteractionType.Inspect, 100 },
         { InteractionType.None, 0 }
     };
 
