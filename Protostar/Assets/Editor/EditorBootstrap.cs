@@ -25,7 +25,11 @@ public class EditorInit
             var activeScene = EditorSceneManager.GetActiveScene();
             PlayerPrefs.SetString("BootSceneFirstScene", activeScene.path);
 
-            EditorSceneManager.playModeStartScene = bootScene;
+            string scenePath = EditorSceneManager.GetActiveScene().path;
+            bool testScene = scenePath.StartsWith("Assets/Scenes/Test/");
+            Debug.Log($"[EditorBootstrap] Scene path {scenePath} Test scene: {testScene}");
+
+            EditorSceneManager.playModeStartScene = testScene ? null : bootScene;
         }
     }
 }

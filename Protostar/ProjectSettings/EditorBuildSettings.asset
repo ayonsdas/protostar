@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 0
-    path: Assets/Scenes/PlayerTester.unity
+    path: Assets/Scenes/Test/PlayerTester.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
     path: Assets/Scenes/Initialize.unity
@@ -18,10 +18,10 @@ EditorBuildSettings:
     path: Assets/Scenes/WhiteBoxPuzzle.unity
     guid: b8ccf57ee3e793f4d949eb5326d15072
   - enabled: 0
-    path: Assets/Scenes/AarohanTestScene.unity
+    path: Assets/Scenes/Test/AarohanTestScene.unity
     guid: a62031cdf2c7bed4ebfb3518560e96b9
   - enabled: 0
-    path: Assets/Scenes/TestMainMenu.unity
+    path: Assets/Scenes/Test/TestMainMenu.unity
     guid: 9803e14e41074ef45921fd79ae383867
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
