@@ -1,7 +1,12 @@
 using FMODUnity;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class Slot<T> : BaseInteractable, IPlaceableSlot where T : MonoBehaviour, IPlaceable
+public class Slot<T> :
+    MonoBehaviour,
+    IPlaceableSlot,
+    IInteractionCandidate
+    where T : MonoBehaviour, IPlaceable
 {
 
     [Header("Visuals")]
@@ -17,6 +22,7 @@ public class Slot<T> : BaseInteractable, IPlaceableSlot where T : MonoBehaviour,
 
     public System.Action OnSlotChanged;
     public bool IsFilled => _placedObject != null;
+    protected virtual string EmptyInteractMessage => "";
 
     private T _placedObject;
     private bool _isLocked = false;
@@ -29,15 +35,6 @@ public class Slot<T> : BaseInteractable, IPlaceableSlot where T : MonoBehaviour,
     public void Lock(bool val = true)
     {
         _isLocked = val;
-    }
-
-    /// <summary>
-    /// IInteractable � not called directly during normal flow;
-    /// PlayerInteractor intercepts object-slot interactions before reaching here.
-    /// </summary>
-    protected override void OnInteractSuccess(GameObject interactor)
-    {
-        Debug.Log($"[Slot] Interact called on {gameObject.name}, IsFilled={IsFilled}");
     }
 
     /// <summary>
@@ -108,7 +105,7 @@ public class Slot<T> : BaseInteractable, IPlaceableSlot where T : MonoBehaviour,
     /// </summary>
     public void ConsumeObject()
     {
-        if (_placedObject = null)
+        if (_placedObject == null)
         {
             _placedObject.gameObject.SetActive(false);
             _placedObject = null;
@@ -144,15 +141,45 @@ public class Slot<T> : BaseInteractable, IPlaceableSlot where T : MonoBehaviour,
         return RemoveObject()?.gameObject;
     }
 
-    // Shouldn't be called as this is handled separately from Interactable flow, but just in case:
-    protected override bool CanInteract(out string message)
+    public virtual void CollectOptions(PlayerInteractionContext context, List<InteractionOption> options)
     {
-        if (IsFilled)
+        // If locked, then cannot interact
+        if (_isLocked)
         {
-            message = "Seed slot is already filled.";
-            return false;
+            return;
         }
 
-        return base.CanInteract(out message);
+        // If carrying an object, try to place it
+        if (context.IsCarrying && !IsFilled)
+        {
+            T placeable = context.CarriedObject?.GetComponentInChildren<T>();
+            // Correct type for the slot, give interaction
+            if (placeable != null)
+            {
+                options.Add(InteractionBuilder.Create(
+                    InteractionType.SlotPlace,
+                    this
+                ));
+            }
+        }
+
+        // If slot is filled, and no carried object
+        if (!context.IsCarrying && IsFilled)
+        {
+            options.Add(InteractionBuilder.Create(
+                InteractionType.SlotRemove,
+                this
+            ));
+        }
+
+        // If provided with an interaction message then have an inspect option
+        if(!context.IsCarrying && !IsFilled && !string.IsNullOrEmpty(EmptyInteractMessage))
+        {
+            options.Add(InteractionBuilder.Create(
+                InteractionType.Inspect,
+                this,
+                EmptyInteractMessage
+            ));
+        }
     }
 }

@@ -14415,8 +14415,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Protostar::SeedSlot
   emptyVisual: {fileID: 319170157}
   filledVisual: {fileID: 1361178685}
-  seedPlacementOffset: {x: 0, y: -0.05, z: 0}
-  <seedPlaceSoundEvent>k__BackingField:
+  objectPlacementOffset: {x: 0, y: -0.05, z: 0}
+  <objectPlaceSoundEvent>k__BackingField:
     Guid:
       Data1: 325684601
       Data2: 1299453874
@@ -17404,8 +17404,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Protostar::SeedSlot
   emptyVisual: {fileID: 726355099}
   filledVisual: {fileID: 805016706}
-  seedPlacementOffset: {x: 0, y: -0.05, z: 0}
-  <seedPlaceSoundEvent>k__BackingField:
+  objectPlacementOffset: {x: 0, y: -0.05, z: 0}
+  <objectPlaceSoundEvent>k__BackingField:
     Guid:
       Data1: 325684601
       Data2: 1299453874
@@ -38097,8 +38097,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Protostar::SeedSlot
   emptyVisual: {fileID: 1434367170}
   filledVisual: {fileID: 2028516874}
-  seedPlacementOffset: {x: 0, y: -0.05, z: 0}
-  <seedPlaceSoundEvent>k__BackingField:
+  objectPlacementOffset: {x: 0, y: -0.05, z: 0}
+  <objectPlaceSoundEvent>k__BackingField:
     Guid:
       Data1: 325684601
       Data2: 1299453874
@@ -60073,8 +60073,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Protostar::SeedSlot
   emptyVisual: {fileID: 782899465}
   filledVisual: {fileID: 2122570213}
-  seedPlacementOffset: {x: 0, y: -0.05, z: 0}
-  <seedPlaceSoundEvent>k__BackingField:
+  objectPlacementOffset: {x: 0, y: -0.05, z: 0}
+  <objectPlaceSoundEvent>k__BackingField:
     Guid:
       Data1: 325684601
       Data2: 1299453874

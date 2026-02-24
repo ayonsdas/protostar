@@ -232,11 +232,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3afde547402154b69895e1eddc6c8d1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInteractor
-  range: 25
-  interactableMask:
+  interactionRadius: 3
+  interactionMask:
     serializedVersion: 2
     m_Bits: 64
-  origin: {fileID: 116889316238556093}
   pickupHoldPoint: {fileID: 1271199352196247041}
   dropDistance: 2
   interactionUI: {fileID: 0}

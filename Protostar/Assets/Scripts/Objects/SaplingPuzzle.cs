@@ -6,7 +6,7 @@ using UnityEngine.Rendering;
 /// <summary>
 /// Sapling that shifts into a tree when all four seed slots are filled.
 /// </summary>
-public class SaplingPuzzle : BaseInteractable, IEngageable, IShiftable
+public class SaplingPuzzle : MonoBehaviour, IEngageable, IShiftable, IInteractionCandidate
 {
     [Header("Puzzle Settings")]
     [SerializeField] private SeedSlot[] seedSlots; // Assign exactly 4 in the Inspector
@@ -21,6 +21,12 @@ public class SaplingPuzzle : BaseInteractable, IEngageable, IShiftable
     [Header("Sound")]
     private bool isShifted = false;
     [field: SerializeField] public EventReference treeGrowSoundEvent { get; private set; }
+
+    private const string UNSHIFTABLE_INSPECT_MESSAGE = "This tree sapling needs more energy to grow, it can't be shifted yet.";
+    private const string SHIFTABLE_INSPECT_MESSAGE = "The maleable course of time has been altered for this tree, it's ready to be shifted!";
+    private const string SHIFTED_INSPECT_MESSAGE = "The omni-tree you grew bears the leaves of a whole new universe!";
+
+    private bool CanShift => canInteract && !isShifted;
 
     private bool canInteract = false;
     private bool _engaged = false;
@@ -251,7 +257,7 @@ public class SaplingPuzzle : BaseInteractable, IEngageable, IShiftable
             {
                 if (slot != null)
                 {
-                    slot.ConsumeSeed();
+                    slot.ConsumeObject();
                 }
             }
         }
@@ -274,41 +280,42 @@ public class SaplingPuzzle : BaseInteractable, IEngageable, IShiftable
         SetTargetSkybox();
     }
 
-    public bool CanShift()
-    {
-        return canInteract && !isShifted;
-    }
-
     public int GetState()
     {
         return isShifted ? 1 : 0;
     }
 
-    protected override void OnInteractSuccess(GameObject interactor)
+    public void CollectOptions(PlayerInteractionContext context, List<InteractionOption> options)
     {
-        Debug.Log("[SaplingPuzzle] Got interaction");
-    }
-
-    protected override bool CanInteract(out string message)
-    {
-        message = null;
-
-        if (isShifted)
+        if(CanShift)
         {
-            message = "The omni-tree you grew bears the leaves of a whole new universe!";
-            return false;
+            options.Add(InteractionBuilder.Create(
+                InteractionType.Shift,
+                this
+            ));
+            options.Add(InteractionBuilder.Create(
+                InteractionType.Inspect,
+                this,
+                SHIFTABLE_INSPECT_MESSAGE
+            ));
         }
 
-        else if(canInteract)
+        if(isShifted)
         {
-            message = "The maleable course of time has been altered for this tree, it's ready to be shifted!";
-            return false;
+            options.Add(InteractionBuilder.Create(
+                InteractionType.Inspect,
+                this,
+                SHIFTED_INSPECT_MESSAGE
+            ));
         }
 
-        else
+        if(!CanShift)
         {
-            message = "This tree sapling needs more energy to grow, it can't be shifted yet.";
-            return false;
+            options.Add(InteractionBuilder.Create(
+                InteractionType.Inspect,
+                this,
+                UNSHIFTABLE_INSPECT_MESSAGE
+            ));
         }
     }
 }

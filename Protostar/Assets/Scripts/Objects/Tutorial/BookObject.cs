@@ -1,7 +1,8 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(CustomGravityBody))]
-public class BookObject : MonoBehaviour, IPickupable, IPlaceable
+public class BookObject : MonoBehaviour, IPickupable, IPlaceable, IInteractionCandidate
 {
     private CustomGravityBody gravityBody;
     private Rigidbody rb;
@@ -10,6 +11,10 @@ public class BookObject : MonoBehaviour, IPickupable, IPlaceable
     private GameObject currentPicker = null;
     private bool isInSlot = false;
     private bool _engaged = false;
+
+    private bool IsHeld => isPickedUp;
+    public bool IsInSlot => isInSlot;
+    private bool IsFree => !isPickedUp && !isInSlot;
 
     private void Awake()
     {
@@ -103,8 +108,6 @@ public class BookObject : MonoBehaviour, IPickupable, IPlaceable
     }
 
     // --- Slot placement ---
-    public bool IsInSlot => isInSlot;
-
     /// <summary>
     /// Called when this book is placed into a Slot.
     /// Keeps the book kinematic with colliders off.
@@ -120,7 +123,7 @@ public class BookObject : MonoBehaviour, IPickupable, IPlaceable
         foreach (var col in physicsColliders)
             col.enabled = false;
 
-        Debug.Log($"[SeedObject] {gameObject.name} placed in slot.");
+        Debug.Log($"[BookObject] {gameObject.name} placed in slot.");
     }
 
     /// <summary>
@@ -136,19 +139,27 @@ public class BookObject : MonoBehaviour, IPickupable, IPlaceable
         foreach (var col in physicsColliders)
             col.enabled = true;
 
-        Debug.Log($"[SeedObject] {gameObject.name} removed from slot.");
+        Debug.Log($"[BookObject] {gameObject.name} removed from slot.");
     }
-
-    // --- IEngageable ---
-    public void Engage(GameObject interactor)
+    
+    public void CollectOptions(PlayerInteractionContext context, List<InteractionOption> options)
     {
-        _engaged = true;
-        Debug.Log($"[SeedObject] Engaged with {gameObject.name}.");
-    }
+        // If free on ground then pickup
+        if (IsFree)
+        {
+            options.Add(InteractionBuilder.Create(
+                InteractionType.Pickup,
+                this
+            ));
+        }
 
-    public void Disengage(GameObject interactor)
-    {
-        _engaged = false;
-        Debug.Log($"[SeedObject] Disengaged from {gameObject.name}");
+        // If currently held by this interactor then can drop
+        if (IsHeld && gameObject.Equals(context.CarriedObject))
+        {
+            options.Add(InteractionBuilder.Create(
+                InteractionType.Drop,
+                this
+            ));
+        }
     }
 }

@@ -18,7 +18,6 @@ public class InputModeManager : MonoBehaviour
     public PlayerInput PlayerInput => playerInput;
 
     private const string PATTERN = @"{([A-Za-z0-9_]+)}";
-    private static Regex regex = new Regex(PATTERN);
 
     private void Awake()
     {
@@ -32,7 +31,7 @@ public class InputModeManager : MonoBehaviour
                 Debug.LogError("[InputManager] cannot find PlayerInput");
                 return;
             }
-            foreach(InputActionMap map in playerInput.actions.actionMaps)
+            foreach (InputActionMap map in playerInput.actions.actionMaps)
             {
                 map.Disable();
             }
@@ -56,6 +55,7 @@ public class InputModeManager : MonoBehaviour
 
     private void HandleControlsChanged(PlayerInput _playerInput)
     {
+        Debug.Log($"[InputModeManager] Controls changed!");
         InputMode inputMode;
         switch (playerInput.currentControlScheme)
         {
@@ -69,7 +69,8 @@ public class InputModeManager : MonoBehaviour
                 return;
         }
 
-        if (inputMode != CurrentInputMode) {
+        if (inputMode != CurrentInputMode)
+        {
             Debug.Log($"[InputModeManager] Set input mode to {inputMode}");
             CurrentInputMode = inputMode;
             InputModeChanged?.Invoke(inputMode);
@@ -78,7 +79,7 @@ public class InputModeManager : MonoBehaviour
 
     public static string ReplaceBindings(string input)
     {
-        PlayerInput playerInput = InputModeManager.Instance.PlayerInput;
+        PlayerInput playerInput = Instance.PlayerInput;
         return Regex.Replace(input, PATTERN, match =>
         {
             string actionName = match.Groups[1].Value;
@@ -129,13 +130,13 @@ public class InputModeManager : MonoBehaviour
                 Dictionary<string, List<string>> composites = GetCompositeActionGroupDisplayStrings(action, i);
                 foreach ((string part, List<string> binds) in composites)
                 {
-                    if(!res.ContainsKey(part))
+                    if (!res.ContainsKey(part))
                     {
                         res[part] = binds;
                     }
                     else
                     {
-                        foreach(var bind in binds)
+                        foreach (var bind in binds)
                         {
                             res[part].Add(bind);
                         }
@@ -222,14 +223,14 @@ public class InputModeManager : MonoBehaviour
         List<string> compositeBindings = new List<string>();
         for (int group = 0; group < maxGroups; group++)
         {
-            compositeBindings.Add("[" + string.Join(", ",  combinedBindings[group]) + "]");
+            compositeBindings.Add("[" + string.Join(", ", combinedBindings[group]) + "]");
         }
         return string.Join(" or ", compositeBindings);
     }
 
     private Dictionary<string, List<string>> GetCompositeActionGroupDisplayStrings(InputAction action, int i)
     {
-        if(!action.bindings[i].isComposite)
+        if (!action.bindings[i].isComposite)
         {
             Debug.LogError($"[InputModeManager] Action {action.name} binding index {i} is not composite");
             return null;
