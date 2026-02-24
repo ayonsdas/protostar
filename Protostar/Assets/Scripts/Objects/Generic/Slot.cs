@@ -177,12 +177,8 @@ public class Slot<T> :
             if (placeable != null)
             {
                 options.Add(InteractionBuilder.Create(
-                    InteractionType.Place,
-                    this,
-                    () =>
-                    {
-                        context.ClearCarriedObject();
-                    }
+                    InteractionType.SlotPlace,
+                    this
                 ));
             }
         }
@@ -191,16 +187,8 @@ public class Slot<T> :
         if (!context.IsCarrying && IsFilled)
         {
             options.Add(InteractionBuilder.Create(
-                InteractionType.Place,
-                this,
-                () =>
-                {
-                    var obj = RemoveObject();
-                    if (obj != null)
-                    {
-                        context.SetCarriedObject(obj.gameObject);
-                    }
-                }
+                InteractionType.SlotRemove,
+                this
             ));
         }
     }

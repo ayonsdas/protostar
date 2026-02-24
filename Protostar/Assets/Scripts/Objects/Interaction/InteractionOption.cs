@@ -8,11 +8,14 @@ public struct InteractionOption
     // UI message to display
     public string Prompt;
     // What to do on interact
-    public Action Execute;
+    public Action<PlayerInteractor> OnPressed;
+    public Action<PlayerInteractor> OnReleased;
     public MonoBehaviour Source;
     public InteractionInputType InputType;
 
-    public bool IsValid => Type != InteractionType.None && Execute != null;
+    public bool IsValid => ValidType && ValidAction;
+    private bool ValidType => Type != InteractionType.None;
+    private bool ValidAction => OnPressed != null || OnReleased != null;
 }
 
 public struct InteractionDefinition
@@ -20,6 +23,8 @@ public struct InteractionDefinition
     public InteractionInputType InputType;
     public InteractionType Type;
     public string DefaultPrompt;
+    public Action<PlayerInteractor, MonoBehaviour> DefaultOnPressed;
+    public Action<PlayerInteractor, MonoBehaviour> DefaultOnReleased;
 }
 
 public static class InteractionBuilder
@@ -33,26 +38,44 @@ public static class InteractionBuilder
             {
                 Type = InteractionType.Shift,
                 InputType = InteractionInputType.Shift,
-                DefaultPrompt = ""
+                DefaultPrompt = "",
+                DefaultOnPressed = (interactor, source) =>
+                {
+                    interactor.TryBeginShift(source);
+                },
+                DefaultOnReleased = (interactor, source) =>
+                {
+                    interactor.EndShift();
+                }
             }
         },
         {
 
-            InteractionType.Place,
+            InteractionType.SlotPlace,
             new InteractionDefinition
             {
-                Type = InteractionType.Place,
+                Type = InteractionType.SlotPlace,
                 InputType = InteractionInputType.Interact,
-                DefaultPrompt = ""
+                DefaultPrompt = "",
+                DefaultOnPressed = (interactor, source) =>
+                {
+                    interactor.TryPlaceInto(source);
+                },
+                DefaultOnReleased = (interactor, source) => { }
             }
         },
         {
-            InteractionType.RemoveFromSlot,
+            InteractionType.SlotRemove,
             new InteractionDefinition
             {
-                Type = InteractionType.RemoveFromSlot,
+                Type = InteractionType.SlotRemove,
                 InputType = InteractionInputType.Interact,
-                DefaultPrompt = ""
+                DefaultPrompt = "",
+                DefaultOnPressed = (interactor, source) =>
+                {
+                    interactor.TryTakeFrom(source);
+                },
+                DefaultOnReleased = (interactor, source) => { }
             }
         },
         {
@@ -61,7 +84,12 @@ public static class InteractionBuilder
             {
                 Type = InteractionType.Pickup,
                 InputType = InteractionInputType.Interact,
-                DefaultPrompt = ""
+                DefaultPrompt = "",
+                DefaultOnPressed = (interactor, source) =>
+                {
+                    interactor.PickupObject(source);
+                },
+                DefaultOnReleased = (interactor, source) => { }
             }
         },
         {
@@ -70,16 +98,24 @@ public static class InteractionBuilder
             {
                 Type = InteractionType.Drop,
                 InputType = InteractionInputType.Interact,
-                DefaultPrompt = ""
+                DefaultPrompt = "",
+                DefaultOnPressed = (interactor, source) =>
+                {
+                    interactor.DropCarriedObject();
+                },
+                DefaultOnReleased = (interactor, source) => { }
             }
         },
+        // TODO Implement this if we actually plan to have any engagable, non-shiftable objects  
         {
             InteractionType.Engage,
             new InteractionDefinition
             {
                 Type = InteractionType.Engage,
                 InputType = InteractionInputType.Interact,
-                DefaultPrompt = ""
+                DefaultPrompt = "",
+                DefaultOnPressed = (interactor, source) => { },
+                DefaultOnReleased = (interactor, source) => { }
             }
         },
         {
@@ -88,7 +124,12 @@ public static class InteractionBuilder
             {
                 Type = InteractionType.Interact,
                 InputType = InteractionInputType.Interact,
-                DefaultPrompt = ""
+                DefaultPrompt = "",
+                DefaultOnPressed = (interactor, source) =>
+                {
+                    interactor.InteractWithObject(source);
+                },
+                DefaultOnReleased = (interactor, source) => { }
             }
         }
     };
@@ -96,7 +137,6 @@ public static class InteractionBuilder
     public static InteractionOption Create(
         InteractionType type,
         MonoBehaviour source,
-        Action execute,
         string promptOverride = null)
     {
         var def = _definitions[type];
@@ -107,7 +147,8 @@ public static class InteractionBuilder
             InputType = def.InputType,
             Source = source,
             Prompt = promptOverride ?? def.DefaultPrompt,
-            Execute = execute
+            OnPressed = interactor => def.DefaultOnPressed(interactor, source),
+            OnReleased = interactor => def.DefaultOnReleased(interactor, source)
         };
     }
 }

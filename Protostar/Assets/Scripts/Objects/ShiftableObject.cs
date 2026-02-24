@@ -52,24 +52,20 @@ public class ShiftableObject : MonoBehaviour, IEngageable, IShiftable, IInteract
     public void Engage(GameObject interactor)
     {
         _engaged = true;
-        Debug.Log("Engaged with " + this.gameObject.name);
+        Debug.Log("[ShiftableObject] Engaged with " + gameObject.name);
     }
 
     public void Disengage(GameObject interactor)
     {
         _engaged = false;
-        Debug.Log("Disengaged with " + this.gameObject.name);
+        Debug.Log("[ShiftableObject] Disengaged with " + gameObject.name);
     }
 
     public void CollectOptions(PlayerInteractionContext context, List<InteractionOption> options)
     {
-        options.Add(new InteractionOption
-        {
-            Type = InteractionType.Shift,
-            InputType = InteractionInputType.Shift,
-            Prompt = "Shift",
-            Source = this,
-            Execute = () => { }
-        });
+        options.Add(InteractionBuilder.Create(
+            InteractionType.Shift,
+            this
+        ));
     }
 }

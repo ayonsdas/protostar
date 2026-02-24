@@ -165,8 +165,7 @@ public class Cabinet : BaseInteractable, IInteractionCandidate
         {
             options.Add(InteractionBuilder.Create(
                 InteractionType.Interact,
-                this,
-                () => { }
+                this
             ));
         }
     }

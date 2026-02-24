@@ -27,6 +27,7 @@ public class SeedObject : MonoBehaviour, IPickupable, IPlaceable, IEngageable, I
 
     private bool IsHeld => isPickedUp;
     public bool IsInSlot => isInSlot;
+    private bool IsShiftable => !isPickedUp && !isInSlot;
     private bool IsFree => !isPickedUp && !isInSlot && !isShifted;
 
     private void Awake()
@@ -314,35 +315,29 @@ public class SeedObject : MonoBehaviour, IPickupable, IPlaceable, IEngageable, I
 
     public void CollectOptions(PlayerInteractionContext context, List<InteractionOption> options)
     {
-        options.Add(InteractionBuilder.Create(
-            InteractionType.Shift,
-            this,
-            () => { }
-        ));
+        if (IsShiftable)
+        {
+            options.Add(InteractionBuilder.Create(
+                InteractionType.Shift,
+                this
+            ));
+        }
 
         // If free on ground then pickup
         if (IsFree)
         {
             options.Add(InteractionBuilder.Create(
                 InteractionType.Pickup,
-                this,
-                () =>
-                {
-                    context.SetCarriedObject(gameObject);
-                }
+                this
             ));
         }
 
         // If currently held by this interactor then can drop
-        if (IsHeld && gameObject.Equals(context.CarriedObject))
+        if (IsHeld)
         {
             options.Add(InteractionBuilder.Create(
                 InteractionType.Drop,
-                this,
-                () =>
-                {
-                    context.DropCarriedObject();
-                }
+                this
             ));
         }
     }

@@ -2,8 +2,8 @@ public enum InteractionType
 {
     None = 0,
     Shift,
-    Place,
-    RemoveFromSlot,
+    SlotPlace,
+    SlotRemove,
     Pickup,
     Drop,
     Engage,

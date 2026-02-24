@@ -10,10 +10,6 @@ public class PlayerInteractor : Interactor
     [SerializeField] private Transform pickupHoldPoint; // Position above player's head
     [SerializeField] private float dropDistance = 2f; // Distance in front to drop
 
-    [Header("Interaction Settings")]
-    [SerializeField] private float interactionRadius = 3f;
-    [SerializeField] private LayerMask interactionMask;
-
     [Header("Interaction UI")]
     [SerializeField] private InteractableUI interactionUI; // UI element to show interaction messages
 
@@ -78,38 +74,109 @@ public class PlayerInteractor : Interactor
         }
     }
 
+    // BUTTON CALLBACKS
+    public void OnShift(InputValue value)
+    {
+        InteractionOption bestOption;
+        // No option for shift exists
+        if(!_bestOptionByInput.TryGetValue(InteractionInputType.Shift, out bestOption))
+        {
+            Debug.Log($"[PlayerInteractor] No available shift option, Shift pressed: {value.isPressed} Best option: {bestOption}");
+            return;
+        }
+
+        if(!string.IsNullOrEmpty(bestOption.Prompt))
+        {
+            interactionUI?.Show(bestOption.Prompt);
+        }
+
+        if (value.isPressed)
+        {
+            Debug.Log($"[PlayerInteractor] Invoking shift press, Best option: {bestOption} Source: {bestOption.Source.name}");
+            bestOption.OnPressed?.Invoke(this);
+        }
+        else
+        {
+            Debug.Log($"[PlayerInteractor] Invoking shift release, Best option: {bestOption} Source: {bestOption.Source.name}");
+            bestOption.OnReleased?.Invoke(this);
+        }
+    }
+
+    public void OnInteract(InputValue value)
+    {
+        InteractionOption bestOption;
+        // No option for interaction exists
+        if(!_bestOptionByInput.TryGetValue(InteractionInputType.Interact, out bestOption))
+        {
+            return;
+        }
+
+        if(!string.IsNullOrEmpty(bestOption.Prompt))
+        {
+            interactionUI?.Show(bestOption.Prompt);
+        }
+
+        if(value.isPressed)
+        {
+            bestOption.OnPressed?.Invoke(this);
+        }
+        else
+        {
+            bestOption.OnReleased?.Invoke(this);
+        }
+
+    }
+
+    // FUNCTIONS TO BE USED IN INTERACTION OPTIONS
     protected override PlayerInteractionContext BuildContext()
     {
         return new PlayerInteractionContext
         {
             Player = gameObject,
             CarriedObject = carriedObject,
-            IsCarrying = carriedObject != null,
-            SetCarriedObject = SetCarriedObjectInternal,
-            DropCarriedObject = DropCarriedObjectInternal,
-            ClearCarriedObject = ClearCarriedObjectInternal
+            IsCarrying = carriedObject != null
         };
     }
 
-    private void SetCarriedObjectInternal(GameObject obj)
+    public void PickupObject(MonoBehaviour source)
     {
-        carriedObject = obj;
-        carriedPickupable = obj.GetComponent<IPickupable>();
+        IPickupable pickupable = source.GetComponent<IPickupable>();
+        if(pickupable == null)
+            return;
 
-        obj.transform.SetParent(pickupHoldPoint);
-        obj.transform.localPosition = Vector3.zero;
-        obj.transform.localRotation = Quaternion.identity;
+        carriedPickupable = pickupable;
+        carriedObject = source.gameObject;
+
+        carriedObject.transform.SetParent(pickupHoldPoint);
+        carriedObject.transform.localPosition = Vector3.zero;
+        carriedObject.transform.localRotation = Quaternion.identity;
 
         carriedPickupable?.OnPickup(gameObject);
     }
 
-    private void ClearCarriedObjectInternal()
+    public void PickupObject(GameObject obj)
+    {
+        IPickupable pickupable = obj.GetComponent<IPickupable>();
+        if(pickupable == null)
+            return;
+
+        carriedPickupable = pickupable;
+        carriedObject = obj;
+
+        carriedObject.transform.SetParent(pickupHoldPoint);
+        carriedObject.transform.localPosition = Vector3.zero;
+        carriedObject.transform.localRotation = Quaternion.identity;
+
+        carriedPickupable?.OnPickup(gameObject);
+    }
+
+    public void ClearCarriedObject()
     {
         carriedObject = null;
         carriedPickupable = null;
     }
 
-    private void DropCarriedObjectInternal()
+    public void DropCarriedObject()
     {
         if (carriedObject == null)
             return;
@@ -124,50 +191,56 @@ public class PlayerInteractor : Interactor
         // Notify the object
         carriedPickupable?.OnDrop(gameObject);
 
-        ClearCarriedObjectInternal();
+        ClearCarriedObject();
     }
 
-    public void OnInteract(InputValue value)
+    public void TryPlaceInto(MonoBehaviour source)
     {
-        if (!value.isPressed)
-        {
+        if (carriedObject == null)
             return;
-        }
 
-        if(!string.IsNullOrEmpty(currentOption.Prompt))
-        {
-            interactionUI?.Show(currentOption.Prompt);
-        }
+        var slot = source.GetComponent<IPlaceableSlot>();
+        if (slot == null)
+            return;
 
-        currentOption.Execute?.Invoke();
-    }
-
-    public void OnShift(InputValue value)
-    {
-        if (value.isPressed)
+        if(slot.TryPlace(carriedObject))
         {
-            TryBeginShift();
-        }
-        else
-        {
-            EndShift();
+            ClearCarriedObject();
         }
     }
 
-    private void TryBeginShift()
+    public void TryTakeFrom(MonoBehaviour source)
     {
+        var slot = source.GetComponent<IPlaceableSlot>();
+        if (slot == null)
+            return;
+
+        var obj = slot.TryRemove();
+
+        if (obj == null)
+            return;
+
+        PickupObject(obj);
+    }
+
+    public void InteractWithObject(MonoBehaviour source)
+    {
+        var interactable = source.GetComponent<IInteractable>();
+        if (interactable == null)
+            return;
+
+        interactable.Interact(gameObject);
+    }
+
+    public void TryBeginShift(MonoBehaviour source)
+    {
+
+        // Already started shifting, don't need to do again
         if (isShiftHeld)
             return;
 
-        // Use the current resolved option
-        if (currentOption.Type != InteractionType.Shift)
-            return;
-
-        if (currentOption.Source == null)
-            return;
-
-        activeShiftTarget = currentOption.Source.GetComponent<IShiftable>();
-        activeShiftEngageable = currentOption.Source.GetComponent<IEngageable>();
+        activeShiftTarget = source.GetComponent<IShiftable>();
+        activeShiftEngageable = source.GetComponent<IEngageable>();
 
         if (activeShiftTarget == null)
             return;
@@ -178,8 +251,9 @@ public class PlayerInteractor : Interactor
         playerController?.SetMovementLocked(true);
     }
 
-    private void EndShift()
+    public void EndShift()
     {
+        Debug.Log($"[PlayerInteractor] ending shift with {activeShiftTarget} shift held: {isShiftHeld}");
         if (!isShiftHeld)
             return;
 

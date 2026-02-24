@@ -3,17 +3,16 @@ using UnityEngine;
 
 public abstract class Interactor : MonoBehaviour
 {
-
-    [SerializeField] private float range = 4f;
-    [SerializeField] private LayerMask interactableMask;
-    [SerializeField] private Transform origin;
+    [Header("Interaction Settings")]
+    [SerializeField] protected float interactionRadius = 3f;
+    [SerializeField] protected LayerMask interactionMask;
 
     protected readonly List<IInteractionCandidate> nearby = new();
-    protected InteractionOption currentOption;
     protected IFocusable currentFocus;
+    private IInteractionCandidate _focusedCandidate;
 
     private readonly List<InteractionOption> _options = new();
-    private readonly Dictionary<InteractionInputType, InteractionOption> _bestByInput
+    protected readonly Dictionary<InteractionInputType, InteractionOption> _bestOptionByInput
     = new Dictionary<InteractionInputType, InteractionOption>();
 
     protected abstract PlayerInteractionContext BuildContext();
@@ -28,42 +27,66 @@ public abstract class Interactor : MonoBehaviour
     {
         var context = BuildContext();
 
-        _options.Clear();
+        IInteractionCandidate newFocus = null;
+        float bestFocusScore = float.MinValue;
+
 
         foreach (var candidate in nearby)
         {
-            candidate.CollectOptions(context, _options);
+            if(!candidate.HasAnyValidInteraction(context))
+                continue;
+                
+            float score = CalculateFocusScore(candidate, context);
+
+            if (score > bestFocusScore)
+            {
+                bestFocusScore = score;
+                newFocus = candidate;
+            }
         }
+
+        ApplyFocus(newFocus);
+        _focusedCandidate = newFocus;
+        ResolveOptionsForFocused(context);
+    }
+
+    private void ResolveOptionsForFocused(PlayerInteractionContext context)
+    {
+        _bestOptionByInput.Clear();
+        _options.Clear();
+
+        if (_focusedCandidate == null)
+            return;
+
+        _focusedCandidate.CollectOptions(context, _options);
 
         foreach (var option in _options)
         {
             if (!option.IsValid)
                 continue;
 
-            float score = CalculateScore(option);
-            InteractionOption bestOption;
-            if (_bestByInput.TryGetValue(option.InputType, out var currentBest))
+            float score = InteractionPriority.Get(option.Type);
+
+            if (_bestOptionByInput.TryGetValue(option.InputType, out var existing))
             {
-                if (score > currentBest.Score)
-                {
-                    _bestByInput[option.InputType] = option;
-                }
+                float bestScore = InteractionPriority.Get(option.Type);
+                if (score > bestScore)
+                    _bestOptionByInput[option.InputType] = option;
             }
             else
             {
-                _bestByInput.Add(option.InputType, option);
+                _bestOptionByInput.Add(option.InputType, option);
             }
-
-            ApplyFocus(best);
-        currentOption = best;
+        }
     }
 
     // Shift focus to new best InteractionOption
-    private void ApplyFocus(InteractionOption interaction)
+    private void ApplyFocus(IInteractionCandidate candidate)
     {
         IFocusable newFocus = null;
-        if (interaction.Source)
-            newFocus = interaction.Source.gameObject.GetComponentInParent<IFocusable>();
+        MonoBehaviour mb = candidate as MonoBehaviour;
+        if (mb != null)
+            newFocus = mb.gameObject.GetComponentInParent<IFocusable>();
 
         if (newFocus == currentFocus)
         {
@@ -76,18 +99,22 @@ public abstract class Interactor : MonoBehaviour
         currentFocus = newFocus;
     }
 
-    private float CalculateScore(InteractionOption option)
-    {
-        int basePriority = InteractionPriority.Get(option.Type);
+    private float CalculateFocusScore(IInteractionCandidate candidate, PlayerInteractionContext context)
+    {            
+
+        var mb = candidate as MonoBehaviour;
+        if(!mb) 
+            return float.MinValue;
+
 
         // Distance weighting
-        var mb = option.Source;
         float distance = Vector3.Distance(transform.position, mb.transform.position);
+        float distanceWeight = Mathf.Clamp01(1f - (distance / interactionRadius));
 
         // Angle weighting
         Vector3 dir = (mb.transform.position - transform.position).normalized;
-        float dot = Vector3.Dot(transform.forward, dir);
+        float angleWeight = Vector3.Dot(transform.forward, dir) * 10f;
 
-        return basePriority * 1000f + dot * 10f - distance;
+        return angleWeight + distanceWeight;
     }
 }

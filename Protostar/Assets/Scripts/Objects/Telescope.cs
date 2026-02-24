@@ -39,6 +39,8 @@ public class Telescope : BaseInteractable, IInteractionCandidate
     private float currentHorizontalAngle = 0f;
     private float currentVerticalAngle = 0f;
 
+    private bool IsUnlocked => requiredPuzzle == null || requiredPuzzle.GetState() != 0;
+
     void Start()
     {
         // Disable telescope camera by default
@@ -304,12 +306,11 @@ public class Telescope : BaseInteractable, IInteractionCandidate
 
     public void CollectOptions(PlayerInteractionContext context, List<InteractionOption> options)
     {
-        if (requiredPuzzle == null || requiredPuzzle.GetState() != 0)
+        if (IsUnlocked)
         {
             options.Add(InteractionBuilder.Create(
                 InteractionType.Interact,
-                this,
-                () => { }
+                this
             ));
         }
     }

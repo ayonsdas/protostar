@@ -141,20 +141,7 @@ public class BookObject : MonoBehaviour, IPickupable, IPlaceable, IInteractionCa
 
         Debug.Log($"[BookObject] {gameObject.name} removed from slot.");
     }
-
-    // --- IEngageable ---
-    public void Engage(GameObject interactor)
-    {
-        _engaged = true;
-        Debug.Log($"[BookObject] Engaged with {gameObject.name}.");
-    }
-
-    public void Disengage(GameObject interactor)
-    {
-        _engaged = false;
-        Debug.Log($"[BookObject] Disengaged from {gameObject.name}");
-    }
-
+    
     public void CollectOptions(PlayerInteractionContext context, List<InteractionOption> options)
     {
         // If free on ground then pickup
@@ -162,11 +149,7 @@ public class BookObject : MonoBehaviour, IPickupable, IPlaceable, IInteractionCa
         {
             options.Add(InteractionBuilder.Create(
                 InteractionType.Pickup,
-                this,
-                () =>
-                {
-                    context.SetCarriedObject(gameObject);
-                }
+                this
             ));
         }
 
@@ -175,11 +158,7 @@ public class BookObject : MonoBehaviour, IPickupable, IPlaceable, IInteractionCa
         {
             options.Add(InteractionBuilder.Create(
                 InteractionType.Drop,
-                this,
-                () =>
-                {
-                    context.DropCarriedObject();
-                }
+                this
             ));
         }
     }

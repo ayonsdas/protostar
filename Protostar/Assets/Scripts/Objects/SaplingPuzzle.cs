@@ -314,10 +314,13 @@ public class SaplingPuzzle : BaseInteractable, IEngageable, IShiftable, IInterac
 
     public void CollectOptions(PlayerInteractionContext context, List<InteractionOption> options)
     {
-        options.Add(InteractionBuilder.Create(
-            InteractionType.Shift,
-            this,
-            () => { }
-        ));
+        if(CanShift())
+        {
+            options.Add(InteractionBuilder.Create(
+                InteractionType.Shift,
+                this
+            ));
+        }
+
     }
 }
