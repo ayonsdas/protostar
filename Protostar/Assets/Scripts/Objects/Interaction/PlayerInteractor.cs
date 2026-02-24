@@ -50,6 +50,40 @@ public class PlayerInteractor : Interactor
         triggerCollider.radius = interactionRadius;
     }
 
+    private void OnEnable()
+    {
+        if (InputModeManager.Instance == null || InputModeManager.Instance.PlayerInput == null)
+        {
+            Debug.LogWarning($"[PlayerController] Cannot find PlayerInput {InputModeManager.Instance}");
+        }
+        else
+        {
+            PlayerInput playerInput = InputModeManager.Instance.PlayerInput;
+            playerInput.actions["Move"].performed += OnMove;
+            playerInput.actions["Interact"].performed += OnInteract;
+            playerInput.actions["Interact"].canceled += OnInteract;
+            playerInput.actions["Shift"].performed += OnShift;
+            playerInput.actions["Shift"].canceled += OnShift;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (InputModeManager.Instance == null || InputModeManager.Instance.PlayerInput == null)
+        {
+            Debug.LogWarning($"[PlayerController] Cannot find PlayerInput {InputModeManager.Instance}");
+        }
+        else
+        {
+            PlayerInput playerInput = InputModeManager.Instance.PlayerInput;
+            playerInput.actions["Move"].performed -= OnMove;
+            playerInput.actions["Interact"].performed -= OnInteract;
+            playerInput.actions["Interact"].canceled -= OnInteract;
+            playerInput.actions["Shift"].performed -= OnShift;
+            playerInput.actions["Shift"].canceled -= OnShift;
+        }
+    }
+
     // Used with the sphere collider in order to detect interactables nearby
     private void OnTriggerEnter(Collider other)
     {
@@ -79,7 +113,7 @@ public class PlayerInteractor : Interactor
     /// Callback hooking the PlayerInput Shift action to use best InteractionOption
     /// of InteractionInputType = Shift
     /// </summary>
-    public void OnShift(InputValue value)
+    public void OnShift(InputAction.CallbackContext ctx)
     {
         InteractionOption bestOption;
         // No option for shift exists
@@ -89,18 +123,16 @@ public class PlayerInteractor : Interactor
             return;
         }
 
-        // Display overlay prompt if present
-        if (!string.IsNullOrEmpty(bestOption.Prompt))
-        {
-            interactionUI?.Show(bestOption.Prompt);
-        }
-
-        if (value.isPressed)
+        // Shift button is pressed
+        if (ctx.performed)
         {
             // Debug.Log($"[PlayerInteractor] Invoking shift press, Best option: {bestOption} Source: {bestOption.Source.name}");
+            // Display UI prompt only on press so it doesn't get called twice
+            DisplayPrompt(bestOption);
             bestOption.OnPressed?.Invoke(this);
         }
-        else
+        // Shift button is released
+        else if (ctx.canceled)
         {
             // Debug.Log($"[PlayerInteractor] Invoking shift release, Best option: {bestOption} Source: {bestOption.Source.name}");
             bestOption.OnReleased?.Invoke(this);
@@ -111,7 +143,7 @@ public class PlayerInteractor : Interactor
     /// Callback hooking the PlayerInput Interact action to use best InteractionOption
     /// of InteractionInputType = Interact
     /// </summary>
-    public void OnInteract(InputValue value)
+    public void OnInteract(InputAction.CallbackContext ctx)
     {
         InteractionOption bestOption;
         // No option for interaction exists
@@ -120,16 +152,13 @@ public class PlayerInteractor : Interactor
             return;
         }
 
-        if (!string.IsNullOrEmpty(bestOption.Prompt))
+        if (ctx.performed)
         {
-            interactionUI?.Show(bestOption.Prompt);
-        }
-
-        if (value.isPressed)
-        {
+            // Display UI prompt only on press so it doesn't get called twice
+            DisplayPrompt(bestOption);
             bestOption.OnPressed?.Invoke(this);
         }
-        else
+        else if (ctx.canceled)
         {
             bestOption.OnReleased?.Invoke(this);
         }
@@ -138,16 +167,25 @@ public class PlayerInteractor : Interactor
     /// <summary>
     /// Callback hooking the PlayerInput Move action to track input during shifting
     /// </summary>
-    public void OnMove(InputValue value)
+    public void OnMove(InputAction.CallbackContext ctx)
     {
         // When shift is held, capture WASD as shift input instead of movement
         if (isShiftHeld)
         {
-            shiftInput = value.Get<Vector2>();
+            shiftInput = ctx.ReadValue<Vector2>();
         }
     }
 
     // FUNCTIONS TO BE USED IN INTERACTION OPTIONS
+
+    private void DisplayPrompt(InteractionOption option)
+    {
+        if (!string.IsNullOrEmpty(option.Prompt))
+        {
+            interactionUI?.Show(option.Prompt);
+        }
+    }
+
     /// <summary>
     /// Builds player state context information for interactables to evaluate
     /// and then choose available options
@@ -400,7 +438,9 @@ public class PlayerInteractor : Interactor
 
     private void PlayShiftSound()
     {
-        Debug.Log($"[PlayerInteractor] playing shift sound target type: {activeShiftTarget?.GetType()}");
+        if (!enableShiftSound)
+            return;
+
         MonoBehaviour mb = activeShiftTarget as MonoBehaviour;
         if (mb == null)
         {

@@ -44,9 +44,9 @@ public class TestPlayerController : MonoBehaviour
     }
 
     // This function automatically runs whenever the State Manager changes states
-    private void OnGameStateChanged(GameStateManager.GameState newState)
+    private void OnGameStateChanged(GameState newState)
     {
-        if (newState == GameStateManager.GameState.InGame)
+        if (newState == GameState.InGame)
         {
             // Resume Game: Lock cursor and enable movement
             Cursor.lockState = CursorLockMode.Locked;
@@ -71,7 +71,7 @@ public class TestPlayerController : MonoBehaviour
         {
             if (GameStateManager.Instance != null)
             {
-                GameStateManager.Instance.SetState(GameStateManager.GameState.Paused);
+                GameStateManager.Instance.SetState(GameState.Paused);
                 return; // Stop processing this frame
             }
         }

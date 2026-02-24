@@ -149,16 +149,16 @@ public class Cabinet : BaseInteractable, IInteractionCandidate
 
     public void CollectOptions(PlayerInteractionContext context, List<InteractionOption> options)
     {
-        if(CanInteract)
+        if (CanInteract)
         {
-            options.Add(InteractionBuilder.Create(
+            options.Add(InteractionOptionBuilder.Create(
                 InteractionType.Interact,
                 this
             ));
         }
         else
         {
-            options.Add(InteractionBuilder.Create(
+            options.Add(InteractionOptionBuilder.Create(
                 InteractionType.Inspect,
                 this,
                 INSPECT_MESSAGE

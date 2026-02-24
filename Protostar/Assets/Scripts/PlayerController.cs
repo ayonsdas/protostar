@@ -33,8 +33,6 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rb;
     private CustomGravityBody gravityBody;
     private Vector2 moveInput;
-    private Vector2 mouseDelta;
-    private bool isMouseHeld = false;
     private bool isGrounded;
     private Quaternion targetRotation;
     private EventInstance footstepEventInstance;
@@ -129,6 +127,38 @@ public class PlayerController : MonoBehaviour
         UpdateSound();
     }
 
+    private void OnEnable()
+    {
+        if (InputModeManager.Instance == null || InputModeManager.Instance.PlayerInput == null)
+        {
+            Debug.LogWarning($"[PlayerController] Cannot find PlayerInput {InputModeManager.Instance}");
+        }
+        else
+        {
+            PlayerInput playerInput = InputModeManager.Instance.PlayerInput;
+            playerInput.actions["Move"].performed += OnMove;
+            playerInput.actions["Move"].canceled += OnMove;
+            playerInput.actions["Jump"].performed += OnJump;
+            playerInput.actions["RotateGravity"].performed += OnRotateGravity;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (InputModeManager.Instance == null || InputModeManager.Instance.PlayerInput == null)
+        {
+            Debug.LogWarning($"[PlayerController] Cannot find PlayerInput {InputModeManager.Instance}");
+        }
+        else
+        {
+            PlayerInput playerInput = InputModeManager.Instance.PlayerInput;
+            playerInput.actions["Move"].performed -= OnMove;
+            playerInput.actions["Move"].canceled -= OnMove;
+            playerInput.actions["Jump"].performed -= OnJump;
+            playerInput.actions["RotateGravity"].performed -= OnRotateGravity;
+        }
+    }
+
     void AlignToGravity()
     {
         // Get the "up" direction (opposite of gravity)
@@ -220,56 +250,21 @@ public class PlayerController : MonoBehaviour
         // Smoothly align player to gravity direction (after turning so it doesn't override)
         AlignToGravity();
 
-        // Reset mouse delta each frame so it doesn't persist
-        mouseDelta = Vector2.zero;
     }
 
     // Called by Player Input component (Send Messages behavior)
-    public void OnMove(InputValue value)
+    public void OnMove(InputAction.CallbackContext ctx)
     {
         if (!movementLocked)
         {
-            moveInput = value.Get<Vector2>();
-        }
-    }
-    
-    // Called by Player Input component for mouse delta
-    public void OnLook(InputValue value)
-    {
-        // Only accept mouse input if not requiring hold, or if mouse is held
-        if (!requireMouseHold || isMouseHeld)
-        {
-            mouseDelta = value.Get<Vector2>();
-        }
-        else
-        {
-            mouseDelta = Vector2.zero;
-        }
-    }
-    
-    // Called when mouse button is pressed/released
-    public void OnMouseHold(InputValue value)
-    {
-        isMouseHeld = value.isPressed;
-        Debug.Log($"[MouseHold] isPressed: {value.isPressed}, isMouseHeld: {isMouseHeld}");
-        
-        // Lock/unlock cursor based on mouse hold state
-        if (isMouseHeld)
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-        }
-        else
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+            moveInput = ctx.ReadValue<Vector2>();
         }
     }
 
     // Called by Player Input component (Send Messages behavior)
-    public void OnJump(InputValue value)
+    public void OnJump(InputAction.CallbackContext ctx)
     {
-        if (isGrounded && rb != null && value.isPressed)
+        if (isGrounded && rb != null && ctx.performed)
         {
             // Jump in the opposite direction of gravity
             Vector3 jumpDirection = gravityBody.GetUpDirection();
@@ -279,11 +274,11 @@ public class PlayerController : MonoBehaviour
     }
 
     // Called by Player Input component (Send Messages behavior)
-    public void OnRotateGravity(InputValue value)
+    public void OnRotateGravity(InputAction.CallbackContext ctx)
     {
-        Debug.Log($"OnRotateGravity called! isPressed: {value.isPressed}");
+        Debug.Log($"OnRotateGravity called! isPressed: {ctx.performed}");
 
-        if (value.isPressed && GravityController.Instance != null)
+        if (ctx.performed && GravityController.Instance != null)
         {
             Debug.Log("Rotating gravity!");
             // Rotate gravity 90 degrees around the X axis

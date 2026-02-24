@@ -11,11 +11,11 @@ public class SeedObject : MonoBehaviour, IPickupable, IPlaceable, IEngageable, I
 {
     [Header("Colliders")]
     [SerializeField] private Collider pickupTrigger; // Optional: separate trigger collider for easier pickup
-    
+
     [Header("Tree Shift")]
     [SerializeField] private GameObject treeModel; // Assign a tree prefab/model as a child (disabled by default)
     [SerializeField] private GameObject seedModel; // The seed visual (if separate from root)
-    
+
     private CustomGravityBody gravityBody;
     private Rigidbody rb;
     private Collider[] physicsColliders;
@@ -34,7 +34,7 @@ public class SeedObject : MonoBehaviour, IPickupable, IPlaceable, IEngageable, I
     {
         gravityBody = GetComponent<CustomGravityBody>();
         rb = GetComponent<Rigidbody>();
-        
+
         // Get only non-trigger colliders for physics
         Collider[] allColliders = GetComponentsInChildren<Collider>();
         System.Collections.Generic.List<Collider> physicsList = new System.Collections.Generic.List<Collider>();
@@ -46,17 +46,17 @@ public class SeedObject : MonoBehaviour, IPickupable, IPlaceable, IEngageable, I
             }
         }
         physicsColliders = physicsList.ToArray();
-        
+
         // Set initial gravity to the seed's local down direction (-Y axis)
         SetGravityDirection(-transform.up);
-        
+
         // Make sure tree model is hidden at start
         if (treeModel != null)
         {
             treeModel.SetActive(false);
         }
     }
-    
+
     private void Update()
     {
         // While being held, continuously sync with player's gravity
@@ -69,7 +69,7 @@ public class SeedObject : MonoBehaviour, IPickupable, IPlaceable, IEngageable, I
             }
         }
     }
-    
+
     /// <summary>
     /// Set the gravity direction for this seed
     /// </summary>
@@ -80,7 +80,7 @@ public class SeedObject : MonoBehaviour, IPickupable, IPlaceable, IEngageable, I
             gravityBody.SetCustomGravityDirection(direction.normalized);
         }
     }
-    
+
     /// <summary>
     /// Get the current gravity direction for this seed
     /// </summary>
@@ -92,7 +92,7 @@ public class SeedObject : MonoBehaviour, IPickupable, IPlaceable, IEngageable, I
         }
         return Vector3.down;
     }
-    
+
     public bool CanPickup()
     {
         return !isShifted && !isPickedUp && !isInSlot;
@@ -105,51 +105,51 @@ public class SeedObject : MonoBehaviour, IPickupable, IPlaceable, IEngageable, I
 
         isPickedUp = true;
         currentPicker = picker;
-        
+
         // Make kinematic while held
         if (rb != null)
         {
             rb.isKinematic = true;
         }
-        
+
         // Disable colliders while held
         foreach (var col in physicsColliders)
         {
             col.enabled = false;
         }
-        
+
         // Also disable pickup trigger if assigned
         if (pickupTrigger != null)
         {
             pickupTrigger.enabled = false;
         }
-        
+
         // Gravity will be continuously synced in Update()
     }
-    
+
     public void OnDrop(GameObject picker)
     {
         isPickedUp = false;
         currentPicker = null;
-        
+
         // Re-enable physics
         if (rb != null)
         {
             rb.isKinematic = false;
         }
-        
+
         // Re-enable colliders
         foreach (var col in physicsColliders)
         {
             col.enabled = true;
         }
-        
+
         // Also re-enable pickup trigger if assigned
         if (pickupTrigger != null)
         {
             pickupTrigger.enabled = true;
         }
-        
+
         // Maintain current gravity direction (player's gravity at drop time)
         // No need to change anything - gravityBody already has the correct direction
     }
@@ -317,7 +317,7 @@ public class SeedObject : MonoBehaviour, IPickupable, IPlaceable, IEngageable, I
     {
         if (IsShiftable)
         {
-            options.Add(InteractionBuilder.Create(
+            options.Add(InteractionOptionBuilder.Create(
                 InteractionType.Shift,
                 this
             ));
@@ -326,7 +326,7 @@ public class SeedObject : MonoBehaviour, IPickupable, IPlaceable, IEngageable, I
         // If free on ground then pickup
         if (IsFree)
         {
-            options.Add(InteractionBuilder.Create(
+            options.Add(InteractionOptionBuilder.Create(
                 InteractionType.Pickup,
                 this
             ));
@@ -335,7 +335,7 @@ public class SeedObject : MonoBehaviour, IPickupable, IPlaceable, IEngageable, I
         // If currently held by this interactor then can drop
         if (IsHeld)
         {
-            options.Add(InteractionBuilder.Create(
+            options.Add(InteractionOptionBuilder.Create(
                 InteractionType.Drop,
                 this
             ));

@@ -156,7 +156,7 @@ public class Slot<T> :
             // Correct type for the slot, give interaction
             if (placeable != null)
             {
-                options.Add(InteractionBuilder.Create(
+                options.Add(InteractionOptionBuilder.Create(
                     InteractionType.SlotPlace,
                     this
                 ));
@@ -166,16 +166,16 @@ public class Slot<T> :
         // If slot is filled, and no carried object
         if (!context.IsCarrying && IsFilled)
         {
-            options.Add(InteractionBuilder.Create(
+            options.Add(InteractionOptionBuilder.Create(
                 InteractionType.SlotRemove,
                 this
             ));
         }
 
         // If provided with an interaction message then have an inspect option
-        if(!context.IsCarrying && !IsFilled && !string.IsNullOrEmpty(EmptyInteractMessage))
+        if (!context.IsCarrying && !IsFilled && !string.IsNullOrEmpty(EmptyInteractMessage))
         {
-            options.Add(InteractionBuilder.Create(
+            options.Add(InteractionOptionBuilder.Create(
                 InteractionType.Inspect,
                 this,
                 EmptyInteractMessage

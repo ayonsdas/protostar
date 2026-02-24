@@ -7,6 +7,7 @@ public abstract class BaseInteractable : MonoBehaviour, IInteractable
 
     public void Interact(GameObject interactor)
     {
+        OnInteracted?.Invoke();
         OnInteract(interactor);
     }
 
