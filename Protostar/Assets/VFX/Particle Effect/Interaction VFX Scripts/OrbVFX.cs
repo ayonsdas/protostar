@@ -76,6 +76,7 @@ public class OrbVFX : MonoBehaviour
 
     void Update()
     {
+        transform.rotation = player.rotation;
         UpdateProximity();
         MoveOrbs();
     }
