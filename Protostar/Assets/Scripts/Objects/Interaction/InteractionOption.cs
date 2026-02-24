@@ -2,33 +2,47 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Struct used in interaction for interactable objects to provide capabilities
+/// Includes type inputType, and callbacks for press and release
+/// </summary>
 public struct InteractionOption
 {
     public InteractionType Type;
+    public InteractionInputType InputType;
     // UI message to display
     public string Prompt;
-    // What to do on interact
+    // What to do when InputType is Pressed / Released
     public Action<PlayerInteractor> OnPressed;
     public Action<PlayerInteractor> OnReleased;
+    // Monobehaviour providing capabilities, to be used for focus, pickup, etc
     public MonoBehaviour Source;
-    public InteractionInputType InputType;
+
 
     public bool IsValid => ValidType && ValidAction;
     private bool ValidType => Type != InteractionType.None;
     private bool ValidAction => OnPressed != null || OnReleased != null;
 }
 
-public struct InteractionDefinition
-{
-    public InteractionInputType InputType;
-    public InteractionType Type;
-    public string DefaultPrompt;
-    public Action<PlayerInteractor, MonoBehaviour> DefaultOnPressed;
-    public Action<PlayerInteractor, MonoBehaviour> DefaultOnReleased;
-}
 
+/// <summary>
+/// Builder class to more easily create standard InteractionOptions by Type
+/// Defines defaults, needing Type, and source to be specified
+/// </summary>
 public static class InteractionBuilder
 {
+    /// <summary>
+    /// Internal struct to store defaults to be used in InteractionOption construction
+    /// </summary>
+    private struct InteractionDefinition
+    {
+        public InteractionInputType InputType;
+        public InteractionType Type;
+        public string DefaultPrompt;
+        public Action<PlayerInteractor, MonoBehaviour> DefaultOnPressed;
+        public Action<PlayerInteractor, MonoBehaviour> DefaultOnReleased;
+    }
+
     private static readonly Dictionary<InteractionType, InteractionDefinition> _definitions
         = new Dictionary<InteractionType, InteractionDefinition>
     {
@@ -50,7 +64,6 @@ public static class InteractionBuilder
             }
         },
         {
-
             InteractionType.SlotPlace,
             new InteractionDefinition
             {
@@ -59,7 +72,7 @@ public static class InteractionBuilder
                 DefaultPrompt = "",
                 DefaultOnPressed = (interactor, source) =>
                 {
-                    interactor.TryPlaceInto(source);
+                    interactor.TrySlotPlace(source);
                 },
                 DefaultOnReleased = (interactor, source) => { }
             }
@@ -73,7 +86,7 @@ public static class InteractionBuilder
                 DefaultPrompt = "",
                 DefaultOnPressed = (interactor, source) =>
                 {
-                    interactor.TryTakeFrom(source);
+                    interactor.TrySlotRemove(source);
                 },
                 DefaultOnReleased = (interactor, source) => { }
             }
@@ -106,7 +119,7 @@ public static class InteractionBuilder
                 DefaultOnReleased = (interactor, source) => { }
             }
         },
-        // TODO Implement this if we actually plan to have any engagable, non-shiftable objects  
+        // TODO Change this if we actually plan to have any engagable, non-shiftable objects  
         {
             InteractionType.Engage,
             new InteractionDefinition
@@ -132,6 +145,7 @@ public static class InteractionBuilder
                 DefaultOnReleased = (interactor, source) => { }
             }
         },
+        // Special type that is used primarily for displaying message, but no real interaction
         {
             InteractionType.Inspect,
             new InteractionDefinition
@@ -145,6 +159,13 @@ public static class InteractionBuilder
         }
     };
 
+    /// <summary>
+    /// Creates instance of InteracitonOption of the given type
+    /// </summary>
+    /// <param name="type">The InteractionType being used</param>
+    /// <param name="type">The MonoBehaviour providing this InteractionOption</param>
+    /// <param name="promptOverride">Optional UI prompt to include</param>
+    /// <returns>A default InteractionOption of of the given type</returns>
     public static InteractionOption Create(
         InteractionType type,
         MonoBehaviour source,

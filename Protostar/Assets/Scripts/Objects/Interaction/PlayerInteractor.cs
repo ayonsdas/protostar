@@ -2,7 +2,6 @@ using UnityEngine.InputSystem;
 using UnityEngine;
 using System;
 using FMODUnity;
-using System.Collections.Generic;
 
 public class PlayerInteractor : Interactor
 {
@@ -37,6 +36,7 @@ public class PlayerInteractor : Interactor
     private IShiftable activeShiftTarget = null;
     private Vector2 shiftInput = Vector2.zero; // WASD input accumulated during shift hold
     private PlayerController playerController;
+    // Sphere collider for Interaction detection
     private SphereCollider triggerCollider;
 
     private void Awake()
@@ -51,6 +51,7 @@ public class PlayerInteractor : Interactor
         triggerCollider.radius = interactionRadius;
     }
 
+    // Used with the sphere collider in order to detect interactables nearby
     private void OnTriggerEnter(Collider other)
     {
         if (((1 << other.gameObject.layer) & interactionMask) == 0)
@@ -75,48 +76,57 @@ public class PlayerInteractor : Interactor
     }
 
     // BUTTON CALLBACKS
+    /// <summary>
+    /// Callback hooking the PlayerInput Shift action to use best InteractionOption
+    /// of InteractionInputType = Shift
+    /// </summary>
     public void OnShift(InputValue value)
     {
         InteractionOption bestOption;
         // No option for shift exists
-        if(!_bestOptionByInput.TryGetValue(InteractionInputType.Shift, out bestOption))
+        if (!_bestOptionByInput.TryGetValue(InteractionInputType.Shift, out bestOption))
         {
-            Debug.Log($"[PlayerInteractor] No available shift option, Shift pressed: {value.isPressed} Best option: {bestOption}");
+            // Debug.Log($"[PlayerInteractor] No available shift option, Shift pressed: {value.isPressed} Best option: {bestOption}");
             return;
         }
 
-        if(!string.IsNullOrEmpty(bestOption.Prompt))
+        // Display overlay prompt if present
+        if (!string.IsNullOrEmpty(bestOption.Prompt))
         {
             interactionUI?.Show(bestOption.Prompt);
         }
 
         if (value.isPressed)
         {
-            Debug.Log($"[PlayerInteractor] Invoking shift press, Best option: {bestOption} Source: {bestOption.Source.name}");
+            // Debug.Log($"[PlayerInteractor] Invoking shift press, Best option: {bestOption} Source: {bestOption.Source.name}");
             bestOption.OnPressed?.Invoke(this);
         }
         else
         {
-            Debug.Log($"[PlayerInteractor] Invoking shift release, Best option: {bestOption} Source: {bestOption.Source.name}");
+            // Debug.Log($"[PlayerInteractor] Invoking shift release, Best option: {bestOption} Source: {bestOption.Source.name}");
             bestOption.OnReleased?.Invoke(this);
         }
     }
 
+    /// <summary>
+    /// Callback hooking the PlayerInput Interact action to use best InteractionOption
+    /// of InteractionInputType = Interact
+    /// </summary>
     public void OnInteract(InputValue value)
     {
         InteractionOption bestOption;
         // No option for interaction exists
-        if(!_bestOptionByInput.TryGetValue(InteractionInputType.Interact, out bestOption))
+        if (!_bestOptionByInput.TryGetValue(InteractionInputType.Interact, out bestOption))
         {
             return;
         }
 
-        if(!string.IsNullOrEmpty(bestOption.Prompt))
+        if (!string.IsNullOrEmpty(bestOption.Prompt))
         {
             interactionUI?.Show(bestOption.Prompt);
         }
 
-        if(value.isPressed)
+        if (value.isPressed)
         {
             bestOption.OnPressed?.Invoke(this);
         }
@@ -124,10 +134,25 @@ public class PlayerInteractor : Interactor
         {
             bestOption.OnReleased?.Invoke(this);
         }
+    }
 
+    /// <summary>
+    /// Callback hooking the PlayerInput Move action to track input during shifting
+    /// </summary>
+    public void OnMove(InputValue value)
+    {
+        // When shift is held, capture WASD as shift input instead of movement
+        if (isShiftHeld)
+        {
+            shiftInput = value.Get<Vector2>();
+        }
     }
 
     // FUNCTIONS TO BE USED IN INTERACTION OPTIONS
+    /// <summary>
+    /// Builds player state context information for interactables to evaluate
+    /// and then choose available options
+    /// </summary>
     protected override PlayerInteractionContext BuildContext()
     {
         return new PlayerInteractionContext
@@ -138,15 +163,20 @@ public class PlayerInteractor : Interactor
         };
     }
 
+    /// <summary>
+    /// Handles logic of picking up an object and having it follow the player
+    /// </summary>
     public void PickupObject(MonoBehaviour source)
     {
+        // Ensure that there is a Pickupable component
         IPickupable pickupable = source.GetComponent<IPickupable>();
-        if(pickupable == null)
+        if (pickupable == null)
             return;
 
         carriedPickupable = pickupable;
         carriedObject = source.gameObject;
 
+        // Make the carried object follow the pickup point
         carriedObject.transform.SetParent(pickupHoldPoint);
         carriedObject.transform.localPosition = Vector3.zero;
         carriedObject.transform.localRotation = Quaternion.identity;
@@ -154,28 +184,40 @@ public class PlayerInteractor : Interactor
         carriedPickupable?.OnPickup(gameObject);
     }
 
+    /// <summary>
+    /// Handles logic of picking up an object and having it follow the player
+    /// </summary>
     public void PickupObject(GameObject obj)
     {
+        // Ensure that there is a Pickupable component
         IPickupable pickupable = obj.GetComponent<IPickupable>();
-        if(pickupable == null)
+        if (pickupable == null)
             return;
 
         carriedPickupable = pickupable;
         carriedObject = obj;
 
+        // Make the carried object follow the pickup point
         carriedObject.transform.SetParent(pickupHoldPoint);
         carriedObject.transform.localPosition = Vector3.zero;
         carriedObject.transform.localRotation = Quaternion.identity;
 
+        // Notify the object
         carriedPickupable?.OnPickup(gameObject);
     }
 
+    /// <summary>
+    /// Allows InteractionOptions to clear object, used for placing objects in slots
+    /// </summary>
     public void ClearCarriedObject()
     {
         carriedObject = null;
         carriedPickupable = null;
     }
 
+    /// <summary>
+    /// Handles logic of dropping up an object onto the floor
+    /// </summary>
     public void DropCarriedObject()
     {
         if (carriedObject == null)
@@ -194,27 +236,37 @@ public class PlayerInteractor : Interactor
         ClearCarriedObject();
     }
 
-    public void TryPlaceInto(MonoBehaviour source)
+    /// <summary>
+    /// Handles logic of slot placement
+    /// </summary>
+    public void TrySlotPlace(MonoBehaviour source)
     {
         if (carriedObject == null)
             return;
 
+        // Check if source contains an IPlaceableSlot, if so we can try to place
         var slot = source.GetComponent<IPlaceableSlot>();
         if (slot == null)
             return;
 
-        if(slot.TryPlace(carriedObject))
+        // If we are able to place our object, then ensure it is no longer held
+        if (slot.TryPlace(carriedObject))
         {
             ClearCarriedObject();
         }
     }
 
-    public void TryTakeFrom(MonoBehaviour source)
+    /// <summary>
+    /// Handles logic of removing an object from a slot
+    /// </summary>
+    public void TrySlotRemove(MonoBehaviour source)
     {
+        // Check if source contains an IPlaceableSlot, if so we can try to remove
         var slot = source.GetComponent<IPlaceableSlot>();
         if (slot == null)
             return;
 
+        // If we are able to remove an object, then pick it up
         var obj = slot.TryRemove();
 
         if (obj == null)
@@ -223,6 +275,9 @@ public class PlayerInteractor : Interactor
         PickupObject(obj);
     }
 
+    /// <summary>
+    /// Handles logic of interacting with an IInteractable object
+    /// </summary>
     public void InteractWithObject(MonoBehaviour source)
     {
         var interactable = source.GetComponent<IInteractable>();
@@ -232,9 +287,11 @@ public class PlayerInteractor : Interactor
         interactable.Interact(gameObject);
     }
 
+    /// <summary>
+    /// Handles logic of beginning the shift process on an object
+    /// </summary>
     public void TryBeginShift(MonoBehaviour source)
     {
-
         // Already started shifting, don't need to do again
         if (isShiftHeld)
             return;
@@ -251,12 +308,15 @@ public class PlayerInteractor : Interactor
         playerController?.SetMovementLocked(true);
     }
 
+    /// <summary>
+    /// Handles logic of ending the shift process on an object
+    /// </summary>
     public void EndShift()
     {
-        Debug.Log($"[PlayerInteractor] ending shift with {activeShiftTarget} shift held: {isShiftHeld}");
         if (!isShiftHeld)
             return;
 
+        Debug.Log("[PlayerInteractor] ending shift");
         int direction = CalculateShiftDirection();
         activeShiftTarget.Shift(direction);
         PlayShiftSound();
@@ -271,6 +331,10 @@ public class PlayerInteractor : Interactor
         playerController?.SetMovementLocked(false);
     }
 
+    /// <summary>
+    /// Gives the direction to shift the object state
+    /// </summary>
+    /// <returns>The direction based on accumulated WASD input during shift</returns>
     private int CalculateShiftDirection()
     {
         // Determine shift direction from accumulated WASD input
@@ -289,9 +353,13 @@ public class PlayerInteractor : Interactor
 
     private void PlayShiftSound()
     {
+        Debug.Log($"[PlayerInteractor] playing shift sound target type: {activeShiftTarget?.GetType()}");
         MonoBehaviour mb = activeShiftTarget as MonoBehaviour;
-        if(mb != null)
+        if (mb == null)
+        {
+            Debug.LogWarning($"[PlayerInteractor] Cannot play shift sound {activeShiftTarget} cannot be cast to MonoBehaviour");
             return;
+        }
 
         Vector3 pos = mb.gameObject.transform.position;
         // Play sound if needed
@@ -305,14 +373,6 @@ public class PlayerInteractor : Interactor
         }
     }
 
-    public void OnMove(InputValue value)
-    {
-        // When shift is held, capture WASD as shift input instead of movement
-        if (isShiftHeld)
-        {
-            shiftInput = value.Get<Vector2>();
-        }
-    }
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.cyan;

@@ -1,5 +1,8 @@
 using System.Collections.Generic;
 
+/// <summary>
+/// Used to specify the relative priority of each given interaction type
+/// </summary>
 public static class InteractionPriority
 {
     private static readonly Dictionary<InteractionType, int> priorities = new()
