@@ -7,6 +7,9 @@ public class SceneGameStateSetter : MonoBehaviour
 
     private void Start()
     {
-        GameStateManager.Instance.SetState(stateOnLoad);
+        if (GameStateManager.Instance.CurrentState == GameState.MainMenu)
+        {
+            GameStateManager.Instance.SetState(stateOnLoad);
+        }
     }
 }

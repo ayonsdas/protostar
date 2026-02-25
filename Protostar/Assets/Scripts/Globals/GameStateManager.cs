@@ -102,7 +102,7 @@ public class GameStateManager : MonoBehaviour
             CloseUI();
         }
         // If leaving in game state, open the UI, use UI controls, unlock cursor, etc
-        else if (CurrentState == GameState.InGame)
+        else if (CurrentState == GameState.InGame || newState == GameState.Cutscene)
         {
             OpenUI();
         }
@@ -171,6 +171,8 @@ public class GameStateManager : MonoBehaviour
         InputModeManager.Instance.PlayerInput.actions.FindActionMap("Player").Disable();
         InputModeManager.Instance.PlayerInput.actions.FindActionMap("UI").Enable();
         Cursor.lockState = CursorLockMode.Confined;
+        Cursor.visible = true;
+        Debug.Log(Cursor.lockState);
     }
 
     private void CloseUI()

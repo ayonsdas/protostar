@@ -36,7 +36,7 @@ public class InteractableOrbItem : MonoBehaviour
         float distance = Vector3.Distance(transform.position, player.position);
 
         // Interact when player is close enough and presses the interact key.
-        if (distance <= interactRange && Input.GetKeyDown(KeyCode.F))
+        if (distance <= interactRange && (Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown(KeyCode.LeftShift)))
         {
             StartCoroutine(AbsorbOrbs());
         }
