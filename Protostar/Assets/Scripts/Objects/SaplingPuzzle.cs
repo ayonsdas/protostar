@@ -267,6 +267,7 @@ public class SaplingPuzzle : MonoBehaviour, IEngageable, IShiftable, IInteractio
         if (treeModel != null)
         {
             treeModel.SetActive(true);
+            PlayTreeAnimation();
             Debug.Log("Tree model shown");
         }
         else
@@ -278,6 +279,19 @@ public class SaplingPuzzle : MonoBehaviour, IEngageable, IShiftable, IInteractio
 
         // Change skybox to target skybox
         SetTargetSkybox();
+    }
+
+    private void PlayTreeAnimation()
+    {
+        Animator animator = treeModel.GetComponent<Animator>();
+
+        if (animator == null)
+        {
+            Debug.LogWarning("[SaplingPuzzle] cannot find animator on tree model");
+            return;
+        }
+
+        animator.SetTrigger("SaplingPuzzleFinished");
     }
 
     public int GetState()
