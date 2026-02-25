@@ -46,6 +46,7 @@ ExportedObj/
 *.csproj
 *.unityproj
 *.sln
+*.slnx
 *.suo
 *.tmp
 *.user
@@ -103,6 +104,7 @@ InitTestScene*.unity*
 
 # Other files
 .DS_Store
+Protostar/Assets/WSATestCertificate.pfx*
 
 Protostar/windows-build*
 Protostar/Team4*
