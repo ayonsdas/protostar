@@ -155,8 +155,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   moveSpeed: 20
   turnSpeed: 200
-  mouseSensitivity: 2
-  requireMouseHold: 1
   jumpForce: 12
   groundCheckRadius: 0.3
   groundCheck: {fileID: 0}
@@ -181,6 +179,13 @@ MonoBehaviour:
       Data3: 1408712344
       Data4: -1088566950
     Path: event:/Jump
+  landEventReference:
+    Guid:
+      Data1: -1834200828
+      Data2: 1303441331
+      Data3: -578663519
+      Data4: 1782172042
+    Path: event:/Land
 --- !u!54 &8402902860222378733
 Rigidbody:
   m_ObjectHideFlags: 0

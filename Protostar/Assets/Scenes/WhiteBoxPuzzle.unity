@@ -22946,6 +22946,13 @@ MonoBehaviour:
   animator: {fileID: 826474630}
   trigger: StartAnimation
   slot: {fileID: 1131361806}
+  bookcaseMoveSound:
+    Guid:
+      Data1: 2046988305
+      Data2: 1094990520
+      Data3: 1590624131
+      Data4: 368854976
+    Path: event:/BookcaseMove
 --- !u!1 &830189910
 GameObject:
   m_ObjectHideFlags: 0
@@ -24804,6 +24811,10 @@ PrefabInstance:
     - target: {fileID: 2094070022166867159, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
       propertyPath: disableFootsteps
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2094070022166867159, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
+      propertyPath: landCooldownTime
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 2094070022166867159, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
       propertyPath: groundLayer.m_Bits
@@ -32160,6 +32171,13 @@ MonoBehaviour:
     StateRoot: {fileID: 1355959256}
   - Name: large
     StateRoot: {fileID: 1501633339}
+  objectShiftSound:
+    Guid:
+      Data1: 1662987838
+      Data2: 1083629743
+      Data3: -2071687513
+      Data4: 649330254
+    Path: event:/MushroomGrow
 --- !u!65 &996769864
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -108,7 +108,6 @@ public class CameraFollow : MonoBehaviour
         {
             // Horizontal: rotate around gravity up axis
             float mouseSensitivity = SettingsManager.Instance.MouseSensitivity;
-            Debug.Log($"[CameraFollow] moving camera with sensetivity {mouseSensitivity}");
             Quaternion yawRot = Quaternion.AngleAxis(lookInput.x * mouseSensitivity * rotationSpeed * Time.deltaTime, gravityUp);
             cameraDir = (yawRot * cameraDir).normalized;
 

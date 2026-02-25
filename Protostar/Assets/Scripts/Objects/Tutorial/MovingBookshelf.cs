@@ -14,7 +14,10 @@ public class MovingBookshelf : MonoBehaviour
 
     [Header("Puzzle")]
     [SerializeField] private BookSlot slot;
+    [Header("Sound")]
+    [SerializeField] private EventReference bookcaseMoveSound;
 
+    private bool CompletedPuzzle => slot != null && slot.IsFilled;
     private bool triggered = false;
 
     private void OnEnable()
@@ -37,17 +40,21 @@ public class MovingBookshelf : MonoBehaviour
     {
         if (animator == null) return;
 
-        if (!triggered && CompletedPuzzle())
+        if (!triggered && CompletedPuzzle)
         {
             triggered = true;
             slot.Lock();
             animator.SetTrigger(trigger);
+            PlayBookcaseMoveSound();
             AudioManager.Instance.SetMusicParameter("Tutorial completion", 1);
         }
     }
 
-    private bool CompletedPuzzle()
+    private void PlayBookcaseMoveSound()
     {
-        return slot != null && slot.IsFilled;
+        if (AudioManager.Instance != null && !bookcaseMoveSound.IsNull)
+        {
+            AudioManager.Instance.PlayOneShot(bookcaseMoveSound, gameObject.transform.position);
+        }
     }
 }

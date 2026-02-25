@@ -25,6 +25,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float footstepDebounceTime = 0.5f;
     [SerializeField] private EventReference footstepEventReference;
     [SerializeField] private EventReference jumpEventReference;
+    [SerializeField] private float landCooldownTime = 0.5f;
+    [SerializeField] private EventReference landEventReference;
 
     private Rigidbody rb;
     private CustomGravityBody gravityBody;
@@ -33,8 +35,11 @@ public class PlayerController : MonoBehaviour
     private Quaternion targetRotation;
     private EventInstance footstepEventInstance;
     private float footstepStartTime;
+    private float lastLandTime;
     private Transform cameraTransform;
     private bool movementLocked = false;
+
+    private bool CanLand => Time.time > lastLandTime + landCooldownTime;
 
     /// <summary>
     /// Lock or unlock player movement. When locked, WASD input is ignored for movement.
@@ -97,6 +102,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        bool previouslyGrounded = isGrounded;
         // Get gravity direction for proper orientation
         Vector3 gravityDown = gravityBody.GetGravityDirection();
 
@@ -110,7 +116,12 @@ public class PlayerController : MonoBehaviour
         {
             if (col != playerCollider)
             {
+                if (!previouslyGrounded && CanLand)
+                {
+                    OnLand();
+                }
                 isGrounded = true;
+
                 break;
             }
         }
@@ -287,17 +298,18 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private bool canStartFootsteps()
+    private bool CanStartFootsteps()
     {
         bool moving = rb.linearVelocity.magnitude >= footstepSpeedThreshold;
         bool debounce = Time.time - footstepStartTime > footstepDebounceTime;
-        return moving && debounce && isGrounded;
+        bool justLanded = Time.time <= lastLandTime + footstepDebounceTime;
+        return moving && debounce && isGrounded && !justLanded;
     }
 
     private void UpdateSound()
     {
         if (disableFootsteps) return;
-        if (canStartFootsteps())
+        if (CanStartFootsteps())
         {
             PLAYBACK_STATE playbackState;
             footstepEventInstance.getPlaybackState(out playbackState);
@@ -308,17 +320,19 @@ public class PlayerController : MonoBehaviour
                 footstepEventInstance.start();
             }
         }
+    }
 
-        //else
-        //{
-        //    PLAYBACK_STATE playbackState;
-        //    footstepEventInstance.getPlaybackState(out playbackState);
-        //    if (playbackState == PLAYBACK_STATE.PLAYING)
-        //    {
-        //        //Debug.Log("Stopped footsteps Velocity: " + rb.linearVelocity + " Grounded: " + isGrounded);
-        //        footstepEventInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
-        //    }
+    private void OnLand()
+    {
+        lastLandTime = Time.time;
+        PlayLandSound();
+    }
+    private void PlayLandSound()
+    {
+        if (AudioManager.Instance != null && !landEventReference.IsNull)
+            AudioManager.Instance.PlayOneShot(landEventReference, gameObject.transform.position);
 
-        //}
+        else
+            Debug.LogWarning("[PlayerController] Landing sound not assigned");
     }
 }
