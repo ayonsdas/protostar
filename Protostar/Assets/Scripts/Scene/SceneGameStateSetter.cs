@@ -1,15 +1,11 @@
-using static GameStateManager;
 using UnityEngine;
 
 public class SceneGameStateSetter : MonoBehaviour
 {
     [SerializeField] private GameState stateOnLoad;
 
-    private void Start()
+    private void Awake()
     {
-        if (GameStateManager.Instance.CurrentState == GameState.MainMenu)
-        {
-            GameStateManager.Instance.SetState(stateOnLoad);
-        }
+        GameStateManager.Instance.SetState(stateOnLoad);
     }
 }

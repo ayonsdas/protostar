@@ -23,7 +23,7 @@ public class ManualCutscene : MonoBehaviour
 
     public void NextButton()
     {
-        if(currentPage + 1 == cutsceneFrames.Length)
+        if (currentPage + 1 == cutsceneFrames.Length)
         {
             // Unlock player movement when video ends
             GameStateManager.Instance.RevertState();
