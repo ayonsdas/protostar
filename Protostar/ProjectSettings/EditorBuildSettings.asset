@@ -5,9 +5,9 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/Scenes/Test/PlayerTester.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/Boot.unity
+    guid: 0dc02c32c7e24a0499947803459b0f57
   - enabled: 1
     path: Assets/Scenes/Initialize.unity
     guid: b5de62eb8a2326042b7d12ced228acfb
@@ -17,6 +17,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/WhiteBoxPuzzle.unity
     guid: b8ccf57ee3e793f4d949eb5326d15072
+  - enabled: 0
+    path: Assets/Scenes/Test/PlayerTester.unity
+    guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 0
     path: Assets/Scenes/Test/AarohanTestScene.unity
     guid: a62031cdf2c7bed4ebfb3518560e96b9
