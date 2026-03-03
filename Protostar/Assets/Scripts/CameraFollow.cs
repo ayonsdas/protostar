@@ -133,7 +133,7 @@ public class CameraFollow : MonoBehaviour
             
             // Accumulate yaw and pitch offsets - these are independent of camera gravity
             cameraYaw += lookInput.x * mouseSensitivity * rotationSpeed * Time.deltaTime;
-            cameraPitch -= lookInput.y * mouseSensitivity * rotationSpeed * Time.deltaTime; // Inverted for natural feel
+            cameraPitch += lookInput.y * mouseSensitivity * rotationSpeed * Time.deltaTime; // Invert direction: up is up, down is down
             
             // Clamp pitch to limits
             cameraPitch = Mathf.Clamp(cameraPitch, minPitch, maxPitch);
