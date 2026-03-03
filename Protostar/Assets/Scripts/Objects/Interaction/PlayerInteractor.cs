@@ -41,11 +41,11 @@ public class PlayerInteractor : Interactor
     private void Awake()
     {
         playerController = GetComponent<PlayerController>();
-        triggerCollider = GetComponent<SphereCollider>();
-
-        if (triggerCollider == null)
-            triggerCollider = gameObject.AddComponent<SphereCollider>();
-
+        // Create a child GameObject for the interaction SphereCollider
+        GameObject triggerObj = new GameObject("InteractionTriggerCollider");
+        triggerObj.transform.parent = transform;
+        triggerObj.transform.localPosition = Vector3.zero;
+        triggerCollider = triggerObj.AddComponent<SphereCollider>();
         triggerCollider.isTrigger = true;
         triggerCollider.radius = interactionRadius;
     }
