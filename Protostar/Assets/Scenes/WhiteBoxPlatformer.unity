@@ -18112,6 +18112,10 @@ PrefabInstance:
       value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 2094070022166867159, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
+      propertyPath: groundCheckBoxCollider
+      value: 
+      objectReference: {fileID: 890825969}
+    - target: {fileID: 2094070022166867159, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
       propertyPath: jumpEventReference.Path
       value: event:/Jump
       objectReference: {fileID: 0}
@@ -18183,6 +18187,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3afde547402154b69895e1eddc6c8d1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInteractor
+--- !u!65 &890825969 stripped
+BoxCollider:
+  m_CorrespondingSourceObject: {fileID: 2962838371341248063, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
+  m_PrefabInstance: {fileID: 890825962}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &907842113
 PrefabInstance:
   m_ObjectHideFlags: 0

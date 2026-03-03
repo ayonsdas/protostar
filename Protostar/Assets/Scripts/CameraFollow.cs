@@ -41,6 +41,26 @@ public class CameraFollow : MonoBehaviour
     private Vector3 lastPlayerPosition;
     private Vector2 lookInput = Vector2.zero;
     private bool isMouseHeld = false;
+    private bool isCameraFlipped = false;
+    private Vector3 currentCameraUp = Vector3.up;
+    private Vector3 targetCameraUp = Vector3.up;
+    private Vector3 cameraUpVelocity = Vector3.zero;
+    private Vector3 cameraBaseGravityUp = Vector3.up; // Camera's base gravity orientation
+    
+    // Camera input stored as offsets from base orientation
+    private float cameraYaw = 0f;   // Horizontal rotation offset
+    private float cameraPitch = 0f; // Vertical rotation offset
+    private Vector3 baseDirection = Vector3.back; // Base direction in world space (updates only during reset)
+
+    /// <summary>
+    /// Returns true if the camera is currently flipped 180 degrees (when player is on ceiling)
+    /// </summary>
+    public bool IsCameraFlipped() => isCameraFlipped;
+
+    /// <summary>
+    /// Returns true if the camera has finished rotating (up vector is close to target)
+    /// </summary>
+    public bool IsCameraRotationComplete() => Vector3.Angle(currentCameraUp, targetCameraUp) < 5f;
 
     void Start()
     {
@@ -62,6 +82,14 @@ public class CameraFollow : MonoBehaviour
             currentDistance = cameraDistance;
             lastGravityUp = gravityBody != null ? gravityBody.GetUpDirection() : Vector3.up;
             lastPlayerPosition = target.position;
+            currentCameraUp = Vector3.up;
+            targetCameraUp = Vector3.up;
+            cameraBaseGravityUp = Vector3.up;
+            cameraYaw = 0f;
+            cameraPitch = 0f;
+            // Initialize base direction to behind player
+            baseDirection = -target.forward;
+            baseDirection = Vector3.ProjectOnPlane(baseDirection, Vector3.up).normalized;
         }
     }
 
@@ -86,11 +114,6 @@ public class CameraFollow : MonoBehaviour
         if (target == null)
             return;
 
-        // Camera no longer rotates to match gravity changes
-        Vector3 gravityUp = Vector3.up; // Always use world up for camera orientation
-        // Do not rotate cameraDir when gravity changes
-        // lastGravityUp = gravityUp; // Not needed
-
         // Check if player has moved
         bool playerMoved = Vector3.Distance(target.position, lastPlayerPosition) > 0.01f;
         if (playerMoved)
@@ -103,32 +126,19 @@ public class CameraFollow : MonoBehaviour
             timeSinceLastMovement += Time.deltaTime;
         }
 
-        // Update camera direction when player is actively moving the mouse (no RMB requirement)
+        // Update camera direction when player is actively moving the mouse
         if (lookInput.magnitude > 0.01f)
         {
-            // Horizontal: rotate around gravity up axis
             float mouseSensitivity = SettingsManager.Instance.MouseSensitivity;
-            Quaternion yawRot = Quaternion.AngleAxis(lookInput.x * mouseSensitivity * rotationSpeed * Time.deltaTime, gravityUp);
-            cameraDir = (yawRot * cameraDir).normalized;
+            
+            // Accumulate yaw and pitch offsets - these are independent of camera gravity
+            cameraYaw += lookInput.x * mouseSensitivity * rotationSpeed * Time.deltaTime;
+            cameraPitch -= lookInput.y * mouseSensitivity * rotationSpeed * Time.deltaTime; // Inverted for natural feel
+            
+            // Clamp pitch to limits
+            cameraPitch = Mathf.Clamp(cameraPitch, minPitch, maxPitch);
 
-            // Vertical: rotate around the right axis (perpendicular to gravity up and camera dir)
-            Vector3 right = Vector3.Cross(gravityUp, cameraDir).normalized;
-            if (right.sqrMagnitude > 0.001f)
-            {
-                Quaternion pitchRot = Quaternion.AngleAxis(lookInput.y * mouseSensitivity * rotationSpeed * Time.deltaTime, right);
-                Vector3 newDir = (pitchRot * cameraDir).normalized;
-
-                // Only accept if within pitch limits
-                float angle = Vector3.Angle(newDir, gravityUp);
-                float minAngleFromUp = 90f - maxPitch; // e.g. 15° from straight up
-                float maxAngleFromUp = 90f - minPitch; // e.g. 85° from straight up
-                if (angle >= minAngleFromUp && angle <= maxAngleFromUp)
-                {
-                    cameraDir = newDir;
-                }
-            }
-
-            // Reset both timers when camera is moved
+            // Reset timers when camera is moved
             timeSinceLastInput = 0f;
             timeSinceLastMovement = 0f;
             isReturning = false;
@@ -147,6 +157,33 @@ public class CameraFollow : MonoBehaviour
         // Smoothly return to behind player (cancel if player moves during reset)
         if (isReturning)
         {
+            // Check if player gravity direction is anti-parallel to camera's base gravity
+            Vector3 playerUp = gravityBody != null ? gravityBody.GetUpDirection() : Vector3.up;
+            Vector3 playerGravity = gravityBody != null ? gravityBody.GetGravityDirection() : Vector3.down;
+            Vector3 cameraGravity = -cameraBaseGravityUp;
+            
+            float angleGravity = Vector3.Angle(playerGravity, cameraGravity);
+            bool isAntiParallel = angleGravity > 170f && angleGravity < 190f;
+            
+            // Flip camera during return if gravity is opposite
+            if (isAntiParallel)
+            {
+                if (!isCameraFlipped)
+                {
+                    Debug.Log($"[CameraFollow] FLIPPING during return! Player gravity {playerGravity} is anti-parallel to camera gravity {cameraGravity}");
+                    isCameraFlipped = true;
+                    cameraBaseGravityUp = playerUp;
+                    targetCameraUp = playerUp; // Target the new up direction (will smoothly transition)
+                }
+                else
+                {
+                    Debug.Log($"[CameraFollow] UN-FLIPPING during return! Player gravity {playerGravity} is anti-parallel to camera gravity {cameraGravity}");
+                    isCameraFlipped = false;
+                    cameraBaseGravityUp = playerUp;
+                    targetCameraUp = playerUp; // Target the new up direction (will smoothly transition)
+                }
+            }
+            
             if (playerMoved)
             {
                 // Player started moving during reset — cancel and restart timers
@@ -156,20 +193,57 @@ public class CameraFollow : MonoBehaviour
             }
             else
             {
-                // Target direction: behind player in world space
-                Vector3 targetDir = target.TransformDirection(offset).normalized;
+                // Calculate target direction: behind player, projected onto camera gravity plane
+                Vector3 playerForward = target.forward;
+                Vector3 targetDir = -playerForward;
+                targetDir = Vector3.ProjectOnPlane(targetDir, targetCameraUp).normalized;
+                
+                // Smoothly interpolate base direction to target
+                baseDirection = Vector3.Slerp(baseDirection, targetDir, returnSpeed * Time.deltaTime);
+                
+                // Smoothly reset yaw and pitch to zero
+                cameraYaw = Mathf.Lerp(cameraYaw, 0f, returnSpeed * Time.deltaTime);
+                cameraPitch = Mathf.Lerp(cameraPitch, 0f, returnSpeed * Time.deltaTime);
+                
+                // Smoothly rotate camera up to target up (same speed as yaw/pitch reset)
+                currentCameraUp = Vector3.Slerp(currentCameraUp, targetCameraUp, returnSpeed * Time.deltaTime);
+                currentCameraUp.Normalize();
 
-                // Smooth interpolation
-                cameraDir = Vector3.Slerp(cameraDir, targetDir, returnSpeed * Time.deltaTime);
-
-                // Stop returning when close enough
-                if (Vector3.Angle(cameraDir, targetDir) < 1f)
+                // Stop returning when close enough (including camera up)
+                if (Vector3.Angle(baseDirection, targetDir) < 1f
+                    &&
+                    Mathf.Abs(cameraYaw) < 1f
+                    &&
+                    Mathf.Abs(cameraPitch) < 1f
+                    &&
+                    Vector3.Angle(currentCameraUp, targetCameraUp) < 1f
+                    )
                 {
-                    cameraDir = targetDir;
+                    baseDirection = targetDir;
+                    cameraYaw = 0f;
+                    cameraPitch = 0f;
+                    currentCameraUp = targetCameraUp;
                     isReturning = false;
                 }
             }
         }
+        
+        // Don't smooth camera up outside of returning - it's handled in the return block
+        // currentCameraUp is only modified during isReturning
+        
+        Debug.Log($"[CameraFollow] CurrentCameraUp: {currentCameraUp}, TargetCameraUp: {targetCameraUp}, Flipped: {isCameraFlipped}");
+        
+        // Use stored base direction (only updates during reset)
+        Vector3 dirFromBase = baseDirection;
+        
+        // Apply yaw rotation around camera up axis
+        Quaternion yawRotation = Quaternion.AngleAxis(cameraYaw, currentCameraUp);
+        Vector3 rotatedDir = yawRotation * dirFromBase;
+        
+        // Apply pitch rotation around right axis (perpendicular to up and rotated dir)
+        Vector3 right = Vector3.Cross(currentCameraUp, rotatedDir).normalized;
+        Quaternion pitchRotation = Quaternion.AngleAxis(cameraPitch, right);
+        cameraDir = (pitchRotation * rotatedDir).normalized;
 
         // --- Position camera ---
         float desiredDistance = cameraDistance;
@@ -194,12 +268,15 @@ public class CameraFollow : MonoBehaviour
         // Smoothly move camera
         transform.position = Vector3.SmoothDamp(transform.position, finalPosition, ref velocity, smoothTime);
 
-        // Camera looks at player, using world up for orientation
+        // Camera looks at player using the calculated up vector
         Vector3 directionToTarget = target.position - transform.position;
         if (directionToTarget.sqrMagnitude > 0.01f)
         {
-            Quaternion lookRotation = Quaternion.LookRotation(directionToTarget, Vector3.up);
+            // Create rotation using current up vector - this naturally aligns with camera gravity
+            Quaternion lookRotation = Quaternion.LookRotation(directionToTarget, currentCameraUp);
             transform.rotation = lookRotation;
+            
+            Debug.Log($"[CameraFollow] Camera Up: {currentCameraUp}, Camera Rotation: {transform.rotation.eulerAngles}, LookRot: {lookRotation.eulerAngles}");
         }
     }
 

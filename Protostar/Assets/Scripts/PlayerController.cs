@@ -37,7 +37,12 @@ public class PlayerController : MonoBehaviour
     private float footstepStartTime;
     private float lastLandTime;
     private Transform cameraTransform;
+    private CameraFollow cameraFollow;
     private bool movementLocked = false;
+
+    [Header("Ground/Gravity Check Collider")]
+    [Tooltip("Assign the BoxCollider used for ground and gravity checks. Only this collider will be used for detection.")]
+    public BoxCollider groundCheckBoxCollider;
 
     private bool CanLand => Time.time > lastLandTime + landCooldownTime;
 
@@ -73,16 +78,17 @@ public class PlayerController : MonoBehaviour
         // Initialize target rotation to current rotation
         targetRotation = transform.rotation;
 
-        // If no groundCheck transform is assigned, create one at the bottom of the collider
-        if (groundCheck == null)
+        // If no groundCheckBoxCollider is assigned, try to get one from this GameObject
+        if (groundCheckBoxCollider == null)
+        {
+            groundCheckBoxCollider = GetComponent<BoxCollider>();
+        }
+        // If no groundCheck transform is assigned, create one at the bottom of the specified BoxCollider
+        if (groundCheck == null && groundCheckBoxCollider != null)
         {
             GameObject checkObj = new GameObject("GroundCheck");
             checkObj.transform.parent = transform;
-
-            // Get box collider height to position ground check at the very bottom
-            BoxCollider box = GetComponent<BoxCollider>();
-            float colliderBottom = box != null ? -(box.size.y / 2f) + 0.1f : -0.9f;
-
+            float colliderBottom = -(groundCheckBoxCollider.size.y / 2f) + 0.1f;
             checkObj.transform.localPosition = new Vector3(0, colliderBottom, 0);
             groundCheck = checkObj.transform;
         }
@@ -97,40 +103,53 @@ public class PlayerController : MonoBehaviour
         if (Camera.main != null)
         {
             cameraTransform = Camera.main.transform;
+            cameraFollow = Camera.main.GetComponent<CameraFollow>();
         }
     }
 
     void Update()
     {
         bool previouslyGrounded = isGrounded;
-        // Get gravity direction for proper orientation
         Vector3 gravityDown = gravityBody.GetGravityDirection();
 
-        // Use OverlapSphere to check for ground, excluding player's own collider
-        Collider[] colliders = Physics.OverlapSphere(groundCheck.position, groundCheckRadius, groundLayer, QueryTriggerInteraction.Ignore);
-        isGrounded = false;
-
-        // Check if any of the overlapping colliders are NOT the player's own collider
-        Collider playerCollider = GetComponent<Collider>();
-        foreach (Collider col in colliders)
+        // Gravity check: use BoxCollider
+        bool gravityGrounded = false;
+        if (groundCheckBoxCollider != null)
         {
-            if (col != playerCollider)
+            Vector3 boxBottomCenter = groundCheckBoxCollider.bounds.center + gravityDown * (-groundCheckBoxCollider.bounds.extents.y + 0.01f);
+            RaycastHit hit;
+            if (Physics.BoxCast(boxBottomCenter, groundCheckBoxCollider.bounds.extents * 0.95f, gravityDown, out hit, groundCheckBoxCollider.transform.rotation, groundCheckRadius, groundLayer, QueryTriggerInteraction.Ignore))
             {
-                if (!previouslyGrounded && CanLand)
+                if (hit.collider != groundCheckBoxCollider)
                 {
-                    OnLand();
+                    gravityGrounded = true;
                 }
-                isGrounded = true;
-
-                break;
             }
         }
 
-        // Debug visualization using gravity direction
+        // Jump check: use SphereCollider at groundCheck.position
+        isGrounded = false;
+        if (groundCheck != null)
+        {
+            Collider[] colliders = Physics.OverlapSphere(groundCheck.position, groundCheckRadius, groundLayer, QueryTriggerInteraction.Ignore);
+            foreach (Collider col in colliders)
+            {
+                if (col != groundCheckBoxCollider)
+                {
+                    if (!previouslyGrounded && CanLand)
+                    {
+                        OnLand();
+                    }
+                    isGrounded = true;
+                    break;
+                }
+            }
+        }
+
+        // Debug visualization
         Color debugColor = isGrounded ? Color.green : Color.red;
         Debug.DrawLine(groundCheck.position, groundCheck.position + gravityDown * groundCheckRadius, debugColor);
 
-        // Play sound if grounded and moving
         UpdateSound();
     }
 
@@ -210,6 +229,7 @@ public class PlayerController : MonoBehaviour
         if (cameraTransform == null && Camera.main != null)
         {
             cameraTransform = Camera.main.transform;
+            cameraFollow = Camera.main.GetComponent<CameraFollow>();
         }
 
         // Calculate movement direction relative to camera or gravity
@@ -217,17 +237,25 @@ public class PlayerController : MonoBehaviour
         if (cameraTransform != null && moveInput.magnitude > 0.01f)
         {
             Vector3 upDirection = gravityBody.GetUpDirection();
-            // If gravity is normal, use camera-relative movement as before
-            // Always calculate camera-relative movement
-            // Always calculate camera-relative movement, but project onto gravity plane first
-            // Calculate the rotation from natural gravity (Vector3.down) to current gravity
-            Quaternion gravityDelta = Quaternion.FromToRotation(Vector3.down, -upDirection);
-            // Rotate the camera's orientation by this delta
+            
+            // Check if camera is flipped (upside down)
+            bool isCameraFlipped = cameraFollow != null && cameraFollow.IsCameraFlipped();
+            
+            // Calculate the rotation from natural gravity to current gravity
+            // This allows smooth movement up walls/curves - holding forward maintains physical direction
+            // When upside down, we calculate from Vector3.up instead of Vector3.down
+            Vector3 baseGravity = isCameraFlipped ? Vector3.up : Vector3.down;
+            Quaternion gravityDelta = Quaternion.FromToRotation(baseGravity, -upDirection);
+            
+            // Rotate the camera's orientation by this delta to get movement in gravity space
             Vector3 rotatedForward = gravityDelta * cameraTransform.forward;
             Vector3 rotatedRight = gravityDelta * cameraTransform.right;
+            
             // Project onto the plane perpendicular to gravity
             rotatedForward = Vector3.ProjectOnPlane(rotatedForward, upDirection).normalized;
             rotatedRight = Vector3.ProjectOnPlane(rotatedRight, upDirection).normalized;
+            
+            // Calculate movement direction from input
             Vector3 camMove = (rotatedForward * moveInput.y + rotatedRight * moveInput.x);
             if (camMove.sqrMagnitude > 0.01f) camMove.Normalize();
             moveDirection = camMove;
