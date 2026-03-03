@@ -20,7 +20,7 @@ public class CameraFollow : MonoBehaviour
 
     [Header("Camera Rotation Settings")]
     public float rotationSpeed = 50f;
-    public float returnDelay = 3f; // Seconds before returning to default
+    public float returnDelay = 0.5f; // Seconds before returning to default
     public float returnSpeed = 2f; // Speed of return to default
 
     [Header("Vertical Angle Limits")]
