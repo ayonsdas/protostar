@@ -7569,10 +7569,10 @@ MonoBehaviour:
     It was the very first bed you slept in. The eternal pre-life, pre-conception
     sleep.
 
-    
 
-    Pick it up using {Interact} and put it in your backpack to
-    integrate it with the world!'
+
+    Pick it up using {Interact} and put it in your backpack to integrate
+    it with the world!'
 --- !u!1 &692571698
 GameObject:
   m_ObjectHideFlags: 0
@@ -18257,6 +18257,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
+--- !u!114 &1726043502 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 644732950325172679, guid: d21c37104370fb34db01d627edff8e08, type: 3}
+  m_PrefabInstance: {fileID: 211683094}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 032c4e7af6f4e374dba739796303b160, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ManualCutscene
 --- !u!1 &1727423255
 GameObject:
   m_ObjectHideFlags: 0
@@ -21790,6 +21801,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b092cb06c1fb6b24d88c3013c2d97d07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  cutscene: {fileID: 1726043502}
 --- !u!1 &2073810330
 GameObject:
   m_ObjectHideFlags: 0
