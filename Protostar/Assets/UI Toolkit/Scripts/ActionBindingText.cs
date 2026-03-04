@@ -27,7 +27,7 @@ public class ActionBindingText : MonoBehaviour
     {
         if (textMesh != null)
         {
-            string newMessage = textMesh.text = InputModeManager.ReplaceBindings(message);
+            textMesh.text = InputModeManager.ReplaceBindings(message);
         }
     }
 
@@ -35,7 +35,7 @@ public class ActionBindingText : MonoBehaviour
     {
         if (textMesh != null)
         {
-            string newMessage = textMesh.text = InputModeManager.ReplaceBindings(message);
+            textMesh.text = InputModeManager.ReplaceBindings(message);
         }
     }
 }
