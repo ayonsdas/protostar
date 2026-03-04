@@ -22,13 +22,10 @@ public class PlayerAnimationController : MonoBehaviour
     private void Update()
     {
         animator.SetFloat(SpeedHash, playerController.GetNormalizedSpeed);
-        // var state = animator.GetCurrentAnimatorStateInfo(0);
-        // Debug.Log($"[PlayerAnimationController] state {state.}");
     }
 
     private void HandleGroundedChanged(bool value)
     {
-        Debug.Log($"[PlayerAnimationController] Grounded {value}");
         animator.SetBool(IsGroundedHash, value);
     }
 

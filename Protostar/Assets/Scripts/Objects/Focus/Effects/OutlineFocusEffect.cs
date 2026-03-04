@@ -11,6 +11,7 @@ public class OutlineFocusEffect : MonoBehaviour, IFocusEffect
 
     public void Start()
     {
+        outlineLayerMask = RenderingLayerMask.GetMask("Outline");
         if (_baseObject == null)
         {
             _baseObject = gameObject;
