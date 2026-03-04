@@ -1,3 +1,4 @@
+using System;
 using FMOD.Studio;
 using FMODUnity;
 using UnityEngine;
@@ -28,10 +29,29 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float landCooldownTime = 0.5f;
     [SerializeField] private EventReference landEventReference;
 
+    public event Action<bool> OnGroundedChanged;
+
+    private bool _isGrounded;
+    public bool IsGrounded
+    {
+        get => _isGrounded;
+        private set
+        {
+            if (_isGrounded == value) return;
+
+            _isGrounded = value;
+            OnGroundedChanged?.Invoke(value);
+        }
+    }
+
+    private bool jumpQueued;
+    private bool jumpCommitted;
+    private Vector2 moveInput;
+    public bool IsMoving => moveInput.sqrMagnitude > 0.01f;
+    public event Action OnJumpRequested;
+    public float GetNormalizedSpeed => Mathf.Clamp(rb.linearVelocity.magnitude / moveSpeed, 0f, 1f);
     private Rigidbody rb;
     private CustomGravityBody gravityBody;
-    private Vector2 moveInput;
-    private bool isGrounded;
     private Quaternion targetRotation;
     private EventInstance footstepEventInstance;
     private float footstepStartTime;
@@ -109,7 +129,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        bool previouslyGrounded = isGrounded;
+        bool previouslyGrounded = IsGrounded;
         Vector3 gravityDown = gravityBody.GetGravityDirection();
 
         // Gravity check: use BoxCollider
@@ -128,7 +148,7 @@ public class PlayerController : MonoBehaviour
         }
 
         // Jump check: use SphereCollider at groundCheck.position
-        isGrounded = false;
+        bool foundGround = false;
         if (groundCheck != null)
         {
             Collider[] colliders = Physics.OverlapSphere(groundCheck.position, groundCheckRadius, groundLayer, QueryTriggerInteraction.Ignore);
@@ -140,14 +160,20 @@ public class PlayerController : MonoBehaviour
                     {
                         OnLand();
                     }
-                    isGrounded = true;
+                    foundGround = true;
                     break;
                 }
             }
         }
+        IsGrounded = foundGround;
+
+        if (IsGrounded && !jumpQueued)
+        {
+            jumpCommitted = false;
+        }
 
         // Debug visualization
-        Color debugColor = isGrounded ? Color.green : Color.red;
+        Color debugColor = IsGrounded ? Color.green : Color.red;
         Debug.DrawLine(groundCheck.position, groundCheck.position + gravityDown * groundCheckRadius, debugColor);
 
         UpdateSound();
@@ -237,26 +263,26 @@ public class PlayerController : MonoBehaviour
         if (cameraTransform != null && moveInput.magnitude > 0.01f)
         {
             Vector3 upDirection = gravityBody.GetUpDirection();
-            
+
             // Check if camera is flipped (upside down)
             bool isCameraFlipped = cameraFollow != null && cameraFollow.IsCameraFlipped();
-            
+
             // Calculate the rotation from natural gravity to current gravity
             // This allows smooth movement up walls/curves - holding forward maintains physical direction
             // When upside down, we calculate from Vector3.up instead of Vector3.down
             Vector3 baseGravity = isCameraFlipped ? Vector3.up : Vector3.down;
             Quaternion gravityDelta = Quaternion.FromToRotation(baseGravity, -upDirection);
-            
+
             // Rotate the camera's orientation by this delta to get movement in gravity space
             Vector3 rotatedForward = gravityDelta * cameraTransform.forward;
             Vector3 rotatedRight = gravityDelta * cameraTransform.right;
-            
+
             // Project onto the plane perpendicular to gravity
             rotatedForward = Vector3.ProjectOnPlane(rotatedForward, upDirection).normalized;
             rotatedRight = Vector3.ProjectOnPlane(rotatedRight, upDirection).normalized;
-            
+
             // Calculate movement direction from input
-            Vector3 camMove = (rotatedForward * moveInput.y + rotatedRight * moveInput.x);
+            Vector3 camMove = rotatedForward * moveInput.y + rotatedRight * moveInput.x;
             if (camMove.sqrMagnitude > 0.01f) camMove.Normalize();
             moveDirection = camMove;
             // Rotate player to face movement direction
@@ -299,13 +325,19 @@ public class PlayerController : MonoBehaviour
     // Called by Player Input component (Send Messages behavior)
     public void OnJump(InputAction.CallbackContext ctx)
     {
-        if (isGrounded && rb != null && ctx.performed)
-        {
-            // Jump in the opposite direction of gravity
-            Vector3 jumpDirection = gravityBody.GetUpDirection();
-            rb.AddForce(jumpDirection * jumpForce, ForceMode.Impulse);
-            AudioManager.Instance.PlayOneShot(jumpEventReference, gameObject.transform.position);
-        }
+        if (!IsGrounded || !ctx.performed) return;
+        OnJumpRequested?.Invoke();
+        ApplyJumpForce();
+    }
+
+    // Called by playerAnimationController to sync with jump animation
+    public void ApplyJumpForce()
+    {
+        // Jump in the opposite direction of gravity
+        Vector3 jumpDirection = gravityBody.GetUpDirection();
+        rb.AddForce(jumpDirection * jumpForce, ForceMode.Impulse);
+        jumpQueued = false;
+        AudioManager.Instance.PlayOneShot(jumpEventReference, gameObject.transform.position);
     }
 
     // Called by Player Input component (Send Messages behavior)
@@ -331,7 +363,7 @@ public class PlayerController : MonoBehaviour
         bool moving = rb.linearVelocity.magnitude >= footstepSpeedThreshold;
         bool debounce = Time.time - footstepStartTime > footstepDebounceTime;
         bool justLanded = Time.time <= lastLandTime + footstepDebounceTime;
-        return moving && debounce && isGrounded && !justLanded;
+        return moving && debounce && IsGrounded && !justLanded;
     }
 
     private void UpdateSound()
