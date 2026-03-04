@@ -9,16 +9,23 @@ public class ManualCutscene : MonoBehaviour
     public Button backButton;
     public Button nextButton;
     public TMP_Text nextButtonText;
+    public Canvas cutsceneCanvas;
 
     public int currentPage = 0;
 
+    void Awake()
+    {
+        cutsceneCanvas = GetComponent<Canvas>();
+    }
+
     void Start()
     {
-        // Lock player movement when cutscene starts
-        GameStateManager.Instance.SetState(GameState.Cutscene);
-
+        cutsceneCanvas.enabled = false;
         backButton.gameObject.SetActive(false);
         cutsceneImage.sprite = cutsceneFrames[0];
+
+        if(currentPage + 1 == cutsceneFrames.Length)
+            nextButtonText.text = "Close";
     }
 
     public void NextButton()
