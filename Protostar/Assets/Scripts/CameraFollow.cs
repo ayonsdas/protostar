@@ -157,6 +157,8 @@ public class CameraFollow : MonoBehaviour
         // Smoothly return to behind player (cancel if player moves during reset)
         if (isReturning)
         {
+            // DISABLED: Camera flipping logic
+            /*
             // Check if player gravity direction is anti-parallel to camera's base gravity
             Vector3 playerUp = gravityBody != null ? gravityBody.GetUpDirection() : Vector3.up;
             Vector3 playerGravity = gravityBody != null ? gravityBody.GetGravityDirection() : Vector3.down;
@@ -183,7 +185,10 @@ public class CameraFollow : MonoBehaviour
                     targetCameraUp = playerUp; // Target the new up direction (will smoothly transition)
                 }
             }
+            */
             
+            // DISABLED: Camera auto-reset logic
+            /*
             if (playerMoved)
             {
                 // Player started moving during reset — cancel and restart timers
@@ -226,6 +231,7 @@ public class CameraFollow : MonoBehaviour
                     isReturning = false;
                 }
             }
+            */
         }
         
         // Don't smooth camera up outside of returning - it's handled in the return block
