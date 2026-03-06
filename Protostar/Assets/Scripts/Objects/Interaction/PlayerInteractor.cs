@@ -52,13 +52,13 @@ public class PlayerInteractor : Interactor
 
     private void OnEnable()
     {
-        if (InputModeManager.Instance == null || InputModeManager.Instance.PlayerInput == null)
+        if (!InputModeManager.HasPlayerInput)
         {
-            Debug.LogWarning($"[PlayerController] Cannot find PlayerInput {InputModeManager.Instance}");
+            Debug.LogWarning($"[PlayerController] Cannot find PlayerInput");
         }
         else
         {
-            PlayerInput playerInput = InputModeManager.Instance.PlayerInput;
+            PlayerInput playerInput = InputModeManager.PlayerInput;
             playerInput.actions["Move"].performed += OnMove;
             playerInput.actions["Interact"].performed += OnInteract;
             playerInput.actions["Interact"].canceled += OnInteract;
@@ -69,13 +69,13 @@ public class PlayerInteractor : Interactor
 
     private void OnDisable()
     {
-        if (InputModeManager.Instance == null || InputModeManager.Instance.PlayerInput == null)
+        if (!InputModeManager.HasPlayerInput)
         {
-            Debug.LogWarning($"[PlayerController] Cannot find PlayerInput {InputModeManager.Instance}");
+            Debug.LogWarning($"[PlayerController] Cannot find PlayerInput");
         }
         else
         {
-            PlayerInput playerInput = InputModeManager.Instance.PlayerInput;
+            PlayerInput playerInput = InputModeManager.PlayerInput;
             playerInput.actions["Move"].performed -= OnMove;
             playerInput.actions["Interact"].performed -= OnInteract;
             playerInput.actions["Interact"].canceled -= OnInteract;

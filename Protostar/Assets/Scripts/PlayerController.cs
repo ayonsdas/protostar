@@ -10,9 +10,12 @@ public class PlayerController : MonoBehaviour
     [Header("Movement Settings")]
     public float moveSpeed = 5f;
     public float turnSpeed = 100f;
+    public float acceleration = 40f;
+    public float airAccelerationMultiplier = 0.4f;
 
     [Header("Jump Settings")]
     public float jumpForce = 5f;
+    [Range(1, 5)]
     public float groundCheckRadius = 0.3f;
     public Transform groundCheck; // Create an empty child object at player's feet
     [Tooltip("Layers to check for ground. Set to 'Everything' to jump off any object, or specific layers to limit what counts as ground.")]
@@ -43,9 +46,6 @@ public class PlayerController : MonoBehaviour
             OnGroundedChanged?.Invoke(value);
         }
     }
-
-    private bool jumpQueued;
-    private bool jumpCommitted;
     private Vector2 moveInput;
     public bool IsMoving => moveInput.sqrMagnitude > 0.01f;
     public event Action OnJumpRequested;
@@ -169,11 +169,6 @@ public class PlayerController : MonoBehaviour
         }
         IsGrounded = foundGround;
 
-        if (IsGrounded && !jumpQueued)
-        {
-            jumpCommitted = false;
-        }
-
         // Debug visualization
         Color debugColor = IsGrounded ? Color.green : Color.red;
         Debug.DrawLine(groundCheck.position, groundCheck.position + gravityDown * groundCheckRadius, debugColor);
@@ -183,13 +178,13 @@ public class PlayerController : MonoBehaviour
 
     private void OnEnable()
     {
-        if (InputModeManager.Instance == null || InputModeManager.Instance.PlayerInput == null)
+        if (!InputModeManager.HasPlayerInput)
         {
-            Debug.LogWarning($"[PlayerController] Cannot find PlayerInput {InputModeManager.Instance}");
+            Debug.LogWarning($"[PlayerController] Cannot find PlayerInput");
         }
         else
         {
-            PlayerInput playerInput = InputModeManager.Instance.PlayerInput;
+            PlayerInput playerInput = InputModeManager.PlayerInput;
             playerInput.actions["Move"].performed += OnMove;
             playerInput.actions["Move"].canceled += OnMove;
             playerInput.actions["Jump"].performed += OnJump;
@@ -199,13 +194,13 @@ public class PlayerController : MonoBehaviour
 
     private void OnDisable()
     {
-        if (InputModeManager.Instance == null || InputModeManager.Instance.PlayerInput == null)
+        if (!InputModeManager.HasPlayerInput)
         {
-            Debug.LogWarning($"[PlayerController] Cannot find PlayerInput {InputModeManager.Instance}");
+            Debug.LogWarning($"[PlayerController] Cannot find PlayerInput");
         }
         else
         {
-            PlayerInput playerInput = InputModeManager.Instance.PlayerInput;
+            PlayerInput playerInput = InputModeManager.PlayerInput;
             playerInput.actions["Move"].performed -= OnMove;
             playerInput.actions["Move"].canceled -= OnMove;
             playerInput.actions["Jump"].performed -= OnJump;
@@ -263,7 +258,7 @@ public class PlayerController : MonoBehaviour
         // Get gravity info used throughout method
         Vector3 upDirection = gravityBody.GetUpDirection();
         Vector3 gravityDirection = -upDirection;
-        
+
         // Track if movement just started - if so, store current gravity as base
         bool isMoving = moveInput.magnitude > 0.01f;
         if (isMoving && !wasMoving)
@@ -285,29 +280,29 @@ public class PlayerController : MonoBehaviour
             // Apply gravity delta to maintain direction when traversing curves
             // Use base gravity from start of movement instead of Vector3.down
             Quaternion gravityDelta = Quaternion.FromToRotation(movementBaseGravity, gravityDirection);
-            
+
             // Check if player is on a wall (gravity roughly horizontal)
             float verticalAlignment = Mathf.Abs(Vector3.Dot(gravityDirection, Vector3.up));
             bool isOnWall = verticalAlignment < 0.3f; // Gravity is mostly horizontal
-            
+
             // Check if we're in "top-down mode" - camera looking along gravity axis
             Vector3 cameraForwardWorld = cameraTransform.forward;
             float cameraGravityAlignment = Mathf.Abs(Vector3.Dot(cameraForwardWorld, gravityDirection));
             bool isTopDownMode = cameraGravityAlignment > 0.7f; // Camera looking mostly up/down gravity axis
-            
+
             Vector3 forward, right;
-            
+
             if (isOnWall)
             {
                 // WALL MODE: Special handling when on a wall (90-degree gravity)
                 // W = away from camera, S = toward camera
                 // A = left, D = right
-                
+
                 // Forward: direction from camera to player
                 Vector3 cameraToPlayer = (transform.position - cameraTransform.position).normalized;
                 Vector3 cameraToPlayerTransformed = gravityDelta * cameraToPlayer;
                 Vector3 forwardProjected = Vector3.ProjectOnPlane(cameraToPlayerTransformed, upDirection);
-                
+
                 if (forwardProjected.sqrMagnitude > 0.01f)
                 {
                     forward = forwardProjected.normalized;
@@ -319,11 +314,11 @@ public class PlayerController : MonoBehaviour
                     forwardProjected = Vector3.ProjectOnPlane(cameraForwardTransformed, upDirection);
                     forward = forwardProjected.sqrMagnitude > 0.01f ? forwardProjected.normalized : Vector3.ProjectOnPlane(transform.forward, upDirection).normalized;
                 }
-                
+
                 // Right: camera's right vector
                 Vector3 cameraRightTransformed = gravityDelta * cameraTransform.right;
                 Vector3 rightProjected = Vector3.ProjectOnPlane(cameraRightTransformed, upDirection);
-                
+
                 if (rightProjected.sqrMagnitude > 0.01f)
                 {
                     right = rightProjected.normalized;
@@ -333,7 +328,7 @@ public class PlayerController : MonoBehaviour
                     // Camera right aligned with gravity - derive from forward
                     right = Vector3.Cross(upDirection, forward).normalized;
                 }
-                
+
                 // Ensure orthogonality: re-orthogonalize right to be perpendicular to forward
                 // Project right onto the plane perpendicular to forward
                 Vector3 rightOrthogonal = Vector3.ProjectOnPlane(right, forward);
@@ -346,11 +341,11 @@ public class PlayerController : MonoBehaviour
                     // If right was parallel to forward, compute it from cross product
                     right = Vector3.Cross(upDirection, forward).normalized;
                 }
-                
+
                 // Check if camera is above/below player relative to wall orientation
                 // Use the non-transformed camera position for this check
                 Vector3 cameraToPlayerWorld = transform.position - cameraTransform.position;
-                
+
                 // Check if forward direction makes sense for "away from camera"
                 // It should have a positive dot product with cameraToPlayer
                 float forwardAlignment = Vector3.Dot(forward, cameraToPlayerTransformed);
@@ -367,13 +362,13 @@ public class PlayerController : MonoBehaviour
                 // TOP-DOWN MODE: Camera is looking along gravity axis (like overhead view on a wall)
                 // W/S should move up/down the screen (camera forward/back)
                 // A/D should move left/right the screen (camera left/right)
-                
+
                 Vector3 cameraForwardTransformed = gravityDelta * cameraTransform.forward;
                 Vector3 cameraRightTransformed = gravityDelta * cameraTransform.right;
-                
+
                 Vector3 forwardProjected = Vector3.ProjectOnPlane(cameraForwardTransformed, upDirection);
                 Vector3 rightProjected = Vector3.ProjectOnPlane(cameraRightTransformed, upDirection);
-                
+
                 forward = forwardProjected.sqrMagnitude > 0.01f ? forwardProjected.normalized : Vector3.ProjectOnPlane(transform.forward, upDirection).normalized;
                 right = rightProjected.sqrMagnitude > 0.01f ? rightProjected.normalized : Vector3.Cross(upDirection, forward).normalized;
             }
@@ -382,12 +377,12 @@ public class PlayerController : MonoBehaviour
                 // NORMAL MODE: Camera looking at player from the side
                 // W/S should move away/toward camera
                 // A/D should move left/right relative to camera
-                
+
                 // Forward: direction from camera to player (transformed for curves)
                 Vector3 cameraToPlayer = (transform.position - cameraTransform.position).normalized;
                 Vector3 cameraToPlayerTransformed = gravityDelta * cameraToPlayer;
                 Vector3 forwardProjected = Vector3.ProjectOnPlane(cameraToPlayerTransformed, upDirection);
-                
+
                 if (forwardProjected.sqrMagnitude > 0.01f)
                 {
                     forward = forwardProjected.normalized;
@@ -399,11 +394,11 @@ public class PlayerController : MonoBehaviour
                     forwardProjected = Vector3.ProjectOnPlane(cameraForwardTransformed, upDirection);
                     forward = forwardProjected.sqrMagnitude > 0.01f ? forwardProjected.normalized : Vector3.ProjectOnPlane(transform.forward, upDirection).normalized;
                 }
-                
+
                 // Right: camera's right vector (transformed for curves)
                 Vector3 cameraRightTransformed = gravityDelta * cameraTransform.right;
                 Vector3 rightProjected = Vector3.ProjectOnPlane(cameraRightTransformed, upDirection);
-                
+
                 right = rightProjected.sqrMagnitude > 0.01f ? rightProjected.normalized : Vector3.Cross(upDirection, forward).normalized;
             }
 
@@ -424,22 +419,27 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        // Calculate desired velocity
-        Vector3 desiredVelocity = moveDirection * moveSpeed;
-
         // Use linearVelocity for proper collision detection
         Vector3 currentVelocity = rb.linearVelocity;
 
         // Keep the vertical (gravity-aligned) component of velocity
         float verticalComponent = Vector3.Dot(currentVelocity, gravityDirection);
-        Vector3 verticalVelocity = gravityDirection * verticalComponent;
+        Vector3 horizontalVelocity = currentVelocity - (gravityDirection * verticalComponent);
 
-        // Apply new velocity (horizontal movement + vertical velocity from gravity/jump)
-        rb.linearVelocity = desiredVelocity + verticalVelocity;
+        // Desired horizontal velocity
+        Vector3 desiredVelocity = moveDirection * moveSpeed;
+
+        // Velocity difference
+        Vector3 velocityChange = desiredVelocity - horizontalVelocity;
+
+        // Use acceleration multiplier to lower air acceleration
+        float accelerationMultiplier = IsGrounded ? 1 : airAccelerationMultiplier;
+
+        // Apply force towards new velocity (Only in horizontal plane)
+        rb.AddForce(velocityChange * acceleration * accelerationMultiplier, ForceMode.Acceleration);
 
         // Smoothly align player to gravity direction (after turning so it doesn't override)
         AlignToGravity();
-
     }
 
     // Called by Player Input component (Send Messages behavior)
@@ -457,6 +457,7 @@ public class PlayerController : MonoBehaviour
         if (!IsGrounded || !ctx.performed) return;
         OnJumpRequested?.Invoke();
         ApplyJumpForce();
+        AudioManager.Instance.PlayOneShot(jumpEventReference, gameObject.transform.position);
     }
 
     // Called by playerAnimationController to sync with jump animation
@@ -465,8 +466,6 @@ public class PlayerController : MonoBehaviour
         // Jump in the opposite direction of gravity
         Vector3 jumpDirection = gravityBody.GetUpDirection();
         rb.AddForce(jumpDirection * jumpForce, ForceMode.Impulse);
-        jumpQueued = false;
-        AudioManager.Instance.PlayOneShot(jumpEventReference, gameObject.transform.position);
     }
 
     // Called by Player Input component (Send Messages behavior)

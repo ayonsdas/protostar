@@ -247,7 +247,7 @@ public class Telescope : MonoBehaviour, IInteractionCandidate, IEngageable
         }
 
         // Get player input for mouse look
-        playerInput = InputModeManager.Instance.PlayerInput;
+        playerInput = InputModeManager.PlayerInput;
         if (playerInput != null)
         {
             lookAction = playerInput.actions["Look"];

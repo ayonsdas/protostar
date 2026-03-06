@@ -126,8 +126,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   moveSpeed: 20
   turnSpeed: 200
+  acceleration: 15
+  airAccelerationMultiplier: 0.3
   jumpForce: 12
-  groundCheckRadius: 0.3
+  groundCheckRadius: 1
   groundCheck: {fileID: 0}
   groundLayer:
     serializedVersion: 2
@@ -171,6 +173,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71a6cded8703bad4c9f71ba3e9e00433, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CustomGravityBody
+  jumpReleasedGravityMultiplier: 1.5
+  fallingGravityMultiplier: 2
 --- !u!114 &-3148427908538241810
 MonoBehaviour:
   m_ObjectHideFlags: 0

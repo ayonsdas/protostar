@@ -46,7 +46,7 @@ public class CameraFollow : MonoBehaviour
     private Vector3 targetCameraUp = Vector3.up;
     private Vector3 cameraUpVelocity = Vector3.zero;
     private Vector3 cameraBaseGravityUp = Vector3.up; // Camera's base gravity orientation
-    
+
     // Camera input stored as offsets from base orientation
     private float cameraYaw = 0f;   // Horizontal rotation offset
     private float cameraPitch = 0f; // Vertical rotation offset
@@ -95,13 +95,13 @@ public class CameraFollow : MonoBehaviour
 
     private void OnEnable()
     {
-        if (InputModeManager.Instance == null || InputModeManager.Instance.PlayerInput == null)
+        if (!InputModeManager.HasPlayerInput)
         {
-            Debug.LogWarning($"[PlayerController] Cannot find PlayerInput {InputModeManager.Instance}");
+            Debug.LogWarning($"[PlayerController] Cannot find PlayerInput");
         }
         else
         {
-            PlayerInput playerInput = InputModeManager.Instance.PlayerInput;
+            PlayerInput playerInput = InputModeManager.PlayerInput;
             playerInput.actions["Look"].performed += OnLook;
             playerInput.actions["Look"].canceled += OnLook;
             playerInput.actions["MouseHold"].performed += OnMouseHold;
@@ -130,11 +130,11 @@ public class CameraFollow : MonoBehaviour
         if (lookInput.magnitude > 0.01f)
         {
             float mouseSensitivity = SettingsManager.Instance.MouseSensitivity;
-            
+
             // Accumulate yaw and pitch offsets - these are independent of camera gravity
             cameraYaw += lookInput.x * mouseSensitivity * rotationSpeed * Time.deltaTime;
             cameraPitch += lookInput.y * mouseSensitivity * rotationSpeed * Time.deltaTime; // Invert direction: up is up, down is down
-            
+
             // Clamp pitch to limits
             cameraPitch = Mathf.Clamp(cameraPitch, minPitch, maxPitch);
 
@@ -186,7 +186,7 @@ public class CameraFollow : MonoBehaviour
                 }
             }
             */
-            
+
             // DISABLED: Camera auto-reset logic
             /*
             if (playerMoved)
@@ -233,19 +233,19 @@ public class CameraFollow : MonoBehaviour
             }
             */
         }
-        
+
         // Don't smooth camera up outside of returning - it's handled in the return block
         // currentCameraUp is only modified during isReturning
-        
-        Debug.Log($"[CameraFollow] CurrentCameraUp: {currentCameraUp}, TargetCameraUp: {targetCameraUp}, Flipped: {isCameraFlipped}");
-        
+
+        // Debug.Log($"[CameraFollow] CurrentCameraUp: {currentCameraUp}, TargetCameraUp: {targetCameraUp}, Flipped: {isCameraFlipped}");
+
         // Use stored base direction (only updates during reset)
         Vector3 dirFromBase = baseDirection;
-        
+
         // Apply yaw rotation around camera up axis
         Quaternion yawRotation = Quaternion.AngleAxis(cameraYaw, currentCameraUp);
         Vector3 rotatedDir = yawRotation * dirFromBase;
-        
+
         // Apply pitch rotation around right axis (perpendicular to up and rotated dir)
         Vector3 right = Vector3.Cross(currentCameraUp, rotatedDir).normalized;
         Quaternion pitchRotation = Quaternion.AngleAxis(cameraPitch, right);
@@ -281,8 +281,8 @@ public class CameraFollow : MonoBehaviour
             // Create rotation using current up vector - this naturally aligns with camera gravity
             Quaternion lookRotation = Quaternion.LookRotation(directionToTarget, currentCameraUp);
             transform.rotation = lookRotation;
-            
-            Debug.Log($"[CameraFollow] Camera Up: {currentCameraUp}, Camera Rotation: {transform.rotation.eulerAngles}, LookRot: {lookRotation.eulerAngles}");
+
+            // Debug.Log($"[CameraFollow] Camera Up: {currentCameraUp}, Camera Rotation: {transform.rotation.eulerAngles}, LookRot: {lookRotation.eulerAngles}");
         }
     }
 

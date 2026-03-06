@@ -11,8 +11,9 @@ public class InputModeManager : MonoBehaviour
     public InputMode CurrentInputMode { get; private set; } = InputMode.Mouse;
     public event Action<InputMode> InputModeChanged;
 
-    private PlayerInput playerInput;
-    public PlayerInput PlayerInput => playerInput;
+    public static PlayerInput PlayerInput { get; private set; }
+
+    public static bool HasPlayerInput => Instance != null && PlayerInput != null;
 
     private const string PATTERN = @"{([A-Za-z0-9_]+)}";
 
@@ -21,18 +22,18 @@ public class InputModeManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            playerInput = GetComponent<PlayerInput>();
+            PlayerInput = GetComponent<PlayerInput>();
 
-            if (playerInput == null)
+            if (PlayerInput == null)
             {
                 Debug.LogError("[InputManager] cannot find PlayerInput");
                 return;
             }
-            foreach (InputActionMap map in playerInput.actions.actionMaps)
+            foreach (InputActionMap map in PlayerInput.actions.actionMaps)
             {
                 map.Disable();
             }
-            playerInput.actions.FindActionMap("Global").Enable();
+            PlayerInput.actions.FindActionMap("Global").Enable();
         }
         else
         {
@@ -42,19 +43,19 @@ public class InputModeManager : MonoBehaviour
 
     void OnEnable()
     {
-        playerInput.onControlsChanged += HandleControlsChanged;
+        PlayerInput.onControlsChanged += HandleControlsChanged;
     }
 
     void OnDisable()
     {
-        playerInput.onControlsChanged -= HandleControlsChanged;
+        PlayerInput.onControlsChanged -= HandleControlsChanged;
     }
 
     private void HandleControlsChanged(PlayerInput _playerInput)
     {
         Debug.Log($"[InputModeManager] Controls changed!");
         InputMode inputMode;
-        switch (playerInput.currentControlScheme)
+        switch (PlayerInput.currentControlScheme)
         {
             case "Keyboard&Mouse":
                 inputMode = InputMode.Mouse;
@@ -76,7 +77,7 @@ public class InputModeManager : MonoBehaviour
 
     public static string ReplaceBindings(string input)
     {
-        PlayerInput playerInput = Instance.PlayerInput;
+        PlayerInput playerInput = PlayerInput;
         return Regex.Replace(input, PATTERN, match =>
         {
             string actionName = match.Groups[1].Value;
@@ -109,7 +110,7 @@ public class InputModeManager : MonoBehaviour
     public Dictionary<string, List<string>> GetActionDisplayDict(InputAction action)
     {
         Dictionary<string, List<string>> res = new Dictionary<string, List<string>>();
-        InputBinding bindingMask = InputBinding.MaskByGroup(playerInput.currentControlScheme);
+        InputBinding bindingMask = InputBinding.MaskByGroup(PlayerInput.currentControlScheme);
 
         for (int i = 0; i < action.bindings.Count; i++)
         {
@@ -163,7 +164,7 @@ public class InputModeManager : MonoBehaviour
 
     public string GetActionDisplayString(InputAction action)
     {
-        InputBinding bindingMask = InputBinding.MaskByGroup(playerInput.currentControlScheme);
+        InputBinding bindingMask = InputBinding.MaskByGroup(PlayerInput.currentControlScheme);
 
         for (int i = 0; i < action.bindings.Count; i++)
         {

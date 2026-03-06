@@ -1,18 +1,63 @@
+using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody))]
 public class CustomGravityBody : MonoBehaviour
 {
+    [SerializeField] private float jumpReleasedGravityMultiplier = 1.5f;
+    [SerializeField] private float fallingGravityMultiplier = 2f;
     private Rigidbody rb;
     private Vector3? customGravityDirection = null; // If set, uses this instead of global gravity
     private float gravityStrength = 100f; // Default strength
+    private bool jumpHeld = false;
+
+    private void OnEnable()
+    {
+        if (!InputModeManager.HasPlayerInput)
+        {
+            Debug.LogWarning($"[CustomGravityBody] Cannot find PlayerInput");
+        }
+        else
+        {
+            PlayerInput playerInput = InputModeManager.PlayerInput;
+            playerInput.actions["Jump"].performed += OnJump;
+            playerInput.actions["Jump"].canceled += OnJump;
+        }
+    }
+
+    private void OnJump(InputAction.CallbackContext ctx)
+    {
+        if (ctx.performed)
+        {
+            jumpHeld = true;
+        }
+        else if (ctx.canceled)
+        {
+            jumpHeld = false;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (!InputModeManager.HasPlayerInput)
+        {
+            Debug.LogWarning($"[CustomGravityBody] Cannot find PlayerInput");
+        }
+        else
+        {
+            PlayerInput playerInput = InputModeManager.PlayerInput;
+            playerInput.actions["Jump"].performed -= OnJump;
+            playerInput.actions["Jump"].canceled -= OnJump;
+        }
+    }
 
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
         // Disable Unity's built-in gravity so we can apply our own
         rb.useGravity = false;
-        
+
         // Get gravity strength from controller if available
         if (GravityController.Instance != null)
         {
@@ -22,21 +67,46 @@ public class CustomGravityBody : MonoBehaviour
 
     void FixedUpdate()
     {
+        Vector3 gravityDirection = Vector3.zero;
         // If we have a custom gravity direction, use that
         if (customGravityDirection.HasValue)
         {
-            Vector3 gravity = customGravityDirection.Value.normalized * gravityStrength;
-            rb.AddForce(gravity, ForceMode.Acceleration);
+            gravityDirection = customGravityDirection.Value.normalized;
         }
         // Otherwise use global gravity
         else if (GravityController.Instance != null)
         {
             // Apply custom gravity force
-            Vector3 gravity = GravityController.Instance.GetGravity();
-            rb.AddForce(gravity, ForceMode.Acceleration);
+            gravityDirection = GravityController.Instance.GetGravity().normalized;
         }
+        else
+        {
+            Debug.LogError($"[CustomGravityBody] cannot find gravity source");
+        }
+
+        // detect if falling
+        float verticalVelocity = Vector3.Dot(rb.linearVelocity, -gravityDirection);
+
+        float gravityMultiplier = 1f;
+
+        bool rising = verticalVelocity > 0;
+        bool falling = verticalVelocity < 0;
+
+        // choose gravity multiplier
+        if (falling)
+        {
+            gravityMultiplier = fallingGravityMultiplier;
+        }
+        else if (rising && !jumpHeld)
+        {
+            gravityMultiplier = jumpReleasedGravityMultiplier;
+        }
+
+        // apply gravity
+        Vector3 gravity = gravityDirection * gravityStrength * gravityMultiplier;
+        rb.AddForce(gravity, ForceMode.Acceleration);
     }
-    
+
     /// <summary>
     /// Set a custom gravity direction for this object (independent of global gravity)
     /// </summary>
@@ -44,7 +114,7 @@ public class CustomGravityBody : MonoBehaviour
     {
         customGravityDirection = direction.normalized;
     }
-    
+
     /// <summary>
     /// Clear custom gravity and use global gravity again
     /// </summary>
@@ -52,7 +122,7 @@ public class CustomGravityBody : MonoBehaviour
     {
         customGravityDirection = null;
     }
-    
+
     /// <summary>
     /// Check if this object has custom gravity set
     /// </summary>
@@ -68,7 +138,7 @@ public class CustomGravityBody : MonoBehaviour
         {
             return customGravityDirection.Value;
         }
-        
+
         // Otherwise return global gravity direction
         if (GravityController.Instance != null)
         {

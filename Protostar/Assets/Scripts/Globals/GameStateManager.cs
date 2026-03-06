@@ -26,13 +26,13 @@ public class GameStateManager : MonoBehaviour
 
     private void OnEnable()
     {
-        if (InputModeManager.Instance == null || InputModeManager.Instance.PlayerInput == null)
+        if (!InputModeManager.HasPlayerInput)
         {
-            Debug.LogWarning($"[GameStateManager] Cannot find PlayerInput on {InputModeManager.Instance}");
+            Debug.LogWarning($"[PlayerController] Cannot find PlayerInput");
         }
         else
         {
-            PlayerInput playerInput = InputModeManager.Instance.PlayerInput;
+            PlayerInput playerInput = InputModeManager.PlayerInput;
             playerInput.actions["ToggleMenu"].performed += OnToggleMenu;
             playerInput.actions["Cancel"].performed += OnCancel;
         }
@@ -40,13 +40,13 @@ public class GameStateManager : MonoBehaviour
 
     private void OnDisable()
     {
-        if (InputModeManager.Instance == null || InputModeManager.Instance.PlayerInput == null)
+        if (!InputModeManager.HasPlayerInput)
         {
-            Debug.LogWarning($"[GameStateManager] Cannot find PlayerInput on {InputModeManager.Instance}");
+            Debug.LogWarning($"[PlayerController] Cannot find PlayerInput");
         }
         else
         {
-            PlayerInput playerInput = InputModeManager.Instance.PlayerInput;
+            PlayerInput playerInput = InputModeManager.PlayerInput;
             playerInput.actions["ToggleMenu"].performed -= OnToggleMenu;
             playerInput.actions["Cancel"].performed -= OnCancel;
         }
@@ -55,7 +55,7 @@ public class GameStateManager : MonoBehaviour
     // Toggle menu when this action is pressed
     private void OnToggleMenu(InputAction.CallbackContext _ctx)
     {
-        switch(CurrentState)
+        switch (CurrentState)
         {
             case GameState.MainMenu:
                 break;
@@ -80,7 +80,7 @@ public class GameStateManager : MonoBehaviour
     private void OnCancel(InputAction.CallbackContext _ctx)
     {
         Debug.Log("Cancel");
-        switch(CurrentState)
+        switch (CurrentState)
         {
             case GameState.Paused:
             case GameState.Settings:
@@ -108,15 +108,15 @@ public class GameStateManager : MonoBehaviour
         }
 
         // When returning to menu or game, clear menu navigation history
-        if(newState == GameState.MainMenu || newState == GameState.InGame)
+        if (newState == GameState.MainMenu || newState == GameState.InGame)
         {
             ClearPreviousStates();
         }
 
         // If we have this state in our history, remove all history up to that point.
-        else if(previousStates.Contains(newState))
+        else if (previousStates.Contains(newState))
         {
-           while (previousStates.Count > 0)
+            while (previousStates.Count > 0)
             {
                 if (previousStates.Pop() == newState) break;
             }
@@ -128,21 +128,21 @@ public class GameStateManager : MonoBehaviour
         }
 
         Debug.Log($"[GameStateManager] Set state to {newState} from {CurrentState}");
-        foreach(var state in previousStates)
+        foreach (var state in previousStates)
         {
             Debug.Log($"[GameStateManager] Previous state: {state}");
         }
         CurrentState = newState;
-        
+
         // Pause/unpause game time
         Time.timeScale = (newState == GameState.InGame) ? 1f : 0f;
-        
+
         OnStateChanged?.Invoke(newState);
     }
 
     public void RevertState()
     {
-        if(previousStates.Count > 0)
+        if (previousStates.Count > 0)
         {
             GameState previousState = previousStates.Peek();
             SetState(previousState);
@@ -168,8 +168,8 @@ public class GameStateManager : MonoBehaviour
     private void OpenUI()
     {
         Time.timeScale = 0f;
-        InputModeManager.Instance.PlayerInput.actions.FindActionMap("Player").Disable();
-        InputModeManager.Instance.PlayerInput.actions.FindActionMap("UI").Enable();
+        InputModeManager.PlayerInput.actions.FindActionMap("Player").Disable();
+        InputModeManager.PlayerInput.actions.FindActionMap("UI").Enable();
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = true;
         Debug.Log(Cursor.lockState);
@@ -178,8 +178,8 @@ public class GameStateManager : MonoBehaviour
     private void CloseUI()
     {
         Time.timeScale = 1f;
-        InputModeManager.Instance.PlayerInput.actions.FindActionMap("UI").Disable();
-        InputModeManager.Instance.PlayerInput.actions.FindActionMap("Player").Enable();
+        InputModeManager.PlayerInput.actions.FindActionMap("UI").Disable();
+        InputModeManager.PlayerInput.actions.FindActionMap("Player").Enable();
         Cursor.lockState = CursorLockMode.Locked;
     }
 }
