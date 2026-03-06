@@ -10,14 +10,15 @@ public class PickupTooltip : MonoBehaviour
     private const string HELD_TEXT = "Press {Interact} again to put objects down or place them somewhere.";
 
     private string _currentText;
-    public string CurrentText {
+    public string CurrentText
+    {
         get { return _currentText; }
         private set
         {
             _currentText = value;
             if (textMesh != null)
             {
-                textMesh.text = InputModeManager.ReplaceBindings(value);
+                textMesh.text = ActionBindingUtil.ReplaceBindings(value);
             }
         }
     }

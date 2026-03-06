@@ -5,7 +5,9 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Rigidbody))]
 public class CustomGravityBody : MonoBehaviour
 {
-    [SerializeField] private float jumpReleasedGravityMultiplier = 1.5f;
+    [Range(1, 5)]
+    [SerializeField] private float jumpReleasedGravityMultiplier = 2.5f;
+    [Range(1, 5)]
     [SerializeField] private float fallingGravityMultiplier = 2f;
     private Rigidbody rb;
     private Vector3? customGravityDirection = null; // If set, uses this instead of global gravity

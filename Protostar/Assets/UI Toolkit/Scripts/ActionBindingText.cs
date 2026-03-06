@@ -1,9 +1,5 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class ActionBindingText : MonoBehaviour
 {
@@ -27,7 +23,7 @@ public class ActionBindingText : MonoBehaviour
     {
         if (textMesh != null)
         {
-            textMesh.text = InputModeManager.ReplaceBindings(message);
+            textMesh.text = ActionBindingUtil.ReplaceBindings(message);
         }
     }
 
@@ -35,7 +31,7 @@ public class ActionBindingText : MonoBehaviour
     {
         if (textMesh != null)
         {
-            textMesh.text = InputModeManager.ReplaceBindings(message);
+            textMesh.text = ActionBindingUtil.ReplaceBindings(message);
         }
     }
 }

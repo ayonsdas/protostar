@@ -10,13 +10,13 @@ public class PlayerAnimationController : MonoBehaviour
     private void OnEnable()
     {
         playerController.OnGroundedChanged += HandleGroundedChanged;
-        playerController.OnJumpRequested += HandleJumpRequested;
+        playerController.OnJumpSuccess += HandleJumpRequested;
     }
 
     private void OnDisable()
     {
         playerController.OnGroundedChanged -= HandleGroundedChanged;
-        playerController.OnJumpRequested -= HandleJumpRequested;
+        playerController.OnJumpSuccess -= HandleJumpRequested;
     }
 
     private void Update()

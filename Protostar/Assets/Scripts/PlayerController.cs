@@ -1,6 +1,7 @@
 using System;
 using FMOD.Studio;
 using FMODUnity;
+using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -15,7 +16,9 @@ public class PlayerController : MonoBehaviour
 
     [Header("Jump Settings")]
     public float jumpForce = 5f;
-    [Range(1, 5)]
+    [SerializeField] private float jumpCooldownTime = 0.1f;
+    [SerializeField] private float coyoteTime = 0.1f;
+    [SerializeField] private float jumpBufferTime = 0.1f;
     public float groundCheckRadius = 0.3f;
     public Transform groundCheck; // Create an empty child object at player's feet
     [Tooltip("Layers to check for ground. Set to 'Everything' to jump off any object, or specific layers to limit what counts as ground.")]
@@ -46,27 +49,30 @@ public class PlayerController : MonoBehaviour
             OnGroundedChanged?.Invoke(value);
         }
     }
+    private bool CanJump => coyoteTimer.IsActive && !jumpCooldownTimer.IsActive;
+    private bool CanGroundedJump => IsGrounded && !jumpCooldownTimer.IsActive;
     private Vector2 moveInput;
     public bool IsMoving => moveInput.sqrMagnitude > 0.01f;
-    public event Action OnJumpRequested;
+    public event Action OnJumpSuccess;
     public float GetNormalizedSpeed => Mathf.Clamp(rb.linearVelocity.magnitude / moveSpeed, 0f, 1f);
     private Rigidbody rb;
     private CustomGravityBody gravityBody;
-    private Quaternion targetRotation;
     private EventInstance footstepEventInstance;
     private float footstepStartTime;
-    private float lastLandTime;
     private Transform cameraTransform;
-    private CameraFollow cameraFollow;
     private bool movementLocked = false;
     private Vector3 movementBaseGravity = Vector3.down; // Gravity direction at start of movement
     private bool wasMoving = false; // Track if player was moving last frame
+    private Timer landSFXCooldownTimer;
+    private Timer jumpCooldownTimer;
+    private Timer coyoteTimer;
+    private InputBuffer jumpBuffer;
 
     [Header("Ground/Gravity Check Collider")]
     [Tooltip("Assign the BoxCollider used for ground and gravity checks. Only this collider will be used for detection.")]
     public BoxCollider groundCheckBoxCollider;
 
-    private bool CanLand => Time.time > lastLandTime + landCooldownTime;
+    private bool CanLand => !landSFXCooldownTimer.IsActive;
 
     /// <summary>
     /// Lock or unlock player movement. When locked, WASD input is ignored for movement.
@@ -97,9 +103,6 @@ public class PlayerController : MonoBehaviour
         // Enable continuous collision detection for better trigger detection
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
 
-        // Initialize target rotation to current rotation
-        targetRotation = transform.rotation;
-
         // If no groundCheckBoxCollider is assigned, try to get one from this GameObject
         if (groundCheckBoxCollider == null)
         {
@@ -114,6 +117,12 @@ public class PlayerController : MonoBehaviour
             checkObj.transform.localPosition = new Vector3(0, colliderBottom, 0);
             groundCheck = checkObj.transform;
         }
+
+        // Initialize timers
+        jumpCooldownTimer = new Timer(jumpCooldownTime);
+        landSFXCooldownTimer = new Timer(landCooldownTime);
+        coyoteTimer = new Timer(coyoteTime);
+        jumpBuffer = new InputBuffer(jumpBufferTime);
     }
 
     void Start()
@@ -125,7 +134,6 @@ public class PlayerController : MonoBehaviour
         if (Camera.main != null)
         {
             cameraTransform = Camera.main.transform;
-            cameraFollow = Camera.main.GetComponent<CameraFollow>();
         }
     }
 
@@ -168,6 +176,21 @@ public class PlayerController : MonoBehaviour
             }
         }
         IsGrounded = foundGround;
+
+        if (CanGroundedJump)
+        {
+            // Use buffered jump if we have it
+            if (jumpBuffer.Consume())
+            {
+                Debug.Log($"[PlayerController] Using buffered jump, starting with velocity {rb.linearVelocity}");
+                HandleJumpSuccess();
+            }
+            // Only restart coyote time if not using buffered jump
+            else
+            {
+                coyoteTimer.Restart();
+            }
+        }
 
         // Debug visualization
         Color debugColor = IsGrounded ? Color.green : Color.red;
@@ -252,7 +275,6 @@ public class PlayerController : MonoBehaviour
         if (cameraTransform == null && Camera.main != null)
         {
             cameraTransform = Camera.main.transform;
-            cameraFollow = Camera.main.GetComponent<CameraFollow>();
         }
 
         // Get gravity info used throughout method
@@ -454,18 +476,49 @@ public class PlayerController : MonoBehaviour
     // Called by Player Input component (Send Messages behavior)
     public void OnJump(InputAction.CallbackContext ctx)
     {
-        if (!IsGrounded || !ctx.performed) return;
-        OnJumpRequested?.Invoke();
+        // If jump button released, ignore
+        if (!ctx.performed)
+            return;
+
+        // If jump button pressed, but not able to use, buffer it
+        if (!CanJump)
+        {
+            jumpBuffer.Press();
+            return;
+        }
+
+        // Otherwise, jump like normal
+        HandleJumpSuccess();
+    }
+
+    private void HandleJumpSuccess()
+    {
+        jumpCooldownTimer.Restart();
+        coyoteTimer.Stop();
+        jumpBuffer.Consume();
+
         ApplyJumpForce();
+
         AudioManager.Instance.PlayOneShot(jumpEventReference, gameObject.transform.position);
+
+        OnJumpSuccess?.Invoke();
     }
 
     // Called by playerAnimationController to sync with jump animation
     public void ApplyJumpForce()
     {
-        // Jump in the opposite direction of gravity
         Vector3 jumpDirection = gravityBody.GetUpDirection();
+
+        // Strip downward velocity so jump goes upward right when landing
+        Vector3 currentVelocity = rb.linearVelocity;
+        float verticalComponent = Vector3.Dot(currentVelocity, jumpDirection);
+        if (verticalComponent < 0)
+        {
+            rb.linearVelocity = currentVelocity - (jumpDirection * verticalComponent);
+        }
+
         rb.AddForce(jumpDirection * jumpForce, ForceMode.Impulse);
+        Debug.Log($"[PlayerController] Jumping, velocity after force: {rb.linearVelocity}");
     }
 
     // Called by Player Input component (Send Messages behavior)
@@ -490,7 +543,7 @@ public class PlayerController : MonoBehaviour
     {
         bool moving = rb.linearVelocity.magnitude >= footstepSpeedThreshold;
         bool debounce = Time.time - footstepStartTime > footstepDebounceTime;
-        bool justLanded = Time.time <= lastLandTime + footstepDebounceTime;
+        bool justLanded = landSFXCooldownTimer.IsActive;
         return moving && debounce && IsGrounded && !justLanded;
     }
 
@@ -512,7 +565,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnLand()
     {
-        lastLandTime = Time.time;
+        landSFXCooldownTimer.Restart();
         PlayLandSound();
     }
     private void PlayLandSound()
