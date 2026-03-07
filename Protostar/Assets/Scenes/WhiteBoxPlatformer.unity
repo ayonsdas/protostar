@@ -18965,6 +18965,11 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10, y: 0.5, z: 10}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!137 &1558130928 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 3386632812885167989, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
+  m_PrefabInstance: {fileID: 890825962}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1569015458
 GameObject:
   m_ObjectHideFlags: 0
@@ -20753,6 +20758,7 @@ GameObject:
   - component: {fileID: 1766510121}
   - component: {fileID: 1766510125}
   - component: {fileID: 1766510127}
+  - component: {fileID: 1766510129}
   - component: {fileID: 1766510126}
   m_Layer: 0
   m_Name: Main Camera
@@ -20900,12 +20906,6 @@ MonoBehaviour:
   collisionRadius: 0.7
   collisionSmoothTime: 0.1
   minDistance: 1
-  fadeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  fadeDetectionRadius: 0.3
-  fadeAlpha: 0.3
-  fadeSpeed: 10
   rotationSpeed: 100
   returnDelay: 0.5
   returnSpeed: 5
@@ -20938,12 +20938,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Protostar::CameraOcclusionFade
   target: {fileID: 890825963}
-  sphereRadius: 0.3
-  fadeSpeed: 4
-  fadeAlpha: 0.1
   fadeLayers:
     serializedVersion: 2
     m_Bits: 832
+  sphereRadius: 0.3
+  ditherSize: 4
+  fadeSpeed: 4
+  fadeAlpha: 0.4
+--- !u!114 &1766510129
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1766510120}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 390881711f1468f45b55ce8d383d4568, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Protostar::PlayerOcclusionFade
+  target: {fileID: 890825963}
+  playerRenderer: {fileID: 1558130928}
+  triggerDistance: 4
+  ditherSize: 3
+  fadeSpeed: 4
+  fadeAlpha: 0.2
 --- !u!1 &1770240493
 GameObject:
   m_ObjectHideFlags: 0
