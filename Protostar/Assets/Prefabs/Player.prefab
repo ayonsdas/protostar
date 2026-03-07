@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: -3148427908538241810}
   - component: {fileID: 6870503674977786369}
   - component: {fileID: 4162050533541982623}
+  - component: {fileID: 4076777060941218657}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -138,7 +139,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   gravityRotationSpeed: 15
-  disableFootsteps: 0
+  disableFootsteps: 1
   footstepSpeedThreshold: 0.1
   footstepDebounceTime: 0.5
   footstepEventReference:
@@ -241,6 +242,25 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &4076777060941218657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 39550120540274030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 197bbdd7b6a607f4aabd2e2aa9e3951d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Protostar::AnimationAudioEventPlayer
+  cooldownEventReferences:
+  - Guid:
+      Data1: -1834200828
+      Data2: 1303441331
+      Data3: -578663519
+      Data4: 1782172042
+    Path: event:/Land
 --- !u!1 &7352152883732015007
 GameObject:
   m_ObjectHideFlags: 0

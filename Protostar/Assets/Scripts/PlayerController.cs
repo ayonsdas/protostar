@@ -54,7 +54,6 @@ public class PlayerController : MonoBehaviour
     private Vector2 moveInput;
     public bool IsMoving => moveInput.sqrMagnitude > 0.01f;
     public event Action OnJumpSuccess;
-    public float GetNormalizedSpeed => Mathf.Clamp(rb.linearVelocity.magnitude / moveSpeed, 0f, 1f);
     private Rigidbody rb;
     private CustomGravityBody gravityBody;
     private EventInstance footstepEventInstance;
@@ -159,9 +158,12 @@ public class PlayerController : MonoBehaviour
 
         // Jump check: use SphereCollider at groundCheck.position
         bool foundGround = false;
+        Vector3 closestGroundPoint = Vector3.zero;
+
         if (groundCheck != null)
         {
             Collider[] colliders = Physics.OverlapSphere(groundCheck.position, groundCheckRadius, groundLayer, QueryTriggerInteraction.Ignore);
+            float closestGroundDistance = float.MaxValue;
             foreach (Collider col in colliders)
             {
                 if (col != groundCheckBoxCollider)
@@ -170,12 +172,30 @@ public class PlayerController : MonoBehaviour
                     {
                         OnLand();
                     }
+
+                    Vector3 colliderClosestPoint = col.ClosestPoint(groundCheck.position);
+                    float colliderDistance = Vector3.Distance(colliderClosestPoint, groundCheck.position);
+
+                    // Update closest ground point for 
+                    if (colliderDistance < closestGroundDistance)
+                    {
+                        closestGroundPoint = colliderClosestPoint;
+                        closestGroundDistance = colliderDistance;
+                    }
                     foundGround = true;
-                    break;
                 }
             }
         }
         IsGrounded = foundGround;
+
+        // Snap to ground if just landed, and falling down
+        float velocityAlongGravity = PhysicsUtils.VelocityIntoNormal(rb, gravityDown);
+        PhysicsUtils.SeperateVelocity(rb, gravityDown, out Vector3 horizontalVelocity, out Vector3 _verticalVelocity);
+        if (IsGrounded && !previouslyGrounded && velocityAlongGravity <= 0)
+        {
+            transform.position += closestGroundPoint - groundCheck.position;
+            rb.linearVelocity = horizontalVelocity;
+        }
 
         if (CanGroundedJump)
         {
@@ -445,7 +465,7 @@ public class PlayerController : MonoBehaviour
         Vector3 currentVelocity = rb.linearVelocity;
 
         // Keep the vertical (gravity-aligned) component of velocity
-        float verticalComponent = Vector3.Dot(currentVelocity, gravityDirection);
+        float verticalComponent = PhysicsUtils.VelocityIntoNormal(rb, gravityDirection);
         Vector3 horizontalVelocity = currentVelocity - (gravityDirection * verticalComponent);
 
         // Desired horizontal velocity
@@ -511,7 +531,7 @@ public class PlayerController : MonoBehaviour
 
         // Strip downward velocity so jump goes upward right when landing
         Vector3 currentVelocity = rb.linearVelocity;
-        float verticalComponent = Vector3.Dot(currentVelocity, jumpDirection);
+        float verticalComponent = PhysicsUtils.VelocityIntoNormal(rb, jumpDirection);
         if (verticalComponent < 0)
         {
             rb.linearVelocity = currentVelocity - (jumpDirection * verticalComponent);
@@ -575,5 +595,16 @@ public class PlayerController : MonoBehaviour
 
         else
             Debug.LogWarning("[PlayerController] Landing sound not assigned");
+    }
+
+    public float GetHorizontalSpeed()
+    {
+        PhysicsUtils.SeperateVelocity(
+            rb,
+            gravityBody.GetGravityDirection(),
+            out Vector3 horizontalVelocity,
+            out Vector3 _
+        );
+        return horizontalVelocity.magnitude;
     }
 }

@@ -20,6 +20,8 @@ public class AudioManager : MonoBehaviour
     private List<StudioEventEmitter> eventEmitters;
     private EventInstance ambienceEventInstance;
     private EventInstance musicEventInstance;
+    private Dictionary<FMOD.GUID, float> lastPlayedTimes = new();
+    private float lastPlayedTime;
 
     public static AudioManager Instance { get; private set; }
     public void Awake()
@@ -71,7 +73,20 @@ public class AudioManager : MonoBehaviour
 
     public void PlayOneShot(EventReference eventReference, Vector3 position)
     {
-        RuntimeManager.PlayOneShot(eventReference, position);
+        PlayOneShot(eventReference.Guid, position);
+    }
+
+    public void PlayOneShot(string path, Vector3 position)
+    {
+        FMOD.GUID eventGuid = RuntimeManager.PathToGUID(path);
+        PlayOneShot(eventGuid, position);
+    }
+
+    private void PlayOneShot(FMOD.GUID eventGuid, Vector3 position)
+    {
+        lastPlayedTime = Time.time;
+        lastPlayedTimes[eventGuid] = lastPlayedTime;
+        RuntimeManager.PlayOneShot(eventGuid, position);
     }
 
     public EventInstance CreateEventInstance(EventReference eventReference)
@@ -129,6 +144,26 @@ public class AudioManager : MonoBehaviour
         {
             ambienceEventInstance.stop(stopMode);
         }
+    }
+
+    public bool PlayedRecently(EventReference eventReference, float cooldown)
+    {
+        return PlayedRecently(eventReference.Guid, cooldown);
+    }
+
+    public bool PlayedRecently(string path, float cooldown)
+    {
+        FMOD.GUID eventGuid = RuntimeManager.PathToGUID(path);
+        return PlayedRecently(eventGuid, cooldown);
+    }
+
+    private bool PlayedRecently(FMOD.GUID eventGuid, float cooldown)
+    {
+        if (!lastPlayedTimes.ContainsKey(eventGuid))
+            return false;
+
+        float lastPlayedTime = lastPlayedTimes[eventGuid];
+        return Time.time - lastPlayedTime < cooldown;
     }
 
     private void Cleanup()
