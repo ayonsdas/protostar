@@ -15,8 +15,8 @@ public class CameraFollow : MonoBehaviour
     public float collisionRadius = 0.3f; // Radius of the camera sphere for collision
     public float collisionSmoothTime = 0.1f; // How smoothly camera adjusts to obstacles
     public float minDistance = 0.5f; // Minimum distance camera can be from player
-
     private Vector3 velocity = Vector3.zero; // Used by SmoothDamp
+
 
     [Header("Camera Rotation Settings")]
     public float rotationSpeed = 50f;
@@ -266,7 +266,17 @@ public class CameraFollow : MonoBehaviour
         }
 
         // Smoothly adjust distance
-        currentDistance = Mathf.SmoothDamp(currentDistance, targetDistance, ref distanceVelocity, collisionSmoothTime);
+        float dampedDistance = Mathf.SmoothDamp(currentDistance, targetDistance, ref distanceVelocity, collisionSmoothTime);
+        if (dampedDistance > currentDistance)
+        {
+            // If we're increasing distance (moving camera out), damp to avoid popping
+            currentDistance = dampedDistance;
+        }
+        else
+        {
+            // If we're decreasing distance (moving camera in), don't smooth to avoid occlusion - just move in immediately
+            currentDistance = targetDistance;
+        }
 
         // Apply adjusted distance
         Vector3 finalPosition = target.position + cameraDir * currentDistance;
