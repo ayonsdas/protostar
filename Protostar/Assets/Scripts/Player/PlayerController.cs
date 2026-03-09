@@ -518,7 +518,6 @@ public class PlayerController : MonoBehaviour
         }
 
         rb.AddForce(jumpDirection * jumpForce, ForceMode.Impulse);
-        Debug.Log($"[PlayerController] Jumping, velocity after force: {rb.linearVelocity}");
     }
 
     // Called by Player Input component (Send Messages behavior)
