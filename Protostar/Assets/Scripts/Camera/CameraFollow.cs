@@ -27,8 +27,6 @@ public class CameraFollow : MonoBehaviour
     public float minPitch = -30f;  // Minimum elevation angle (below horizontal)
     public float maxPitch = 75f;   // Maximum elevation angle (never directly above)
 
-    private InputAction lookAction;
-    private InputAction mouseHoldAction;
     private CustomGravityBody gravityBody;
     private Vector3 cameraDir;        // World-space normalized direction from player to camera
     private float cameraDistance;     // Distance from player (from offset magnitude)
@@ -46,6 +44,7 @@ public class CameraFollow : MonoBehaviour
     private Vector3 targetCameraUp = Vector3.up;
     private Vector3 cameraUpVelocity = Vector3.zero;
     private Vector3 cameraBaseGravityUp = Vector3.up; // Camera's base gravity orientation
+    private PlayerController playerController;
 
     // Camera input stored as offsets from base orientation
     private float cameraYaw = 0f;   // Horizontal rotation offset
@@ -74,6 +73,7 @@ public class CameraFollow : MonoBehaviour
             }
 
             gravityBody = target.GetComponent<CustomGravityBody>();
+            playerController = target.GetComponent<PlayerController>();
 
             // Initialize camera direction from the local offset converted to world space
             Vector3 worldOffset = target.TransformDirection(offset);
@@ -113,6 +113,28 @@ public class CameraFollow : MonoBehaviour
     {
         if (target == null)
             return;
+
+        Vector3 playerUp = gravityBody != null ? gravityBody.GetUpDirection() : Vector3.up;
+
+        bool playerRotatingCamera = lookInput.magnitude > 0.01f;
+
+        if (Vector3.Angle(currentCameraUp, playerUp) < 1f)
+        {
+            currentCameraUp = playerUp;
+        }
+        else if (playerController.IsGrounded && !playerRotatingCamera)
+        {
+            currentCameraUp = Vector3.Slerp(currentCameraUp, playerUp, Time.deltaTime * 2f);
+            currentCameraUp.Normalize();
+        }
+
+        // After updating currentCameraUp, project baseDirection onto new up plane
+        // so the camera doesn't suddenly snap when gravity shifts
+        baseDirection = Vector3.ProjectOnPlane(baseDirection, currentCameraUp).normalized;
+        if (baseDirection.sqrMagnitude < 0.01f)
+        {
+            baseDirection = Vector3.ProjectOnPlane(-target.forward, currentCameraUp).normalized;
+        }
 
         // Check if player has moved
         bool playerMoved = Vector3.Distance(target.position, lastPlayerPosition) > 0.01f;
