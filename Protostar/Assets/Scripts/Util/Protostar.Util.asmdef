@@ -1,0 +1,17 @@
+{
+    "name": "Protostar.Util",
+    "rootNamespace": "",
+    "references": [
+        "GUID:75469ad4d38634e559750d17036d5f7c",
+        "GUID:6a08c4987bfcdb94e965fa2f5862c24a"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - GravityFlip
   layers:
   - Default
   - TransparentFX
@@ -12,9 +13,9 @@ TagManager:
   - Water
   - UI
   - Interactable
-  - 
-  - 
-  - 
+  - Walls
+  - Platforms
+  - Props
   - 
   - 
   - 
@@ -50,3 +51,4 @@ TagManager:
   - Light Layer 5
   - Light Layer 6
   - Light Layer 7
+  - Outline

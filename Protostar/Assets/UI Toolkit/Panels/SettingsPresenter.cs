@@ -5,10 +5,7 @@ using UnityEngine.UIElements;
 
 public class SettingsPresenter
 {
-    private const string RESOLUTION_KEY = "Settings_Resolution";
-    private const string FULLSCREEN_KEY = "Settings_Fullscreen";
-    private const string MUSIC_MASTER_KEY = "Settings_MusicMaster";
-
+    private const float VOLUME_SCALE = 100f;
     private List<string> resolutions = new List<string>()
     {
         "3840x2160",
@@ -18,15 +15,17 @@ public class SettingsPresenter
         "1280x720"
     };
 
-    public Action BackAction { set { if (backButton != null) backButton.clicked += value; } }
-    public Action ReturnToMainMenuAction { set { if (mainMenuButton != null) mainMenuButton.clicked += value; } }
+    public Action BackAction { set { UIHelper.RegisterButton(backButton, value); } }
+    public Action ReturnToMainMenuAction { set { UIHelper.RegisterButton(mainMenuButton, value); } }
+    public Action ControlsAction { set { UIHelper.RegisterButton(controlsButton, value); } }
 
     private Button backButton;
     private Button mainMenuButton;
+    private Button controlsButton;
     private Toggle fullscreenToggle;
     private DropdownField resolutionsDropdown;
-    private Slider musicMasterSlider;
-
+    private Slider masterVolumeSlider;
+    private Slider mouseSensitivitySlider;
 
     public SettingsPresenter(VisualElement root)
     {
@@ -35,75 +34,90 @@ public class SettingsPresenter
             Debug.LogError("Settings root is null");
             return;
         }
-
         backButton = root.Q<Button>("BackButton");
         mainMenuButton = root.Q<Button>("MainMenuButton");
+        controlsButton = root.Q<Button>("ControlsButton");
         fullscreenToggle = root.Q<Toggle>("FullscreenToggle");
         resolutionsDropdown = root.Q<DropdownField>("ResolutionDropdown");
-        musicMasterSlider = root.Q<Slider>("MusicMasterSlider");
+        masterVolumeSlider = root.Q<Slider>("MasterVolumeSlider");
+        mouseSensitivitySlider = root.Q<Slider>("MouseSensitivitySlider");
 
         if (backButton == null)
         {
             Debug.LogError("BackButton not found in Settings");
         }
-
         if (fullscreenToggle != null)
         {
-            // Load saved fullscreen setting
-            fullscreenToggle.value = PlayerPrefs.GetInt(FULLSCREEN_KEY, Screen.fullScreen ? 1 : 0) == 1;
+            fullscreenToggle.value = PlayerPrefs.GetInt(PlayerPrefKeys.FULLSCREEN_KEY, Screen.fullScreen ? 1 : 0) == 1;
             fullscreenToggle.RegisterCallback<MouseUpEvent>((evt) => { SetFullscreen(fullscreenToggle.value); }, TrickleDown.TrickleDown);
+        }
+        else
+        {
+            Debug.LogWarning("[SettingsPresenter] FullscreenToggle not found in Settings view");
         }
 
         if (resolutionsDropdown != null)
         {
             resolutionsDropdown.choices = resolutions;
-
-            // Load saved resolution index
-            int savedIndex = PlayerPrefs.GetInt(RESOLUTION_KEY, 2); // Default to 1920x1080
+            int savedIndex = PlayerPrefs.GetInt(PlayerPrefKeys.RESOLUTION_KEY, 2);
             resolutionsDropdown.index = Mathf.Clamp(savedIndex, 0, resolutions.Count - 1);
-
             resolutionsDropdown.RegisterValueChangedCallback((value) => SetResolution(value.newValue));
         }
         else
         {
-            Debug.LogError("ResolutionDropdown not found in Settings view");
+            Debug.LogError("[SettingsPresenter] ResolutionDropdown not found in Settings view");
+        }
+        if (masterVolumeSlider != null)
+        {
+            if (PlayerPrefs.HasKey(PlayerPrefKeys.MASTER_VOLUME_KEY))
+            {
+                masterVolumeSlider.value = PlayerPrefs.GetFloat(PlayerPrefKeys.MASTER_VOLUME_KEY) * VOLUME_SCALE;
+            }
+            masterVolumeSlider.RegisterValueChangedCallback((evt) => SetMusicMasterVolume(evt.newValue));
+        }
+        else
+        {
+            Debug.LogError("[SettingsPresenter] MasterVolumeSlider not found in Settings view");
         }
 
-        if (musicMasterSlider != null)
+        if (mouseSensitivitySlider != null)
         {
-            // Load saved music volume (default to 100%)
-            musicMasterSlider.value = PlayerPrefs.GetFloat(MUSIC_MASTER_KEY, 1f);
-            musicMasterSlider.RegisterValueChangedCallback((evt) => SetMusicMasterVolume(evt.newValue));
+            if (PlayerPrefs.HasKey(PlayerPrefKeys.MOUSE_SENSETIVITY_KEY))
+            {
+                mouseSensitivitySlider.value = PlayerPrefs.GetFloat(PlayerPrefKeys.MOUSE_SENSETIVITY_KEY);
+            }
+            mouseSensitivitySlider.RegisterValueChangedCallback((evt) => SetMouseSensetivity(evt.newValue));
+        }
+        else
+        {
+            Debug.LogError("[SettingsPresenter] MouseSensitivitySlider not found in Settings view");
         }
     }
 
     private void SetFullscreen(bool enabled)
     {
         Screen.fullScreen = enabled;
-        PlayerPrefs.SetInt(FULLSCREEN_KEY, enabled ? 1 : 0);
+        PlayerPrefs.SetInt(PlayerPrefKeys.FULLSCREEN_KEY, enabled ? 1 : 0);
         PlayerPrefs.Save();
     }
-
     private void SetResolution(string newResolution)
     {
         string[] resolutionArray = newResolution.Split("x");
         int[] valuesIntArray = new int[] { int.Parse(resolutionArray[0]), int.Parse(resolutionArray[1]) };
-
         Screen.SetResolution(valuesIntArray[0], valuesIntArray[1], fullscreenToggle.value);
-
-        // Save the index
         int index = resolutions.IndexOf(newResolution);
-        PlayerPrefs.SetInt(RESOLUTION_KEY, index);
+        PlayerPrefs.SetInt(PlayerPrefKeys.RESOLUTION_KEY, index);
         PlayerPrefs.Save();
     }
-
     private void SetMusicMasterVolume(float volume)
     {
-        // Sets volume in Audio Manager which connects to busses
-        Debug.Log("Set Master volume to ");
-        AudioManager.Instance.masterVolume = volume;
-
-        PlayerPrefs.SetFloat(MUSIC_MASTER_KEY, volume);
+        float normalizedVolume = volume / VOLUME_SCALE;
+        PlayerPrefs.SetFloat(PlayerPrefKeys.MASTER_VOLUME_KEY, normalizedVolume);
         PlayerPrefs.Save();
+        AudioManager.Instance.SetBusVolume(AudioBus.Master, normalizedVolume);
+    }
+    private void SetMouseSensetivity(float sensitivity)
+    {
+        SettingsManager.Instance.SetMouseSensitivity(sensitivity);
     }
 }

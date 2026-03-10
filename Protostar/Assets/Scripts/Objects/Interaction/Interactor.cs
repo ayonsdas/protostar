@@ -1,88 +1,129 @@
+using System.Collections.Generic;
 using UnityEngine;
 
-public class Interactor : MonoBehaviour
+public abstract class Interactor : MonoBehaviour
 {
+    [Header("Interaction Settings")]
+    [SerializeField] protected float interactionRadius = 3f;
+    [SerializeField] protected LayerMask interactionMask;
 
-    [SerializeField] private float range = 4f;
-    [SerializeField] private LayerMask interactableMask;
-    [SerializeField] private Transform origin;
+    protected readonly List<IInteractionCandidate> nearby = new();
+    protected IFocusable currentFocus;
+    private IInteractionCandidate _focusedCandidate;
+    protected IEngageable activeEngageable;
+    protected IInteractionCandidate engagedCandidate;
+    protected bool IsEngaged => activeEngageable != null && engagedCandidate != null;
 
-    public IEngageable Engaged;
-    public IInteractable HoveredInteractable;
-    public IEngageable HoveredEngagable;
-    public IFocusable Focused;
-    public IPickupable HoveredPickupable;
+    private readonly List<InteractionOption> _options = new();
+    protected readonly Dictionary<InteractionInputType, InteractionOption> _bestOptionByInput
+    = new Dictionary<InteractionInputType, InteractionOption>();
+
+    protected abstract PlayerInteractionContext BuildContext();
 
     public virtual void Update()
     {
-        Cast();
+        ResolveInteraction();
     }
 
-    private void Cast()
+    // Find the most relevant interaction around us.
+    private void ResolveInteraction()
     {
-        IInteractable newHoveredInteractable = null;
-        IEngageable newHoveredEngagable = null;
-        IFocusable newFocused = null;
-        IPickupable newHoveredPickupable = null;
+        IInteractionCandidate newFocus = null;
+        var context = BuildContext();
 
-
-        if (Physics.Raycast(origin.position, origin.forward, out var hit, range, interactableMask))
+        if (IsEngaged)
         {
-            newHoveredInteractable = hit.collider.GetComponentInParent<IInteractable>();
-            newHoveredEngagable = hit.collider.GetComponentInParent<IEngageable>();
-            newFocused = hit.collider.GetComponentInParent<IFocusable>();
-            newHoveredPickupable = hit.collider.GetComponentInParent<IPickupable>();
+            newFocus = engagedCandidate;
+        }
+        else
+        {
+            float bestFocusScore = float.MinValue;
+
+            foreach (var candidate in nearby)
+            {
+                if (!candidate.HasAnyValidInteraction(context))
+                    continue;
+
+                float score = CalculateFocusScore(candidate, context);
+
+                if (score > bestFocusScore)
+                {
+                    bestFocusScore = score;
+                    newFocus = candidate;
+                }
+            }
         }
 
-        if (newFocused != Focused)
-        {
-            Focused?.Unfocus(gameObject);
-            newFocused?.Focus(gameObject);
-            Focused = newFocused;
-        }
-
-        HoveredInteractable = newHoveredInteractable;
-        HoveredEngagable = newHoveredEngagable;
-        HoveredPickupable = newHoveredPickupable;
+        ApplyFocus(newFocus);
+        _focusedCandidate = newFocus;
+        ResolveOptionsForFocused(context);
     }
 
-
-    public void Interact()
+    private void ResolveOptionsForFocused(PlayerInteractionContext context)
     {
-        // Make sure we have the latest raycast data
-        Cast();
-        
-        Debug.Log($"[Interactor] Interact() called. Engaged={Engaged != null}, HoveredEngagable={HoveredEngagable != null}, HoveredInteractable={HoveredInteractable != null}");
-        
-        if (Engaged != null)
+        _bestOptionByInput.Clear();
+        _options.Clear();
+
+        if (_focusedCandidate == null)
+            return;
+
+        _focusedCandidate.CollectOptions(context, _options);
+
+        foreach (var option in _options)
         {
-            Debug.Log("[Interactor] Disengaging");
-            Engaged.Disengage(gameObject);
-            Engaged = null;
+            if (!option.IsValid)
+                continue;
+
+            float score = InteractionPriority.Get(option.Type);
+
+            if (_bestOptionByInput.TryGetValue(option.InputType, out var existing))
+            {
+                float bestScore = InteractionPriority.Get(option.Type);
+                if (score > bestScore)
+                    _bestOptionByInput[option.InputType] = option;
+            }
+            else
+            {
+                _bestOptionByInput.Add(option.InputType, option);
+            }
+        }
+    }
+
+    // Shift focus to new best InteractionOption
+    private void ApplyFocus(IInteractionCandidate candidate)
+    {
+        IFocusable newFocus = null;
+        MonoBehaviour mb = candidate as MonoBehaviour;
+        if (mb != null)
+            newFocus = mb.gameObject.GetComponentInParent<IFocusable>();
+
+        if (newFocus == currentFocus)
+        {
             return;
         }
 
-        if (HoveredEngagable != null)
-        {
-            Debug.Log("[Interactor] Engaging HoveredEngagable");
-            HoveredEngagable.Engage(gameObject);
-            Engaged = HoveredEngagable;
-        }
+        currentFocus?.Unfocus(gameObject);
+        newFocus?.Focus(gameObject);
 
-        Debug.Log($"[Interactor] About to call HoveredInteractable.Interact, HoveredInteractable is null: {HoveredInteractable == null}");
-        if (HoveredInteractable != null)
-        {
-            Debug.Log($"[Interactor] HoveredInteractable type: {HoveredInteractable.GetType().Name}");
-        }
-        HoveredInteractable?.Interact(gameObject);
-        Debug.Log("[Interactor] After calling HoveredInteractable.Interact");
+        currentFocus = newFocus;
     }
 
-    public void Scroll(int direction)
+    private float CalculateFocusScore(IInteractionCandidate candidate, PlayerInteractionContext context)
     {
-        if (Engaged is IShiftable shiftable)
-        {
-            shiftable.Shift(direction);
-        }
+
+        var mb = candidate as MonoBehaviour;
+        if (!mb)
+            return float.MinValue;
+
+
+        // Distance weighting
+        float distance = Vector3.Distance(transform.position, mb.transform.position);
+        float distanceWeight = Mathf.Clamp01(1f - (distance / interactionRadius));
+
+        // Angle weighting
+        Vector3 dir = (mb.transform.position - transform.position).normalized;
+        float angleWeight = Vector3.Dot(transform.forward, dir) * 10f;
+
+        return angleWeight + distanceWeight;
     }
 }

@@ -13,6 +13,11 @@ public class PickupableObject : MonoBehaviour, IPickupable
         colliders = GetComponentsInChildren<Collider>();
     }
 
+    public bool CanPickup()
+    {
+        return !isPickedUp;
+    }
+
     public void OnPickup(GameObject picker)
     {
         if (isPickedUp) return;

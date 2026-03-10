@@ -1,98 +1,156 @@
-using System;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class StartViewPresenter : MonoBehaviour
+public class StartViewPresenter : MonoBehaviour, IMenuView
 {
-    public static StartViewPresenter Instance { get; private set; }
-    
+    private const string CONTROLLER_MODE_CLASS = "controller-mode";
+    private const string MOUSE_MODE_CLASS = "mouse-mode";
+
     [SerializeField] private string gameSceneName = "MainLevel";
     [SerializeField] private string mainMenuSceneName = "MainMenu";
-    
+
     private VisualElement root;
     private VisualElement settingsView;
     private VisualElement mainMenuView;
+    private VisualElement creditsView;
+    private VisualElement controlsView;
 
     void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
-        DontDestroyOnLoad(gameObject);
+        root = GetComponent<UIDocument>().rootVisualElement;
+
+        settingsView = root.Q<TemplateContainer>("Settings");
+        mainMenuView = root.Q<TemplateContainer>("MainMenu");
+        creditsView = root.Q<TemplateContainer>("Credits");
+        controlsView = root.Q<TemplateContainer>("Controls");
     }
 
     void Start()
     {
-        root = GetComponent<UIDocument>().rootVisualElement;
-        settingsView = root.Q<TemplateContainer>("Settings");
-        mainMenuView = root.Q<TemplateContainer>("MainMenu");
-
         SetupMainMenu();
         SetupSettingsMenu();
+        SetupCreditsMenu();
+        SetupControlsMenu();
 
-        // Subscribe to state changes
-        GameStateManager.Instance.OnStateChanged += OnGameStateChanged;
-
-        // Initialize UI based on current state
+        // Set initial modes
         OnGameStateChanged(GameStateManager.Instance.CurrentState);
+        OnInputModeChanged(InputModeManager.Instance.CurrentInputMode);
     }
 
-    private void OnDestroy()
+    private void OnEnable()
     {
-        if (GameStateManager.Instance != null)
+        if (MenuManager.Instance)
         {
-            GameStateManager.Instance.OnStateChanged -= OnGameStateChanged;
+            MenuManager.Instance.RegisterView(this);
         }
+        else
+        {
+            Debug.LogWarning("[StartViewPresenter] cannot find MenuManger to register with");
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (MenuManager.Instance != null)
+            MenuManager.Instance.UnregisterView(this);
+    }
+
+    public void OnInputModeChanged(InputMode inputMode)
+    {
+        switch (inputMode)
+        {
+            case InputMode.Mouse:
+                root.focusController.focusedElement?.Blur();
+                SetMouseMode();
+                break;
+            case InputMode.Controller:
+                SetControllerMode();
+                SetButtonFocus(GameStateManager.Instance.CurrentState);
+                break;
+        }
+    }
+    public void OnGameStateChanged(GameState newState)
+    {
+        mainMenuView.Display(newState == GameState.MainMenu);
+        settingsView.Display(newState == GameState.Settings ||
+                            newState == GameState.Paused);
+        creditsView.Display(newState == GameState.Credits);
+        controlsView.Display(newState == GameState.Controls);
+        root.Display(newState != GameState.InGame);
+        if (InputModeManager.Instance.CurrentInputMode == InputMode.Controller)
+        {
+            SetButtonFocus(newState);
+        }
+    }
+
+    private void SetControllerMode()
+    {
+        // If already in controller mode, dont need to switch
+        if (root.ClassListContains(CONTROLLER_MODE_CLASS)) return;
+
+        //Debug.Log("Set to controller mode");
+        root.RemoveFromClassList(MOUSE_MODE_CLASS);
+        root.AddToClassList(CONTROLLER_MODE_CLASS);
+    }
+
+    private void SetMouseMode()
+    {
+        // If already in controller mode, dont need to switch
+        if (root.ClassListContains(MOUSE_MODE_CLASS)) return;
+
+        //Debug.Log("Set to mouse mode");
+        root.RemoveFromClassList(CONTROLLER_MODE_CLASS);
+        root.AddToClassList(MOUSE_MODE_CLASS);
     }
 
     private void SetupMainMenu()
     {
         MainMenuPresenter menuPresenter = new MainMenuPresenter(mainMenuView);
-        menuPresenter.OpenSettings = () => GameStateManager.Instance.SetState(GameStateManager.GameState.Settings);
+        menuPresenter.OpenSettings = () => GameStateManager.Instance.SetState(GameState.Settings);
         menuPresenter.StartGame = () => GameStateManager.Instance.StartGame(gameSceneName);
+        menuPresenter.OpenCredits = () => GameStateManager.Instance.SetState(GameState.Credits);
         menuPresenter.QuitGame = () => Application.Quit();
+    }
+
+    private void SetupControlsMenu()
+    {
+        ControlsPresenter controlsPresenter = new ControlsPresenter(root.Q<TemplateContainer>("Controls"));
+        controlsPresenter.BackAction = () => GameStateManager.Instance.RevertState();
     }
 
     private void SetupSettingsMenu()
     {
         SettingsPresenter settingsPresenter = new SettingsPresenter(root.Q<TemplateContainer>("Settings"));
-        
-        // Back button - return to previous screen
-        settingsPresenter.BackAction = () =>
-        {
-            var currentState = GameStateManager.Instance.CurrentState;
-            if (currentState == GameStateManager.GameState.Settings)
-            {
-                // Came from main menu
-                GameStateManager.Instance.SetState(GameStateManager.GameState.MainMenu);
-            }
-            else if (currentState == GameStateManager.GameState.Paused)
-            {
-                // Came from in-game, resume playing
-                GameStateManager.Instance.SetState(GameStateManager.GameState.InGame);
-            }
-        };
-        
-        // Return to main menu button (used when paused in-game)
-        settingsPresenter.ReturnToMainMenuAction = () =>
-        {
-            GameStateManager.Instance.ReturnToMainMenu(mainMenuSceneName);
-        };
+        settingsPresenter.BackAction = () => GameStateManager.Instance.RevertState();
+        settingsPresenter.ReturnToMainMenuAction = () => GameStateManager.Instance.ReturnToMainMenu(mainMenuSceneName);
+        settingsPresenter.ControlsAction = () => GameStateManager.Instance.SetState(GameState.Controls);
     }
 
-    private void OnGameStateChanged(GameStateManager.GameState newState)
+    private void SetupCreditsMenu()
     {
-        // Show main menu only in MainMenu state
-        mainMenuView.Display(newState == GameStateManager.GameState.MainMenu);
-        
-        // Show settings in both Settings (from menu) and Paused (from game) states
-        settingsView.Display(newState == GameStateManager.GameState.Settings || 
-                            newState == GameStateManager.GameState.Paused);
-        
-        // Show root UI except when actively playing
-        root.Display(newState != GameStateManager.GameState.InGame);
+        CreditsPresenter creditsPresenter = new CreditsPresenter(root.Q<TemplateContainer>("Credits"));
+        creditsPresenter.BackAction = () => GameStateManager.Instance.RevertState();
+    }
+
+    private void SetButtonFocus(GameState state)
+    {
+
+        // Set initial focus for controller navigation
+        switch (state)
+        {
+            case GameState.MainMenu:
+                mainMenuView.Q<Button>()?.Focus();
+                break;
+            case GameState.Settings:
+            case GameState.Paused:
+                settingsView.Q<Button>()?.Focus();
+                break;
+            case GameState.Credits:
+                creditsView.Q<Button>()?.Focus();
+                break;
+            case GameState.Controls:
+                controlsView.Q<Button>()?.Focus();
+                break;
+        }
     }
 }

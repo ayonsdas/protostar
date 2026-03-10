@@ -4,13 +4,18 @@ using UnityEngine;
 public class OutlineFocusEffect : MonoBehaviour, IFocusEffect
 {
     [SerializeField] private GameObject _baseObject;
-    [SerializeField] private Material _outlineMaterial;
+    [SerializeField] private RenderingLayerMask outlineLayerMask;
 
     private Renderer[] _renderers;
-    private Dictionary<Renderer, Material[]> _originalMaterials = new Dictionary<Renderer, Material[]>();
+    private Dictionary<Renderer, RenderingLayerMask> _originalRenderingLayerMask = new Dictionary<Renderer, RenderingLayerMask>();
 
     public void Start()
     {
+        outlineLayerMask = RenderingLayerMask.GetMask("Outline");
+        if (_baseObject == null)
+        {
+            _baseObject = gameObject;
+        }
         _renderers = _baseObject.GetComponentsInChildren<Renderer>(true);
     }
 
@@ -20,12 +25,8 @@ public class OutlineFocusEffect : MonoBehaviour, IFocusEffect
         {
             foreach (Renderer renderer in _renderers)
             {
-                List<Material> currentMaterials = new List<Material>();
-                renderer.GetSharedMaterials(currentMaterials);
-                _originalMaterials[renderer] = currentMaterials.ToArray();
-
-                currentMaterials.Add(_outlineMaterial);
-                renderer.SetSharedMaterials(currentMaterials);
+                _originalRenderingLayerMask[renderer] = renderer.renderingLayerMask;
+                renderer.renderingLayerMask |= outlineLayerMask;
             }
         }
     }
@@ -36,7 +37,7 @@ public class OutlineFocusEffect : MonoBehaviour, IFocusEffect
         {
             foreach (Renderer renderer in _renderers)
             {
-                renderer.sharedMaterials = _originalMaterials[renderer];
+                renderer.renderingLayerMask = _originalRenderingLayerMask[renderer];
             }
         }
     }

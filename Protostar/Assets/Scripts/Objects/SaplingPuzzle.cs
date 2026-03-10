@@ -4,28 +4,32 @@ using FMODUnity;
 using UnityEngine.Rendering;
 
 /// <summary>
-/// Sapling that shifts into a tree when all seeds are in the trigger zone
+/// Sapling that shifts into a tree when all four seed slots are filled.
 /// </summary>
-public class SaplingPuzzle : MonoBehaviour, IInteractable, IShiftable
+public class SaplingPuzzle : MonoBehaviour, IEngageable, IShiftable, IInteractionCandidate
 {
     [Header("Puzzle Settings")]
-    [SerializeField] private int requiredSeeds = 4;
-    [SerializeField] private GameObject saplingModel; // The sapling visual
-    [SerializeField] private GameObject treeModel; // The tree model to shift to
-
-    [Header("Colliders")]
-    [SerializeField] private Collider seedDetectionZone; // Trigger collider for detecting seeds
+    [SerializeField] private SeedSlot[] seedSlots; // Assign exactly 4 in the Inspector
+    [SerializeField] private GameObject saplingModel;
+    [SerializeField] private GameObject treeModel;
 
     [Header("Skybox")]
-    [SerializeField] private Material targetSkybox; // The skybox to show after puzzle completion
-    
-    [Header("Sound")]
-    private bool isShifted = false; // Runtime state only
-    [field: SerializeField] public EventReference treeGrowSoundEvent { get; private set; }
-    [field: SerializeField] public EventReference seedPlantSoundEvent { get; private set; }
+    [SerializeField] private bool startWithBlackSkybox = true; // Toggle whether to start with black skybox
+    [SerializeField] private Material targetSkybox;
+    [SerializeField] private GameObject sun;
 
-    private HashSet<SeedObject> seedsInZone = new HashSet<SeedObject>();
+    [Header("Sound")]
+    private bool isShifted = false;
+    [field: SerializeField] public EventReference treeGrowSoundEvent { get; private set; }
+
+    private const string UNSHIFTABLE_INSPECT_MESSAGE = "This tree sapling needs more energy to grow, it can't be shifted yet.";
+    private const string SHIFTABLE_INSPECT_MESSAGE = "The maleable course of time has been altered for this tree, it's ready to be shifted!";
+    private const string SHIFTED_INSPECT_MESSAGE = "The omni-tree you grew bears the leaves of a whole new universe!";
+
+    private bool CanShift => canInteract && !isShifted;
+
     private bool canInteract = false;
+    private bool _engaged = false;
 
     private void Start()
     {
@@ -40,52 +44,104 @@ public class SaplingPuzzle : MonoBehaviour, IInteractable, IShiftable
         {
             saplingModel.SetActive(true);
         }
-        
-        // Set skybox to black at start
-        SetBlackSkybox();
+
+        // Subscribe to each slot's change event
+        if (seedSlots != null)
+        {
+            foreach (var slot in seedSlots)
+            {
+                if (slot != null)
+                {
+                    slot.OnSlotChanged += UpdateInteractableState;
+                }
+            }
+        }
+
+        UpdateInteractableState();
+
+        // Set skybox to black at start (if enabled)
+        if (startWithBlackSkybox)
+        {
+            SetBlackSkybox();
+        }
     }
-    
+
+    private void OnDestroy()
+    {
+        // Unsubscribe to avoid leaks
+        if (seedSlots != null)
+        {
+            foreach (var slot in seedSlots)
+            {
+                if (slot != null)
+                {
+                    slot.OnSlotChanged -= UpdateInteractableState;
+                }
+            }
+        }
+    }
+
     private void SetBlackSkybox()
     {
+        // Set skybox to null for pure black
         RenderSettings.skybox = null;
+
+        // Set ambient lighting to black
         RenderSettings.ambientMode = AmbientMode.Flat;
         RenderSettings.ambientLight = Color.black;
-        
-        // Enable fog with pure black - very aggressive
-        RenderSettings.fog = true;
-        RenderSettings.fogColor = Color.black;
-        RenderSettings.fogMode = FogMode.Linear;
-        RenderSettings.fogStartDistance = 0f;  // Start immediately
-        RenderSettings.fogEndDistance = 20f;   // Very short distance
-        
-        // Set camera background to black
+        RenderSettings.ambientIntensity = 0f;
+
+        // Disable reflection probes and environment reflections
+        RenderSettings.defaultReflectionMode = UnityEngine.Rendering.DefaultReflectionMode.Custom;
+        RenderSettings.customReflectionTexture = null;
+        RenderSettings.reflectionIntensity = 0f;
+
+        // Disable fog completely
+        RenderSettings.fog = false;
+
+        // Disable subtractive ambient (prevents light bleeding)
+        RenderSettings.subtractiveShadowColor = Color.black;
+
+        // Hide the sun
+        if (sun != null)
+        {
+            sun.SetActive(false);
+        }
+
+        // Set camera background to pure black with no environment influence
         Camera mainCamera = Camera.main;
         if (mainCamera != null)
         {
             mainCamera.backgroundColor = Color.black;
             mainCamera.clearFlags = CameraClearFlags.SolidColor;
         }
-        
+
         DynamicGI.UpdateEnvironment();
     }
-    
+
     private void SetTargetSkybox()
     {
         if (targetSkybox != null)
         {
             RenderSettings.skybox = targetSkybox;
             RenderSettings.ambientMode = AmbientMode.Skybox;
-            
+
             // Disable fog when skybox is enabled
             RenderSettings.fog = false;
-            
+
+            // Show the sun
+            if (sun != null)
+            {
+                sun.SetActive(true);
+            }
+
             // Reset camera to skybox mode
             Camera mainCamera = Camera.main;
             if (mainCamera != null)
             {
                 mainCamera.clearFlags = CameraClearFlags.Skybox;
             }
-            
+
             DynamicGI.UpdateEnvironment();
             Debug.Log("Skybox changed to target skybox");
         }
@@ -95,65 +151,76 @@ public class SaplingPuzzle : MonoBehaviour, IInteractable, IShiftable
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    private int FilledSlotCount()
     {
-        // Check if a seed entered the zone
-        SeedObject seed = other.GetComponent<SeedObject>();
-        if (seed != null)
+        if (seedSlots == null) return 0;
+        int count = 0;
+        foreach (var slot in seedSlots)
         {
-            seedsInZone.Add(seed);
-            RuntimeManager.PlayOneShot(seedPlantSoundEvent, seed.transform.position);
-            Debug.Log($"Seed entered zone. Total seeds: {seedsInZone.Count}/{requiredSeeds}");
-            UpdateInteractableState();
+            if (slot != null && slot.IsFilled) count++;
         }
+        return count;
     }
 
-    private void OnTriggerExit(Collider other)
+    private bool AllSlotsFilled()
     {
-        // Check if a seed left the zone
-        SeedObject seed = other.GetComponent<SeedObject>();
-        if (seed != null)
+        if (seedSlots == null || seedSlots.Length == 0) return false;
+        foreach (var slot in seedSlots)
         {
-            seedsInZone.Remove(seed);
-            Debug.Log($"Seed left zone. Total seeds: {seedsInZone.Count}/{requiredSeeds}");
-            UpdateInteractableState();
+            if (slot == null || !slot.IsFilled) return false;
         }
+        return true;
     }
 
     private void UpdateInteractableState()
     {
-        // Can only interact when all seeds are present and not already shifted
-        canInteract = seedsInZone.Count >= requiredSeeds && !isShifted;
+        bool allFilled = AllSlotsFilled();
+        bool notShifted = !isShifted;
+        canInteract = allFilled && notShifted;
+
+        Debug.Log($"[SaplingPuzzle] UpdateInteractableState: filled={FilledSlotCount()}/{(seedSlots != null ? seedSlots.Length : 0)}, allFilled={allFilled}, notShifted={notShifted}, canInteract={canInteract}");
 
         if (canInteract)
         {
-            Debug.Log("All seeds collected! You can now interact with the sapling.");
+            Debug.Log("[SaplingPuzzle] All seed slots filled! You can now shift the sapling.");
         }
     }
 
-    public void Interact(GameObject interactor)
+    // IEngageable implementation
+    public void Engage(GameObject interactor)
     {
-        Debug.Log($"[SaplingPuzzle] Interact called: canInteract={canInteract}, isShifted={isShifted}, seedsInZone.Count={seedsInZone.Count}, requiredSeeds={requiredSeeds}");
-        
+        _engaged = true;
+        Debug.Log($"[SaplingPuzzle] Engaged. canInteract={canInteract}, isShifted={isShifted}");
         if (canInteract)
         {
-            Debug.Log("Attempting to shift sapling...");
-            // Try to shift via IShiftable interface
-            Shift(1); // Shift forward
+            Debug.Log("[SaplingPuzzle] All slots filled! Press Shift to grow the tree!");
         }
         else if (isShifted)
         {
-            Debug.Log("Sapling has already been shifted to a tree.");
+            Debug.Log("[SaplingPuzzle] Sapling has already been shifted to a tree.");
         }
         else
         {
-            Debug.Log($"Need all {requiredSeeds} seeds in the zone. Currently have {seedsInZone.Count}.");
+            Debug.Log($"[SaplingPuzzle] Need all {(seedSlots != null ? seedSlots.Length : 0)} seed slots filled. Currently have {FilledSlotCount()}.");
         }
+    }
+
+    public void Disengage(GameObject interactor)
+    {
+        _engaged = false;
+        Debug.Log("[SaplingPuzzle] Disengaged");
     }
 
     private void PlaySFX()
     {
-        RuntimeManager.PlayOneShot(treeGrowSoundEvent, gameObject.transform.position);
+        try
+        {
+            RuntimeManager.PlayOneShot(treeGrowSoundEvent, gameObject.transform.position);
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning($"Failed to play tree grow sound: {e.Message}");
+        }
     }
 
     // IShiftable implementation
@@ -183,23 +250,24 @@ public class SaplingPuzzle : MonoBehaviour, IInteractable, IShiftable
             Debug.LogWarning("Sapling model is null!");
         }
 
-        // Hide/destroy all seeds
-        Debug.Log($"Hiding {seedsInZone.Count} seeds");
-        foreach (var seed in seedsInZone)
+        // Consume all seeds from slots
+        if (seedSlots != null)
         {
-            if (seed != null)
+            foreach (var slot in seedSlots)
             {
-                seed.gameObject.SetActive(false);
-                Debug.Log($"Hidden seed: {seed.name}");
-                // Or use Destroy(seed.gameObject) if you want to permanently remove them
+                if (slot != null)
+                {
+                    slot.ConsumeObject();
+                }
             }
         }
-        seedsInZone.Clear();
+        Debug.Log("All seeds consumed from slots.");
 
         // Show tree
         if (treeModel != null)
         {
             treeModel.SetActive(true);
+            PlayTreeAnimation();
             Debug.Log("Tree model shown");
         }
         else
@@ -208,24 +276,60 @@ public class SaplingPuzzle : MonoBehaviour, IInteractable, IShiftable
         }
 
         Debug.Log("Sapling shifted into tree! Seeds consumed.");
-        
+
         // Change skybox to target skybox
         SetTargetSkybox();
-
-        // Disable the seed detection zone so no more seeds affect it
-        if (seedDetectionZone != null)
-        {
-            seedDetectionZone.enabled = false;
-        }
     }
 
-    public bool CanShift()
+    private void PlayTreeAnimation()
     {
-        return canInteract && !isShifted;
+        Animator animator = treeModel.GetComponent<Animator>();
+
+        if (animator == null)
+        {
+            Debug.LogWarning("[SaplingPuzzle] cannot find animator on tree model");
+            return;
+        }
+
+        animator.SetTrigger("SaplingPuzzleFinished");
     }
 
     public int GetState()
     {
         return isShifted ? 1 : 0;
+    }
+
+    public void CollectOptions(PlayerInteractionContext context, List<InteractionOption> options)
+    {
+        if (CanShift)
+        {
+            options.Add(InteractionOptionBuilder.Create(
+                InteractionType.Shift,
+                this
+            ));
+            options.Add(InteractionOptionBuilder.Create(
+                InteractionType.Inspect,
+                this,
+                SHIFTABLE_INSPECT_MESSAGE
+            ));
+        }
+
+        if (isShifted)
+        {
+            options.Add(InteractionOptionBuilder.Create(
+                InteractionType.Inspect,
+                this,
+                SHIFTED_INSPECT_MESSAGE
+            ));
+        }
+
+        if (!CanShift)
+        {
+            options.Add(InteractionOptionBuilder.Create(
+                InteractionType.Inspect,
+                this,
+                UNSHIFTABLE_INSPECT_MESSAGE
+            ));
+        }
     }
 }

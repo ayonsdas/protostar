@@ -10,6 +10,7 @@ public class SimpleFocusable : MonoBehaviour, IFocusable
     }
     public void Focus(GameObject interactor)
     {
+        if (_focusEffects == null) return;
         foreach (IFocusEffect focusEffect in _focusEffects)
         {
             focusEffect.OnFocus();
@@ -18,6 +19,7 @@ public class SimpleFocusable : MonoBehaviour, IFocusable
 
     public void Unfocus(GameObject interactor)
     {
+        if (_focusEffects == null) return;
         foreach (IFocusEffect focusEffect in _focusEffects)
         {
             focusEffect.OnUnfocus();

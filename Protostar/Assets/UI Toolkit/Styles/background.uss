@@ -1,4 +1,26 @@
 :root {
 }
 
+.menu-background {
+    flex-grow: 1;
+    background-image: url("project://database/Assets/UI%20Toolkit/ExternalAssets/MainPanel03.png?fileID=-578984812&guid=6caba4b2b40fb894f8eead5c90c37233&type=3#MainPanel03_0");
+    flex-direction: row;
+}
 
+.settings-background {
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+
+    flex-direction: column;
+    align-items: stretch;
+    
+    background-color: rgba(108, 108, 108, 0);
+    background-image: url("project://database/Assets/UI%20Toolkit/ExternalAssets/MainPanel03.png?fileID=-578984812&guid=6caba4b2b40fb894f8eead5c90c37233&type=3#MainPanel03_0");
+    -unity-background-scale-mode: scale-and-crop;
+    -unity-slice-type: sliced;
+    -unity-slice-left: 0;
+    -unity-slice-top: 0;
+    -unity-slice-right: 0;
+    -unity-slice-bottom: 0;
+}

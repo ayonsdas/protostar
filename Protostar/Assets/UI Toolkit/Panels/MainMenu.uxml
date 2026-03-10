@@ -1,12 +1,13 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/UI%20Toolkit/Styles/labels.uss?fileID=7433441132597879392&amp;guid=ef86a62bffa5b4549872a8b238bb4ccf&amp;type=3#labels"/>
     <Style src="project://database/Assets/UI%20Toolkit/Styles/buttons.uss?fileID=7433441132597879392&amp;guid=918d511739c223b43938892711387e22&amp;type=3#buttons"/>
-    <ui:VisualElement name="Background" style="flex-grow: 1; flex-direction: row; align-items: stretch; background-color: rgb(238, 255, 204); opacity: 1; background-image: url(&quot;project://database/Assets/UI%20Toolkit/ExternalAssets/Protostar_-_Galaxy_Background.jpg?fileID=2800000&amp;guid=ab06104ffaa137f44896243892cbee0a&amp;type=3#Protostar_-_Galaxy_Background&quot;);">
+    <ui:VisualElement name="Background" style="flex-grow: 1; flex-direction: row; align-items: stretch; background-color: rgba(238, 255, 204, 0); opacity: 1; background-image: none;">
         <ui:VisualElement name="Sidebar" style="flex-grow: 0; width: 25%; background-color: rgba(65, 58, 66, 0.04); justify-content: center; opacity: 1;">
             <ui:Label text="Protostar" name="Title" class="label-main-title"/>
-            <ui:Button text="Start" name="Start" class="button-main-title"/>
-            <ui:Button text="Settings" name="Settings" class="button-main-title"/>
-            <ui:Button text="Quit" name="Quit" class="button-main-title"/>
+            <ui:Button text="Start" name="Start" class="menu-button"/>
+            <ui:Button text="Settings" name="Settings" class="menu-button"/>
+            <ui:Button text="Credits" name="Credits" class="menu-button"/>
+            <ui:Button text="Quit" name="Quit" class="menu-button"/>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

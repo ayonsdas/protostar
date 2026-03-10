@@ -1,0 +1,20 @@
+{
+    "name": "Protostar.UI",
+    "rootNamespace": "",
+    "references": [
+        "GUID:75469ad4d38634e559750d17036d5f7c",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:6a08c4987bfcdb94e965fa2f5862c24a",
+        "GUID:c223bb2b88038824489e47a1789445f1",
+        "GUID:bd46fc8e0568a714081fd824ee102e40"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -2,8 +2,13 @@
     "name": "Protostar",
     "rootNamespace": "",
     "references": [
-        "FMODUnity",
-        "Unity.InputSystem"
+        "GUID:0c752da273b17c547ae705acf0f2adf2",
+        "GUID:75469ad4d38634e559750d17036d5f7c",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:6a08c4987bfcdb94e965fa2f5862c24a",
+        "GUID:fda9d4e6308e139499962e7c8e983c8d",
+        "GUID:c223bb2b88038824489e47a1789445f1",
+        "GUID:bd46fc8e0568a714081fd824ee102e40"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
