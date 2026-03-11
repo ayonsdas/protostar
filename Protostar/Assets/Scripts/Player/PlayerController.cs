@@ -158,12 +158,10 @@ public class PlayerController : MonoBehaviour
 
         // Jump check: use SphereCollider at groundCheck.position
         bool foundGround = false;
-        Vector3 closestGroundPoint = Vector3.zero;
 
         if (groundCheck != null)
         {
             Collider[] colliders = Physics.OverlapSphere(groundCheck.position, groundCheckRadius, groundLayer, QueryTriggerInteraction.Ignore);
-            float closestGroundDistance = float.MaxValue;
             foreach (Collider col in colliders)
             {
                 if (col != groundCheckBoxCollider)
@@ -171,16 +169,6 @@ public class PlayerController : MonoBehaviour
                     if (!previouslyGrounded && CanLand)
                     {
                         OnLand();
-                    }
-
-                    Vector3 colliderClosestPoint = col.ClosestPoint(groundCheck.position);
-                    float colliderDistance = Vector3.Distance(colliderClosestPoint, groundCheck.position);
-
-                    // Update closest ground point for 
-                    if (colliderDistance < closestGroundDistance)
-                    {
-                        closestGroundPoint = colliderClosestPoint;
-                        closestGroundDistance = colliderDistance;
                     }
                     foundGround = true;
                 }
@@ -193,7 +181,6 @@ public class PlayerController : MonoBehaviour
         PhysicsUtils.SeperateVelocity(rb, gravityDown, out Vector3 horizontalVelocity, out Vector3 _verticalVelocity);
         if (IsGrounded && !previouslyGrounded && velocityAlongGravity <= 0)
         {
-            transform.position += closestGroundPoint - groundCheck.position;
             rb.linearVelocity = horizontalVelocity;
         }
 
