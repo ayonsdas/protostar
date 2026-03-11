@@ -156,7 +156,7 @@ MonoBehaviour:
       Data2: 1106623750
       Data3: 1408712344
       Data4: -1088566950
-    Path: event:/Jump
+    Path: event:/Player/Jump
   landCooldownTime: 0.5
   landEventReference:
     Guid:
@@ -164,7 +164,7 @@ MonoBehaviour:
       Data2: 1303441331
       Data3: -578663519
       Data4: 1782172042
-    Path: event:/Land
+    Path: event:/Player/Land
   groundCheckBoxCollider: {fileID: 0}
 --- !u!114 &8026761801045726097
 MonoBehaviour:
@@ -282,7 +282,7 @@ MonoBehaviour:
       Data2: 1303441331
       Data3: -578663519
       Data4: 1782172042
-    Path: event:/Land
+    Path: event:/Player/Land
 --- !u!1 &7352152883732015007
 GameObject:
   m_ObjectHideFlags: 0
