@@ -171,10 +171,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8266459593356596250, guid: b40233012ea350943b8698854f80500b, type: 3}
-      propertyPath: gameSceneName
-      value: WhiteBoxPlatformer
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ControlPanel : MonoBehaviour
+public class CutsceneInteractionItem : MonoBehaviour, IInteractable, IInteractionCandidate
 {
     [SerializeField] private ManualCutscene cutscene;
     private bool cutsceneTriggered = false;
     public void Interact(GameObject interactor)
     {
-        Debug.Log($"[CreationChamber] Interacting!");
+        Debug.Log($"[CutsceneInteractionItem] Interacting!");
         cutscene.cutsceneCanvas.enabled = true;
         GameStateManager.Instance.SetState(GameState.Cutscene);
         gameObject.SetActive(false);
