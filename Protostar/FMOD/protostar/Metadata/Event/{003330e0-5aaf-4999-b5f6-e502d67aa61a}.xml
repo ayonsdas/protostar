@@ -99,6 +99,7 @@
 		<relationship name="effects">
 			<destination>{1f0aaf14-21a2-402c-81a6-3d3ab261ab6a}</destination>
 			<destination>{4ed41ede-29c4-4b4b-9d9e-14910fe1646a}</destination>
+			<destination>{470601ce-44ce-42c5-aabb-3880f592a6fb}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{dd09df5e-d7d4-4da1-9f9e-d90ea6f93b39}" />
@@ -146,6 +147,11 @@
 		</property>
 		<property name="mix">
 			<value>100</value>
+		</property>
+	</object>
+	<object class="ThreeEQEffect" id="{470601ce-44ce-42c5-aabb-3880f592a6fb}">
+		<property name="midGain">
+			<value>-17</value>
 		</property>
 	</object>
 </objects>
