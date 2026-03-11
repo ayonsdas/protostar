@@ -47853,11 +47853,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Protostar::SceneAudioSetup
   musicEventReference:
     Guid:
-      Data1: 349925590
-      Data2: 1115495488
-      Data3: 1486378148
-      Data4: 124316143
-    Path: event:/Music/LivingSpaceMusic
+      Data1: 1488908913
+      Data2: 1079450449
+      Data3: -1393379445
+      Data4: -1156052937
+    Path: event:/SpaceTheme
   ambienceEventReference:
     Guid:
       Data1: -410983625
