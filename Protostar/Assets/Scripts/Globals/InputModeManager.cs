@@ -71,4 +71,20 @@ public class InputModeManager : MonoBehaviour
             InputModeChanged?.Invoke(inputMode);
         }
     }
+
+    public void SetPlayerControlsEnabled(bool enabled)
+    {
+        if (PlayerInput != null)
+        {
+            Debug.Log("[InputModeManager] Set controls enabled to " + enabled);
+            if (enabled)
+            {
+                PlayerInput.actions.FindActionMap("Player").Enable();
+            }
+            else
+            {
+                PlayerInput.actions.FindActionMap("Player").Disable();
+            }
+        }
+    }
 }

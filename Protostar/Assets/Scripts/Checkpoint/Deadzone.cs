@@ -9,7 +9,7 @@ public class Deadzone : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            checkpointSystem.RespawnPlayer(); 
+            checkpointSystem.TryRespawnPlayer();
         }
     }
 }

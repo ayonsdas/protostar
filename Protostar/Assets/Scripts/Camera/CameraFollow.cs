@@ -56,6 +56,7 @@ public class CameraFollow : MonoBehaviour
     private float cameraYaw = 0f;   // Horizontal rotation offset
     private float cameraPitch = 0f; // Vertical rotation offset
     private Vector3 baseDirection = Vector3.back; // Base direction in world space (updates only during reset)
+    private CheckpointSystem checkpointSystem;
 
     /// <summary>
     /// Returns true if the camera is currently flipped 180 degrees (when player is on ceiling)
@@ -80,6 +81,7 @@ public class CameraFollow : MonoBehaviour
 
             gravityBody = target.GetComponent<CustomGravityBody>();
             playerController = target.GetComponent<PlayerController>();
+            checkpointSystem = FindFirstObjectByType<CheckpointSystem>();
 
             // Initialize camera direction from the local offset converted to world space
             Vector3 worldOffset = target.TransformDirection(offset);
@@ -320,7 +322,7 @@ public class CameraFollow : MonoBehaviour
         float targetDistance = desiredDistance;
 
         // Check for obstacles between camera and player
-        if (collisionLayers.value != 0)
+        if (collisionLayers.value != 0 && (checkpointSystem == null || !checkpointSystem.IsRespawning))
         {
             RaycastHit hit;
             if (Physics.SphereCast(target.position, collisionRadius, cameraDir, out hit, desiredDistance, collisionLayers))

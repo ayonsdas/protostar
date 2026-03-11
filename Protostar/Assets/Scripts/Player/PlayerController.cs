@@ -79,11 +79,12 @@ public class PlayerController : MonoBehaviour
     public void SetMovementLocked(bool locked)
     {
         movementLocked = locked;
+        Debug.Log("[PlayerController] Set movement lock to " + locked);
         if (locked)
         {
             moveInput = Vector2.zero;
             // Kill horizontal velocity immediately
-            if (rb != null && gravityBody != null)
+            if (rb != null && gravityBody != null && !rb.isKinematic)
             {
                 Vector3 gravityDir = gravityBody.GetGravityDirection();
                 float verticalComponent = Vector3.Dot(rb.linearVelocity, gravityDir);
@@ -138,6 +139,9 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (rb.isKinematic)
+            return;
+
         bool previouslyGrounded = IsGrounded;
         Vector3 gravityDown = gravityBody.GetGravityDirection();
 
