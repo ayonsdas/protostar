@@ -112,9 +112,18 @@ public class CustomGravityBody : MonoBehaviour
     /// <summary>
     /// Set a custom gravity direction for this object (independent of global gravity)
     /// </summary>
-    public void SetCustomGravityDirection(Vector3 direction)
+    public void SetCustomGravityDirection(Vector3 direction, bool rotateVelocity = true)
     {
+        Vector3 oldUpDirection = GetUpDirection();
         customGravityDirection = direction.normalized;
+
+        if (rotateVelocity)
+        {
+            // Rotate the velocity to match the new gravity direction
+            Vector3 newUpDirection = GetUpDirection();
+            Quaternion gravityRotation = Quaternion.FromToRotation(oldUpDirection, newUpDirection);
+            rb.linearVelocity = gravityRotation * rb.linearVelocity;
+        }
     }
 
     /// <summary>
