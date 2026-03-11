@@ -98,6 +98,7 @@
 	<object class="MixerBusEffectChain" id="{adb0f4ab-6f64-4b07-bec4-bb30ed016ff8}">
 		<relationship name="effects">
 			<destination>{1f0aaf14-21a2-402c-81a6-3d3ab261ab6a}</destination>
+			<destination>{4ed41ede-29c4-4b4b-9d9e-14910fe1646a}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{dd09df5e-d7d4-4da1-9f9e-d90ea6f93b39}" />
@@ -136,4 +137,15 @@
 	</object>
 	<object class="MixerBusFader" id="{2b777d12-7d8b-423d-8084-9d8f5da1f538}" />
 	<object class="MixerBusFader" id="{1f0aaf14-21a2-402c-81a6-3d3ab261ab6a}" />
+	<object class="FlangerEffect" id="{4ed41ede-29c4-4b4b-9d9e-14910fe1646a}">
+		<property name="rate">
+			<value>11</value>
+		</property>
+		<property name="delay">
+			<value>0.550000012</value>
+		</property>
+		<property name="mix">
+			<value>100</value>
+		</property>
+	</object>
 </objects>
