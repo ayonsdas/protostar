@@ -27,8 +27,10 @@ public class CameraFollow : MonoBehaviour
     public float minPitch = -30f;  // Minimum elevation angle (below horizontal)
     public float maxPitch = 75f;   // Maximum elevation angle (never directly above)
 
-    private InputAction lookAction;
-    private InputAction mouseHoldAction;
+    [Header("Gravity Alignment Settings")]
+    public float gravityRotationSpeed = 2f; // Speed of rotation to align with gravity
+    public float gravitySnapAngle = 1f;   // Angle at which camera snaps to gravity direction
+
     private CustomGravityBody gravityBody;
     private Vector3 cameraDir;        // World-space normalized direction from player to camera
     private float cameraDistance;     // Distance from player (from offset magnitude)
@@ -46,6 +48,9 @@ public class CameraFollow : MonoBehaviour
     private Vector3 targetCameraUp = Vector3.up;
     private Vector3 cameraUpVelocity = Vector3.zero;
     private Vector3 cameraBaseGravityUp = Vector3.up; // Camera's base gravity orientation
+    private PlayerController playerController;
+    private float pitchCorrectionDebt = 0f;      // Accumulated excess pitch (degrees) to smooth out
+    private float pitchCorrectionVelocity = 0f;  // SmoothDamp velocity for debt repayment
 
     // Camera input stored as offsets from base orientation
     private float cameraYaw = 0f;   // Horizontal rotation offset
@@ -74,6 +79,7 @@ public class CameraFollow : MonoBehaviour
             }
 
             gravityBody = target.GetComponent<CustomGravityBody>();
+            playerController = target.GetComponent<PlayerController>();
 
             // Initialize camera direction from the local offset converted to world space
             Vector3 worldOffset = target.TransformDirection(offset);
@@ -113,6 +119,28 @@ public class CameraFollow : MonoBehaviour
     {
         if (target == null)
             return;
+
+        Vector3 playerUp = gravityBody != null ? gravityBody.GetUpDirection() : Vector3.up;
+
+        bool playerRotatingCamera = lookInput.magnitude > 0.01f;
+
+        if (Vector3.Angle(currentCameraUp, playerUp) < gravitySnapAngle)
+        {
+            currentCameraUp = playerUp;
+        }
+        else if (playerController.IsGrounded && !playerRotatingCamera)
+        {
+            currentCameraUp = Vector3.Slerp(currentCameraUp, playerUp, Time.deltaTime * gravityRotationSpeed);
+            currentCameraUp.Normalize();
+        }
+
+        // After updating currentCameraUp, project baseDirection onto new up plane
+        // so the camera doesn't suddenly snap when gravity shifts
+        baseDirection = Vector3.ProjectOnPlane(baseDirection, currentCameraUp).normalized;
+        if (baseDirection.sqrMagnitude < 0.01f)
+        {
+            baseDirection = Vector3.ProjectOnPlane(-target.forward, currentCameraUp).normalized;
+        }
 
         // Check if player has moved
         bool playerMoved = Vector3.Distance(target.position, lastPlayerPosition) > 0.01f;
@@ -248,8 +276,44 @@ public class CameraFollow : MonoBehaviour
 
         // Apply pitch rotation around right axis (perpendicular to up and rotated dir)
         Vector3 right = Vector3.Cross(currentCameraUp, rotatedDir).normalized;
+        cameraPitch = Mathf.Clamp(cameraPitch, minPitch, maxPitch);
         Quaternion pitchRotation = Quaternion.AngleAxis(cameraPitch, right);
         cameraDir = (pitchRotation * rotatedDir).normalized;
+
+        float worldPitch = 90f - Vector3.Angle(cameraDir, playerUp);
+        float pitchExcess = 0f;
+        if (worldPitch < minPitch)
+            pitchExcess = minPitch - worldPitch;
+        else if (worldPitch > maxPitch)
+            pitchExcess = worldPitch - maxPitch; // positive = need to rotate toward playerUp
+
+        if (Mathf.Abs(pitchExcess) > 0.01f)
+        {
+            // Accumulate into debt so we can smooth the repayment
+            pitchCorrectionDebt += pitchExcess;
+        }
+
+        // Drain the debt smoothly; clamp to never overshoot zero
+        float debtThisFrame = 0f;
+        if (Mathf.Abs(pitchCorrectionDebt) > 0.001f)
+        {
+            float newDebt = Mathf.SmoothDamp(pitchCorrectionDebt, 0f, ref pitchCorrectionVelocity, 0.1f);
+            debtThisFrame = pitchCorrectionDebt - newDebt;
+            pitchCorrectionDebt = newDebt;
+        }
+
+        if (Mathf.Abs(debtThisFrame) > 0.001f)
+        {
+            currentCameraUp = Vector3.RotateTowards(currentCameraUp, playerUp, debtThisFrame * Mathf.Deg2Rad, 0f);
+            currentCameraUp.Normalize();
+            // Rebuild cameraDir from the corrected up vector
+            Vector3 correctedBase = Vector3.ProjectOnPlane(baseDirection, currentCameraUp).normalized;
+            if (correctedBase.sqrMagnitude < 0.01f)
+                correctedBase = Vector3.ProjectOnPlane(-target.forward, currentCameraUp).normalized;
+            rotatedDir = Quaternion.AngleAxis(cameraYaw, currentCameraUp) * correctedBase;
+            right = Vector3.Cross(currentCameraUp, rotatedDir).normalized;
+            cameraDir = (Quaternion.AngleAxis(cameraPitch, right) * rotatedDir).normalized;
+        }
 
         // --- Position camera ---
         float desiredDistance = cameraDistance;

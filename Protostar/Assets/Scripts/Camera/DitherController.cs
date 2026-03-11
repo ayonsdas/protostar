@@ -164,7 +164,15 @@ public class DitherController
 
             r.GetPropertyBlock(propertyBlock, i);
 
-            Color color = originalMat.GetColor("_BaseColor");
+            Color color;
+            if (originalMat.HasProperty("_BaseColor"))
+            {
+                color = originalMat.GetColor("_BaseColor");
+            }
+            else
+            {
+                color = Color.white;
+            }
             color.a = alpha;
 
             propertyBlock.SetColor("_BaseColor", color);
