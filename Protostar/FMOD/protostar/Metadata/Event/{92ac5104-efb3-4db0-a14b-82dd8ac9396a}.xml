@@ -105,10 +105,13 @@
 	<object class="MixerBusFader" id="{b3fe64a8-446e-488b-8189-1fb5efd68023}" />
 	<object class="ThreeEQEffect" id="{d33d40e9-91fb-449e-b479-ed5efa88007c}">
 		<property name="lowGain">
-			<value>-10.5</value>
+			<value>-16</value>
 		</property>
 		<property name="midGain">
 			<value>-80</value>
+		</property>
+		<property name="lowCrossover">
+			<value>160</value>
 		</property>
 	</object>
 	<object class="SFXReverbEffect" id="{df38dc2f-eed8-47e3-9da1-9c602cd3c0a4}">
