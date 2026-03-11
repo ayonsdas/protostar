@@ -112,7 +112,7 @@ public class CustomGravityBody : MonoBehaviour
     /// <summary>
     /// Set a custom gravity direction for this object (independent of global gravity)
     /// </summary>
-    public void SetCustomGravityDirection(Vector3 direction, bool rotateVelocity = true)
+    public void SetCustomGravityDirection(Vector3 direction, bool rotateVelocity = false)
     {
         Vector3 oldUpDirection = GetUpDirection();
         customGravityDirection = direction.normalized;
