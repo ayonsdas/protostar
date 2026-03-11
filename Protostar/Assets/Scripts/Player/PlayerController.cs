@@ -301,157 +301,27 @@ public class PlayerController : MonoBehaviour
         Vector3 upDirection = gravityBody.GetUpDirection();
         Vector3 gravityDirection = -upDirection;
 
-        // Track if movement just started - if so, store current gravity as base
-        bool isMoving = moveInput.magnitude > 0.01f;
-        if (isMoving && !wasMoving)
-        {
-            // Movement just started - store current gravity as the base
-            movementBaseGravity = gravityDirection;
-        }
-        else if (!isMoving && wasMoving)
-        {
-            // Movement just stopped - reset base to current gravity for next time
-            movementBaseGravity = gravityDirection;
-        }
-        wasMoving = isMoving;
-
-        // Calculate movement direction relative to camera or gravity
+        // Calculate movement direction relative to camera
         Vector3 moveDirection = Vector3.zero;
         if (cameraTransform != null && moveInput.magnitude > 0.01f)
         {
-            // Apply gravity delta to maintain direction when traversing curves
-            // Use base gravity from start of movement instead of Vector3.down
-            Quaternion gravityDelta = Quaternion.FromToRotation(movementBaseGravity, gravityDirection);
+            // W = camera forward flattened onto surface plane
+            // A/D = camera right flattened onto surface plane
+            // This works on any surface orientation — flat, wall, sphere — without special cases
+            Vector3 forward = Vector3.ProjectOnPlane(cameraTransform.forward, upDirection).normalized;
+            Vector3 right = Vector3.ProjectOnPlane(cameraTransform.right, upDirection).normalized;
 
-            // Check if player is on a wall (gravity roughly horizontal)
-            float verticalAlignment = Mathf.Abs(Vector3.Dot(gravityDirection, Vector3.up));
-            bool isOnWall = verticalAlignment < 0.3f; // Gravity is mostly horizontal
+            // Fallback: if camera is looking almost straight up/down the gravity axis
+            // (e.g. directly above player), use player's own forward instead
+            if (forward.sqrMagnitude < 0.01f)
+                forward = Vector3.ProjectOnPlane(transform.forward, upDirection).normalized;
+            if (right.sqrMagnitude < 0.01f)
+                right = Vector3.Cross(upDirection, forward).normalized;
 
-            // Check if we're in "top-down mode" - camera looking along gravity axis
-            Vector3 cameraForwardWorld = cameraTransform.forward;
-            float cameraGravityAlignment = Mathf.Abs(Vector3.Dot(cameraForwardWorld, gravityDirection));
-            bool isTopDownMode = cameraGravityAlignment > 0.7f; // Camera looking mostly up/down gravity axis
-
-            Vector3 forward, right;
-
-            if (isOnWall)
-            {
-                // WALL MODE: Special handling when on a wall (90-degree gravity)
-                // W = away from camera, S = toward camera
-                // A = left, D = right
-
-                // Forward: direction from camera to player
-                Vector3 cameraToPlayer = (transform.position - cameraTransform.position).normalized;
-                Vector3 cameraToPlayerTransformed = gravityDelta * cameraToPlayer;
-                Vector3 forwardProjected = Vector3.ProjectOnPlane(cameraToPlayerTransformed, upDirection);
-
-                if (forwardProjected.sqrMagnitude > 0.01f)
-                {
-                    forward = forwardProjected.normalized;
-                }
-                else
-                {
-                    // Camera directly aligned with gravity - use camera forward
-                    Vector3 cameraForwardTransformed = gravityDelta * cameraTransform.forward;
-                    forwardProjected = Vector3.ProjectOnPlane(cameraForwardTransformed, upDirection);
-                    forward = forwardProjected.sqrMagnitude > 0.01f ? forwardProjected.normalized : Vector3.ProjectOnPlane(transform.forward, upDirection).normalized;
-                }
-
-                // Right: camera's right vector
-                Vector3 cameraRightTransformed = gravityDelta * cameraTransform.right;
-                Vector3 rightProjected = Vector3.ProjectOnPlane(cameraRightTransformed, upDirection);
-
-                if (rightProjected.sqrMagnitude > 0.01f)
-                {
-                    right = rightProjected.normalized;
-                }
-                else
-                {
-                    // Camera right aligned with gravity - derive from forward
-                    right = Vector3.Cross(upDirection, forward).normalized;
-                }
-
-                // Ensure orthogonality: re-orthogonalize right to be perpendicular to forward
-                // Project right onto the plane perpendicular to forward
-                Vector3 rightOrthogonal = Vector3.ProjectOnPlane(right, forward);
-                if (rightOrthogonal.sqrMagnitude > 0.01f)
-                {
-                    right = rightOrthogonal.normalized;
-                }
-                else
-                {
-                    // If right was parallel to forward, compute it from cross product
-                    right = Vector3.Cross(upDirection, forward).normalized;
-                }
-
-                // Check if camera is above/below player relative to wall orientation
-                // Use the non-transformed camera position for this check
-                Vector3 cameraToPlayerWorld = transform.position - cameraTransform.position;
-
-                // Check if forward direction makes sense for "away from camera"
-                // It should have a positive dot product with cameraToPlayer
-                float forwardAlignment = Vector3.Dot(forward, cameraToPlayerTransformed);
-                if (forwardAlignment < -0.1f)
-                {
-                    // Forward points toward camera instead of away - flip it
-                    forward = -forward;
-                    // Also flip right to maintain consistent handedness
-                    right = -right;
-                }
-            }
-            else if (isTopDownMode)
-            {
-                // TOP-DOWN MODE: Camera is looking along gravity axis (like overhead view on a wall)
-                // W/S should move up/down the screen (camera forward/back)
-                // A/D should move left/right the screen (camera left/right)
-
-                Vector3 cameraForwardTransformed = gravityDelta * cameraTransform.forward;
-                Vector3 cameraRightTransformed = gravityDelta * cameraTransform.right;
-
-                Vector3 forwardProjected = Vector3.ProjectOnPlane(cameraForwardTransformed, upDirection);
-                Vector3 rightProjected = Vector3.ProjectOnPlane(cameraRightTransformed, upDirection);
-
-                forward = forwardProjected.sqrMagnitude > 0.01f ? forwardProjected.normalized : Vector3.ProjectOnPlane(transform.forward, upDirection).normalized;
-                right = rightProjected.sqrMagnitude > 0.01f ? rightProjected.normalized : Vector3.Cross(upDirection, forward).normalized;
-            }
-            else
-            {
-                // NORMAL MODE: Camera looking at player from the side
-                // W/S should move away/toward camera
-                // A/D should move left/right relative to camera
-
-                // Forward: direction from camera to player (transformed for curves)
-                Vector3 cameraToPlayer = (transform.position - cameraTransform.position).normalized;
-                Vector3 cameraToPlayerTransformed = gravityDelta * cameraToPlayer;
-                Vector3 forwardProjected = Vector3.ProjectOnPlane(cameraToPlayerTransformed, upDirection);
-
-                if (forwardProjected.sqrMagnitude > 0.01f)
-                {
-                    forward = forwardProjected.normalized;
-                }
-                else
-                {
-                    // Camera directly above/below - use camera forward
-                    Vector3 cameraForwardTransformed = gravityDelta * cameraTransform.forward;
-                    forwardProjected = Vector3.ProjectOnPlane(cameraForwardTransformed, upDirection);
-                    forward = forwardProjected.sqrMagnitude > 0.01f ? forwardProjected.normalized : Vector3.ProjectOnPlane(transform.forward, upDirection).normalized;
-                }
-
-                // Right: camera's right vector (transformed for curves)
-                Vector3 cameraRightTransformed = gravityDelta * cameraTransform.right;
-                Vector3 rightProjected = Vector3.ProjectOnPlane(cameraRightTransformed, upDirection);
-
-                right = rightProjected.sqrMagnitude > 0.01f ? rightProjected.normalized : Vector3.Cross(upDirection, forward).normalized;
-            }
-
-            // Calculate movement direction from input
-            // W (moveInput.y > 0) = forward
-            // S (moveInput.y < 0) = backward
-            // D (moveInput.x > 0) = right
-            // A (moveInput.x < 0) = left
             Vector3 camMove = forward * moveInput.y + right * moveInput.x;
             if (camMove.sqrMagnitude > 0.01f) camMove.Normalize();
             moveDirection = camMove;
+
             // Rotate player to face movement direction
             if (moveDirection.magnitude > 0.01f)
             {
@@ -538,7 +408,6 @@ public class PlayerController : MonoBehaviour
         }
 
         rb.AddForce(jumpDirection * jumpForce, ForceMode.Impulse);
-        Debug.Log($"[PlayerController] Jumping, velocity after force: {rb.linearVelocity}");
     }
 
     // Called by Player Input component (Send Messages behavior)

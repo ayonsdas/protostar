@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8647561337584889003}
   - component: {fileID: 8402902860222378733}
   - component: {fileID: 2094070022166867159}
+  - component: {fileID: 8026761801045726097}
   - component: {fileID: 584570856701392244}
   - component: {fileID: -3148427908538241810}
   - component: {fileID: 6870503674977786369}
@@ -128,7 +129,7 @@ MonoBehaviour:
   moveSpeed: 25
   turnSpeed: 200
   acceleration: 15
-  airAccelerationMultiplier: 0.5
+  airAccelerationMultiplier: 0.3
   jumpForce: 12
   jumpCooldownTime: 0.1
   coyoteTime: 0.1
@@ -165,6 +166,27 @@ MonoBehaviour:
       Data4: 1782172042
     Path: event:/Land
   groundCheckBoxCollider: {fileID: 0}
+--- !u!114 &8026761801045726097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 39550120540274030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2d1b7d5952843243bca59b0e94d03e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Protostar::SurfaceGravityAligner
+  downRaycastDistance: 3
+  velocityRaycastDistance: 6
+  velocityThreshold: 0.3
+  lookaheadDistance: 2
+  surfaceLayerMask:
+    serializedVersion: 2
+    m_Bits: 256
+  alignmentSpeed: 8
+  groundStickinessForce: 30
 --- !u!114 &584570856701392244
 MonoBehaviour:
   m_ObjectHideFlags: 0
