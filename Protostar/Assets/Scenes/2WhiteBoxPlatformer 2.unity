@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 0.56
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: 1e0911d9da201fc4e84ec3657e7f3763, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 9e3a767a8e8726a46b0ee9895c30e1fc, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -84987,6 +84987,7 @@ MonoBehaviour:
   respawnTime: 2
   teleport: 0
   disablePreviousZones: 0
+  respawnAtLastPlatform: 0
 --- !u!4 &2021015651
 Transform:
   m_ObjectHideFlags: 0
