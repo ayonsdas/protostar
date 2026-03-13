@@ -1,10 +1,12 @@
 using System;
+using FMODUnity;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody))]
 public class CustomGravityBody : MonoBehaviour
 {
+    [Header("Gravity Settings")]
     [Range(1, 5)]
     [SerializeField] private float jumpReleasedGravityMultiplier = 2.5f;
     [Range(1, 5)]
@@ -13,6 +15,10 @@ public class CustomGravityBody : MonoBehaviour
     private Vector3? customGravityDirection = null; // If set, uses this instead of global gravity
     private float gravityStrength = 100f; // Default strength
     private bool jumpHeld = false;
+
+    [Header("Sound Settings")]
+    [SerializeField] private float soundAngleThreshold = 150f;
+    [SerializeField] private EventReference gravityFlipEvent;
 
     private void OnEnable()
     {
@@ -117,10 +123,20 @@ public class CustomGravityBody : MonoBehaviour
         Vector3 oldUpDirection = GetUpDirection();
         customGravityDirection = direction.normalized;
 
+        Vector3 newUpDirection = GetUpDirection();
+        float angle = Vector3.Angle(oldUpDirection, newUpDirection);
+
+        if (angle > soundAngleThreshold)
+        {
+            if (AudioManager.Instance != null && !gravityFlipEvent.IsNull)
+            {
+                AudioManager.Instance.PlayOneShot(gravityFlipEvent, transform.position);
+            }
+        }
+
         if (rotateVelocity)
         {
             // Rotate the velocity to match the new gravity direction
-            Vector3 newUpDirection = GetUpDirection();
             Quaternion gravityRotation = Quaternion.FromToRotation(oldUpDirection, newUpDirection);
             rb.linearVelocity = gravityRotation * rb.linearVelocity;
         }

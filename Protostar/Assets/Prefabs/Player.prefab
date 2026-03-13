@@ -201,6 +201,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CustomGravityBody
   jumpReleasedGravityMultiplier: 1
   fallingGravityMultiplier: 2
+  soundAngleThreshold: 150
+  gravityFlipEvent:
+    Guid:
+      Data1: -1990641014
+      Data2: 1170111252
+      Data3: 18289802
+      Data4: -1714419739
+    Path: event:/Player/Timeshift
 --- !u!114 &-3148427908538241810
 MonoBehaviour:
   m_ObjectHideFlags: 0
