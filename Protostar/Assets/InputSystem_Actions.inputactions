@@ -68,6 +68,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Dismiss",
+                    "type": "Button",
+                    "id": "7b107fb3-be09-4957-a7c4-10048cd1dd0d",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -343,6 +352,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "MouseHold",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a515c8cb-e762-4ecb-98d3-aad6998b8a7f",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Dismiss",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "505ae9c8-3d69-428d-aeff-7a0c414206a3",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "Dismiss",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

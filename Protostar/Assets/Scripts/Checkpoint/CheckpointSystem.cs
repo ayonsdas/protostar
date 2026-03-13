@@ -167,7 +167,7 @@ public class CheckpointSystem : MonoBehaviour
 
         playerTransform.rotation = playerStartRot;
         // TODO spawn points should eventually specify their gravity direction, but just use down for now
-        playerGravityBody.SetCustomGravityDirection(new Vector3(0, -1, 0), rotateVelocity: false);
+        playerGravityBody.SetCustomGravityDirection(-transform.up, rotateVelocity: false);
         yield return new WaitForSeconds(.2f);
         playerController.SetMovementLocked(false);
         IsRespawning = false;
