@@ -854,7 +854,7 @@ PlayerSettings:
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
   metroPackageName: Protostar
-  metroPackageVersion: 
+  metroPackageVersion: 1.0.0.0
   metroCertificatePath: Assets/WSATestCertificate.pfx
   metroCertificatePassword: 
   metroCertificateSubject: DefaultCompany
@@ -862,7 +862,7 @@ PlayerSettings:
   metroCertificateNotAfter: 002fe6e0fbc4dd01
   metroApplicationDescription: Protostar
   wsaImages: {}
-  metroTileShortName: 
+  metroTileShortName: Protostar
   metroTileShowName: 0
   metroMediumTileShowName: 0
   metroLargeTileShowName: 0
@@ -929,7 +929,7 @@ PlayerSettings:
   qnxGraphicConfPath: 
   apiCompatibilityLevel: 6
   captureStartupLogs: {}
-  activeInputHandler: 2
+  activeInputHandler: 1
   windowsGamepadBackendHint: 0
   cloudProjectId: 349a0495-04fd-48c4-a7ea-afd37c6df101
   framebufferDepthMemorylessMode: 0

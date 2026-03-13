@@ -1,11 +1,16 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using NUnit.Framework;
 using UnityEngine;
 
 public class CheckpointSystem : MonoBehaviour
 {
+    private struct SpawnPoint
+    {
+        public Vector3 Position;
+        public Quaternion Rotation;
+        public Vector3 GravityDirection;
+    }
+
     [Tooltip("Index 0 should be set to the starting spawn point.")]
     public Transform[] spawnPoints;
     public PlayableLevelZone[] playableLevelZones;
@@ -17,6 +22,7 @@ public class CheckpointSystem : MonoBehaviour
     public float respawnTime = 2f;
     public bool teleport = false;
     public bool disablePreviousZones = false;
+    public bool respawnAtLastPlatform = false;
 
     private bool isRespawning;
     public bool IsRespawning
@@ -129,22 +135,41 @@ public class CheckpointSystem : MonoBehaviour
 
         IsRespawning = true;
 
+        SpawnPoint spawnPointData = new SpawnPoint
+        {
+            Position = activeSpawnPoint.position,
+            Rotation = activeSpawnPoint.rotation,
+            GravityDirection = -activeSpawnPoint.up
+        };
+
+        if (respawnAtLastPlatform)
+        {
+            spawnPointData = new SpawnPoint
+            {
+                Position = playerController.LastGroundedState.Position,
+                Rotation = playerController.LastGroundedState.Rotation,
+                GravityDirection = playerController.LastGroundedState.GravityDirection
+            };
+            Debug.Log($"[CheckpointSystem] Respawning at last grounded platform Position: {spawnPointData.Position}, Rotation: {spawnPointData.Rotation}, GravityDirection: {spawnPointData.GravityDirection}");
+        }
+
         if (!teleport)
         {
             playerController.SetMovementLocked(true);
             playerRB.isKinematic = true;
-            StartCoroutine(MovePlayerToCheckpoint());
+            StartCoroutine(MovePlayerToCheckpoint(spawnPointData));
         }
         else
         {
-            playerTransform.position = activeSpawnPoint.position;
-            playerTransform.rotation = activeSpawnPoint.rotation;
+            playerTransform.position = spawnPointData.Position;
+            playerTransform.rotation = spawnPointData.Rotation;
+            playerGravityBody.SetCustomGravityDirection(spawnPointData.GravityDirection, rotateVelocity: false);
             playerController.SetMovementLocked(false);
             IsRespawning = false;
         }
     }
 
-    private IEnumerator MovePlayerToCheckpoint()
+    private IEnumerator MovePlayerToCheckpoint(SpawnPoint spawnPointData)
     {
         float secElapsed = 0f;
         Vector3 currentPos = playerTransform.position;
@@ -154,8 +179,8 @@ public class CheckpointSystem : MonoBehaviour
         {
             secElapsed += Time.deltaTime;
             float t = secElapsed / respawnTime;
-            playerTransform.position = Vector3.Lerp(currentPos, activeSpawnPoint.position, t);
-            playerTransform.rotation = Quaternion.Lerp(currentRot, activeSpawnPoint.rotation, t);
+            playerTransform.position = Vector3.Lerp(currentPos, spawnPointData.Position, t);
+            playerTransform.rotation = Quaternion.Lerp(currentRot, spawnPointData.Rotation, t);
             yield return null;
         }
 
@@ -166,8 +191,7 @@ public class CheckpointSystem : MonoBehaviour
         playerRB.angularVelocity = Vector3.zero;
 
         playerTransform.rotation = playerStartRot;
-        // TODO spawn points should eventually specify their gravity direction, but just use down for now
-        playerGravityBody.SetCustomGravityDirection(-transform.up, rotateVelocity: false);
+        playerGravityBody.SetCustomGravityDirection(spawnPointData.GravityDirection, rotateVelocity: false);
         yield return new WaitForSeconds(.2f);
         playerController.SetMovementLocked(false);
         IsRespawning = false;

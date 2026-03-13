@@ -1,7 +1,6 @@
 using System;
 using FMOD.Studio;
 using FMODUnity;
-using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -71,6 +70,8 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Assign the BoxCollider used for ground and gravity checks. Only this collider will be used for detection.")]
     public BoxCollider groundCheckBoxCollider;
 
+    // Store player's last grounded state for respawning on last platform
+    public PlayerBodyState LastGroundedState { get; private set; } = new PlayerBodyState();
     private bool CanLand => !landSFXCooldownTimer.IsActive;
 
     /// <summary>
@@ -179,6 +180,18 @@ public class PlayerController : MonoBehaviour
             }
         }
         IsGrounded = foundGround;
+
+        if (IsGrounded)
+        {
+            LastGroundedState = new PlayerBodyState
+            {
+                Position = transform.position,
+                Rotation = transform.rotation,
+                GravityDirection = gravityBody.GetGravityDirection(),
+                LinearVelocity = rb.linearVelocity,
+                AngularVelocity = rb.angularVelocity
+            };
+        }
 
         // Snap to ground if just landed, and falling down
         float velocityAlongGravity = PhysicsUtils.VelocityIntoNormal(rb, gravityDown);
@@ -466,5 +479,22 @@ public class PlayerController : MonoBehaviour
             out Vector3 _
         );
         return horizontalVelocity.magnitude;
+    }
+
+    public void RestoreBodyState(PlayerBodyState bodyState, bool restoreVelocity = false)
+    {
+        // Restore position and rotation
+        transform.position = bodyState.Position;
+        transform.rotation = bodyState.Rotation;
+
+        // Restore gravity direction
+        gravityBody.SetCustomGravityDirection(-bodyState.GravityDirection, rotateVelocity: false);
+
+        // Restore velocity if desired
+        if (restoreVelocity)
+        {
+            rb.linearVelocity = bodyState.LinearVelocity;
+            rb.angularVelocity = bodyState.AngularVelocity;
+        }
     }
 }
