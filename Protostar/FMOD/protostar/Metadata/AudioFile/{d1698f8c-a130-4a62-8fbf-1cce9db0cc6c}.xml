@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <objects serializationModel="Studio.02.03.00">
-	<object class="AudioFile" id="{893f64e1-011d-45c5-9775-b4ed90d87e72}">
+	<object class="AudioFile" id="{d1698f8c-a130-4a62-8fbf-1cce9db0cc6c}">
 		<property name="assetPath">
-			<value>Player/protostar jump.wav</value>
+			<value>UI/protostar menu hover1.wav</value>
 		</property>
 		<property name="frequencyInKHz">
 			<value>48</value>
@@ -11,7 +11,7 @@
 			<value>2</value>
 		</property>
 		<property name="length">
-			<value>5.573291666666667</value>
+			<value>4.1538541666666671</value>
 		</property>
 		<relationship name="masterAssetFolder">
 			<destination>{16d8ab07-7665-4059-870a-5631b0737b7a}</destination>
