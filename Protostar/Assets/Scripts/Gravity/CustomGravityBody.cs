@@ -130,7 +130,7 @@ public class CustomGravityBody : MonoBehaviour
         {
             if (AudioManager.Instance != null && !gravityFlipEvent.IsNull)
             {
-                AudioManager.Instance.PlayOneShot(gravityFlipEvent, transform.position);
+                AudioManager.PlayOneShot(gravityFlipEvent, transform.position);
             }
         }
 

@@ -5,11 +5,12 @@ public class SceneAudioSetup : MonoBehaviour
 {
     [SerializeField] private EventReference musicEventReference;
     [SerializeField] private EventReference ambienceEventReference;
+    [SerializeField] private bool useOrchestration = false;
     private void Start()
     {
         if (!musicEventReference.IsNull)
         {
-            AudioManager.Instance.PlayMusic(musicEventReference);
+            AudioManager.Instance.PlayMusic(musicEventReference, useOrchestration);
         }
 
         if (!ambienceEventReference.IsNull)

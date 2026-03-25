@@ -9,7 +9,7 @@ public class Checkpoint : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.CompareTag("Player") && !activated)
+        if (other.gameObject.CompareTag("Player") && !activated)
         {
             activated = true;
             checkpointSystem.SetActiveCheckpoint(checkpointNumber);

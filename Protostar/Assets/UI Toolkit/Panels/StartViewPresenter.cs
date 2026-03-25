@@ -1,3 +1,4 @@
+using FMODUnity;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -8,6 +9,11 @@ public class StartViewPresenter : MonoBehaviour, IMenuView
 
     [SerializeField] private string gameSceneName = "MainLevel";
     [SerializeField] private string mainMenuSceneName = "MainMenu";
+
+    [Header("Button SFX")]
+    [SerializeField] private EventReference clickSound;
+    [SerializeField] private EventReference hoverSound;
+    [SerializeField] private EventReference startSound;
 
     private VisualElement root;
     private VisualElement settingsView;
@@ -105,7 +111,12 @@ public class StartViewPresenter : MonoBehaviour, IMenuView
 
     private void SetupMainMenu()
     {
-        MainMenuPresenter menuPresenter = new MainMenuPresenter(mainMenuView);
+        MainMenuPresenter menuPresenter = new MainMenuPresenter(
+            mainMenuView,
+            clickSound: clickSound,
+            hoverSound: hoverSound,
+            startSound: startSound
+        );
         menuPresenter.OpenSettings = () => GameStateManager.Instance.SetState(GameState.Settings);
         menuPresenter.StartGame = () => GameStateManager.Instance.StartGame(gameSceneName);
         menuPresenter.OpenCredits = () => GameStateManager.Instance.SetState(GameState.Credits);
@@ -114,13 +125,21 @@ public class StartViewPresenter : MonoBehaviour, IMenuView
 
     private void SetupControlsMenu()
     {
-        ControlsPresenter controlsPresenter = new ControlsPresenter(root.Q<TemplateContainer>("Controls"));
+        ControlsPresenter controlsPresenter = new ControlsPresenter(
+            root.Q<TemplateContainer>("Controls"),
+            clickSound: clickSound,
+            hoverSound: hoverSound
+        );
         controlsPresenter.BackAction = () => GameStateManager.Instance.RevertState();
     }
 
     private void SetupSettingsMenu()
     {
-        SettingsPresenter settingsPresenter = new SettingsPresenter(root.Q<TemplateContainer>("Settings"));
+        SettingsPresenter settingsPresenter = new SettingsPresenter(
+            root.Q<TemplateContainer>("Settings"),
+            clickSound: clickSound,
+            hoverSound: hoverSound
+        );
         settingsPresenter.BackAction = () => GameStateManager.Instance.RevertState();
         settingsPresenter.ReturnToMainMenuAction = () => GameStateManager.Instance.ReturnToMainMenu(mainMenuSceneName);
         settingsPresenter.ControlsAction = () => GameStateManager.Instance.SetState(GameState.Controls);
@@ -128,7 +147,11 @@ public class StartViewPresenter : MonoBehaviour, IMenuView
 
     private void SetupCreditsMenu()
     {
-        CreditsPresenter creditsPresenter = new CreditsPresenter(root.Q<TemplateContainer>("Credits"));
+        CreditsPresenter creditsPresenter = new CreditsPresenter(
+            root.Q<TemplateContainer>("Credits"),
+            clickSound: clickSound,
+            hoverSound: hoverSound
+        );
         creditsPresenter.BackAction = () => GameStateManager.Instance.RevertState();
     }
 

@@ -42,6 +42,6 @@ public class AnimationAudioEventPlayer : MonoBehaviour
         if (!CanPlayEvent(eventName))
             return;
 
-        AudioManager.Instance.PlayOneShot(eventName, transform.position);
+        AudioManager.PlayOneShot(eventName, transform.position);
     }
 }

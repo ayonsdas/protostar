@@ -63,7 +63,7 @@ public class CheckpointSystem : MonoBehaviour
         playerStartRot = playerTransform.rotation;
 
         playerController = playerTransform.GetComponent<PlayerController>();
-        if(fadeEffectCanvas != null)
+        if (fadeEffectCanvas != null)
         {
             fadeImage = fadeEffectCanvas.GetComponentInChildren<Image>();
             fadeEffectCanvas.gameObject.SetActive(false);
@@ -80,6 +80,10 @@ public class CheckpointSystem : MonoBehaviour
             activeSpawnPoint = spawnPoints[activeCheckpointIndex];
             ChangeCurrentPlayableZone();
             Debug.Log("Active Checkpoint updated to Checkpoint " + activeCheckpointIndex);
+
+            // Update the Orchestration parameter in AudioManager
+            AudioManager.Instance.Orchestration = activeCheckpointIndex;
+            Debug.Log($"[CheckpointSystem] Set Orchestration to {AudioManager.Instance.Orchestration} for checkpoint {activeCheckpointIndex}");
         }
     }
 
@@ -189,9 +193,9 @@ public class CheckpointSystem : MonoBehaviour
 
         fadeImage.color = transparentColor;
         fadeEffectCanvas.gameObject.SetActive(true);
-        
+
         float secElapsed = 0f;
-        while(secElapsed < teleportFadeTime) // fade to black
+        while (secElapsed < teleportFadeTime) // fade to black
         {
             secElapsed += Time.deltaTime;
             float t = secElapsed / teleportFadeTime;
@@ -207,14 +211,13 @@ public class CheckpointSystem : MonoBehaviour
         yield return new WaitForSeconds(.2f);
 
         secElapsed = 0f;
-        while(secElapsed < teleportFadeTime) // fade to transparent
+        while (secElapsed < teleportFadeTime) // fade to transparent
         {
-            Debug.Log(secElapsed);
             secElapsed += Time.deltaTime;
             float t = secElapsed / teleportFadeTime;
             fadeImage.color = Color.Lerp(opaqueColor, transparentColor, t);
             yield return null;
-        } 
+        }
 
         playerRB.isKinematic = false;
         playerRB.linearVelocity = Vector3.zero;
@@ -232,7 +235,7 @@ public class CheckpointSystem : MonoBehaviour
         Vector3 currentPos = playerTransform.position;
         Quaternion currentRot = playerTransform.rotation;
 
-        while (secElapsed < respawnTime) 
+        while (secElapsed < respawnTime)
         {
             secElapsed += Time.deltaTime;
             float t = secElapsed / respawnTime;

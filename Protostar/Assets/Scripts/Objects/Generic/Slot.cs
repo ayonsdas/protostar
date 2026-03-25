@@ -67,7 +67,7 @@ public class Slot<T> :
         // Play sound (completely independent, failure does not affect anything)
         try
         {
-            AudioManager.Instance.PlayOneShot(objectPlaceSoundEvent, transform.position);
+            AudioManager.PlayOneShot(objectPlaceSoundEvent, transform.position);
         }
         catch (System.Exception e)
         {

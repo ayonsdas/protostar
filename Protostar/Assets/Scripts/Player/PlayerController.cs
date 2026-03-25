@@ -393,7 +393,7 @@ public class PlayerController : MonoBehaviour
 
         ApplyJumpForce();
 
-        AudioManager.Instance.PlayOneShot(jumpEventReference, gameObject.transform.position);
+        AudioManager.PlayOneShot(jumpEventReference, gameObject.transform.position);
 
         OnJumpSuccess?.Invoke();
     }
@@ -464,7 +464,7 @@ public class PlayerController : MonoBehaviour
     private void PlayLandSound()
     {
         if (AudioManager.Instance != null && !landEventReference.IsNull)
-            AudioManager.Instance.PlayOneShot(landEventReference, gameObject.transform.position);
+            AudioManager.PlayOneShot(landEventReference, gameObject.transform.position);
 
         else
             Debug.LogWarning("[PlayerController] Landing sound not assigned");
