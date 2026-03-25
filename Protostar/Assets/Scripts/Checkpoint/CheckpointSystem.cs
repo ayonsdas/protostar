@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CheckpointSystem : MonoBehaviour
 {
@@ -17,9 +18,12 @@ public class CheckpointSystem : MonoBehaviour
 
     [Header("Respawn Variables")]
     public Transform playerTransform;
+    public Canvas fadeEffectCanvas;
+    private Image fadeImage;
     private Quaternion playerStartRot;
     private Vector3 playerStartPos;
     public float respawnTime = 2f;
+    public float teleportFadeTime = 0.8f;
     public bool teleport = false;
     public bool disablePreviousZones = false;
     public bool respawnAtLastPlatform = false;
@@ -59,6 +63,11 @@ public class CheckpointSystem : MonoBehaviour
         playerStartRot = playerTransform.rotation;
 
         playerController = playerTransform.GetComponent<PlayerController>();
+        if(fadeEffectCanvas != null)
+        {
+            fadeImage = fadeEffectCanvas.GetComponentInChildren<Image>();
+            fadeEffectCanvas.gameObject.SetActive(false);
+        }
         playerRB = playerTransform.GetComponent<Rigidbody>();
         playerGravityBody = playerTransform.GetComponent<CustomGravityBody>();
     }
@@ -161,12 +170,60 @@ public class CheckpointSystem : MonoBehaviour
         }
         else
         {
-            playerTransform.position = spawnPointData.Position;
-            playerTransform.rotation = spawnPointData.Rotation;
-            playerGravityBody.SetCustomGravityDirection(spawnPointData.GravityDirection, rotateVelocity: false);
-            playerController.SetMovementLocked(false);
-            IsRespawning = false;
+            // playerTransform.position = spawnPointData.Position;
+            // playerTransform.rotation = spawnPointData.Rotation;
+            // playerGravityBody.SetCustomGravityDirection(spawnPointData.GravityDirection, rotateVelocity: false);
+            // playerController.SetMovementLocked(false);
+            // IsRespawning = false;
+
+            playerController.SetMovementLocked(true);
+            playerRB.isKinematic = true;
+            StartCoroutine(TeleportToCheckpoint(spawnPointData));
         }
+    }
+
+    private IEnumerator TeleportToCheckpoint(SpawnPoint spawnPointData)
+    {
+        Color transparentColor = new Color(0, 0, 0, 0); // empty
+        Color opaqueColor = new Color(0, 0, 0, 1); // black
+
+        fadeImage.color = transparentColor;
+        fadeEffectCanvas.gameObject.SetActive(true);
+        
+        float secElapsed = 0f;
+        while(secElapsed < teleportFadeTime) // fade to black
+        {
+            secElapsed += Time.deltaTime;
+            float t = secElapsed / teleportFadeTime;
+            fadeImage.color = Color.Lerp(transparentColor, opaqueColor, t);
+            yield return null;
+        }
+
+        playerTransform.position = spawnPointData.Position;
+        playerTransform.rotation = spawnPointData.Rotation;
+        playerGravityBody.SetCustomGravityDirection(spawnPointData.GravityDirection, rotateVelocity: false);
+        fadeImage.color = opaqueColor;
+
+        yield return new WaitForSeconds(.2f);
+
+        secElapsed = 0f;
+        while(secElapsed < teleportFadeTime) // fade to transparent
+        {
+            Debug.Log(secElapsed);
+            secElapsed += Time.deltaTime;
+            float t = secElapsed / teleportFadeTime;
+            fadeImage.color = Color.Lerp(opaqueColor, transparentColor, t);
+            yield return null;
+        } 
+
+        playerRB.isKinematic = false;
+        playerRB.linearVelocity = Vector3.zero;
+        playerRB.angularVelocity = Vector3.zero;
+        fadeEffectCanvas.gameObject.SetActive(false);
+
+        yield return new WaitForSeconds(.1f);
+        playerController.SetMovementLocked(false);
+        IsRespawning = false;
     }
 
     private IEnumerator MovePlayerToCheckpoint(SpawnPoint spawnPointData)
@@ -175,7 +232,7 @@ public class CheckpointSystem : MonoBehaviour
         Vector3 currentPos = playerTransform.position;
         Quaternion currentRot = playerTransform.rotation;
 
-        while (secElapsed < respawnTime)
+        while (secElapsed < respawnTime) 
         {
             secElapsed += Time.deltaTime;
             float t = secElapsed / respawnTime;
