@@ -206,6 +206,12 @@ public class CheckpointSystem : MonoBehaviour
         playerTransform.position = spawnPointData.Position;
         playerTransform.rotation = spawnPointData.Rotation;
         playerGravityBody.SetCustomGravityDirection(spawnPointData.GravityDirection, rotateVelocity: false);
+        CameraFollow cameraFollow = Camera.main.GetComponent<CameraFollow>();
+        if (cameraFollow != null)
+        {
+            cameraFollow.ResetCameraOffset();
+        }
+        Debug.Log($"[CheckpointSystem] Teleported to Position: {spawnPointData.Position}, Rotation: {spawnPointData.Rotation}, GravityDirection: {spawnPointData.GravityDirection}");
         fadeImage.color = opaqueColor;
 
         yield return new WaitForSeconds(.2f);

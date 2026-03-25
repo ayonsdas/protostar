@@ -362,6 +362,30 @@ public class CameraFollow : MonoBehaviour
         }
     }
 
+    public void ResetCameraOffset()
+    {
+        // Recalculate base direction from current offset
+        Vector3 worldOffset = target.TransformDirection(offset);
+        cameraDir = worldOffset.normalized;
+        cameraDistance = worldOffset.magnitude;
+        currentDistance = cameraDistance;
+
+        targetCameraUp = gravityBody != null ? gravityBody.GetUpDirection() : Vector3.up;
+        currentCameraUp = targetCameraUp;
+
+        // Reset camera rotation offsets
+        cameraYaw = 0f;
+        cameraPitch = 0f;
+
+        // Reset base direction to behind player
+        baseDirection = -target.forward;
+        baseDirection = Vector3.ProjectOnPlane(baseDirection, currentCameraUp).normalized;
+        if (baseDirection.sqrMagnitude < 0.01f)
+        {
+            baseDirection = Vector3.ProjectOnPlane(-target.forward, currentCameraUp).normalized;
+        }
+    }
+
     /// <summary>
     /// Clamp the camera direction so it stays within pitch limits relative to the given up direction.
     /// </summary>
