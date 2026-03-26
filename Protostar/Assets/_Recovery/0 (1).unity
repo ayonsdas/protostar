@@ -70148,10 +70148,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Protostar::SceneAudioSetup
   musicEventReference:
     Guid:
-      Data1: 697270770
-      Data2: 1281439589
-      Data3: 1089006012
-      Data4: -1238132197
+      Data1: -289948661
+      Data2: 1269057552
+      Data3: -2132235100
+      Data4: -1002959146
     Path: event:/Music/GameplayMusic
   ambienceEventReference:
     Guid:
