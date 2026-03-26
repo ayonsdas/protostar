@@ -10,7 +10,7 @@ public class SceneAudioSetup : MonoBehaviour
     {
         if (!musicEventReference.IsNull)
         {
-            AudioManager.Instance.PlayMusic(musicEventReference, useOrchestration);
+            AudioManager.Instance.PlayMusic(musicEventReference);
         }
 
         if (!ambienceEventReference.IsNull)

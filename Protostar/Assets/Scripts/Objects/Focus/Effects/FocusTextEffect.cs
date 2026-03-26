@@ -1,16 +1,29 @@
 using TMPro;
 using UnityEngine;
 
+[RequireComponent(typeof(ActionBindingText))]
 public class FocusTextEffect : MonoBehaviour, IFocusEffect
 {
     [SerializeField] private FocusUI focusUI;
-    [SerializeField] private ActionBindingText text;
+    private ActionBindingText _text;
 
     public void Start()
     {
-        if (text)
+        _text = GetComponent<ActionBindingText>();
+
+        var textMesh = focusUI.canvas.GetComponentInChildren<TextMeshProUGUI>();
+        if (textMesh)
         {
-            text.enabled = false;
+            _text.TextMesh = textMesh;
+        }
+        else
+        {
+            Debug.LogError("FocusUI canvas is missing a TextMeshProUGUI component in its children.");
+        }
+
+        if (_text)
+        {
+            _text.enabled = false;
         }
         else
         {
@@ -20,12 +33,12 @@ public class FocusTextEffect : MonoBehaviour, IFocusEffect
     public void OnFocus()
     {
         focusUI.ShowUI();
-        text.enabled = true;
+        _text.enabled = true;
     }
 
     public void OnUnfocus()
     {
         focusUI.HideUI();
-        text.enabled = false;
+        _text.enabled = false;
     }
 }

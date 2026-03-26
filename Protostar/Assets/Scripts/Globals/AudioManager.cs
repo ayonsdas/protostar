@@ -13,8 +13,6 @@ public enum AudioBus
 
 public class AudioManager : MonoBehaviour
 {
-    public float Orchestration = 0f;
-
     private Bus masterBus;
     private Bus musicBus;
     private Bus sfxBus;
@@ -25,11 +23,6 @@ public class AudioManager : MonoBehaviour
     private EventInstance musicEventInstance;
     private Dictionary<FMOD.GUID, float> lastPlayedTimes = new();
     private float lastPlayedTime;
-
-    private bool _loopEnded = false;
-    private EVENT_CALLBACK _loopEndCallback;
-    private string _markerName;
-    private bool _printMarkerDebug = false;
 
 
     public static AudioManager Instance { get; private set; }
@@ -50,22 +43,6 @@ public class AudioManager : MonoBehaviour
         sfxBus = RuntimeManager.GetBus("bus:/SFX Bus");
 
         InitializeBusVolumes();
-    }
-
-    private void Update()
-    {
-        if (musicEventInstance.isValid() && _loopEnded)
-        {
-            _loopEnded = false;
-            musicEventInstance.setParameterByName("Orchestration", Orchestration);
-            Debug.Log($"[AudioManager] Loop ended, set Orchestration to {Orchestration}");
-        }
-
-        if (_printMarkerDebug)
-        {
-            Debug.Log($"[AudioManager] Reached marker: {_markerName}");
-            _printMarkerDebug = false;
-        }
     }
 
     private void InitializeBusVolumes()
@@ -140,20 +117,10 @@ public class AudioManager : MonoBehaviour
         return eventEmitter;
     }
 
-    public void PlayMusic(EventReference eventReference, bool useOrchestration = false)
+    public void PlayMusic(EventReference eventReference)
     {
         musicEventInstance = CreateEventInstance(eventReference);
         musicEventInstance.start();
-        if (useOrchestration)
-        {
-            AddOrchestrationCallback(musicEventInstance);
-        }
-    }
-
-    private void AddOrchestrationCallback(EventInstance eventInstance)
-    {
-        _loopEndCallback = LoopEndCallback;
-        eventInstance.setCallback(_loopEndCallback, EVENT_CALLBACK_TYPE.TIMELINE_MARKER);
     }
 
     private FMOD.RESULT LoopEndCallback(
@@ -166,12 +133,16 @@ public class AudioManager : MonoBehaviour
         var markerProps = (TIMELINE_MARKER_PROPERTIES)System.Runtime.InteropServices.Marshal.PtrToStructure(
             propertyPtr, typeof(TIMELINE_MARKER_PROPERTIES));
 
-        _printMarkerDebug = true;
-        _markerName = markerProps.name;
+        if (callbackType != EVENT_CALLBACK_TYPE.TIMELINE_MARKER)
+        {
+            Debug.LogWarning($"[AudioManager] Received unexpected callback type: {callbackType}");
+            return FMOD.RESULT.OK;
+        }
+
         // Check if the marker is called Loop
         if (markerProps.name == "Loop")
         {
-            _loopEnded = true;
+
         }
 
         return FMOD.RESULT.OK;

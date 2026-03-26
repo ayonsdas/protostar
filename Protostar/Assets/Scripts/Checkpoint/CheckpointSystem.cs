@@ -82,8 +82,8 @@ public class CheckpointSystem : MonoBehaviour
             Debug.Log("Active Checkpoint updated to Checkpoint " + activeCheckpointIndex);
 
             // Update the Orchestration parameter in AudioManager
-            AudioManager.Instance.Orchestration = activeCheckpointIndex;
-            Debug.Log($"[CheckpointSystem] Set Orchestration to {AudioManager.Instance.Orchestration} for checkpoint {activeCheckpointIndex}");
+            AudioManager.Instance.SetMusicParameter("Orchestration", activeCheckpointIndex);
+            Debug.Log($"[CheckpointSystem] Set Music Orchestration parameter to {activeCheckpointIndex}");
         }
     }
 
