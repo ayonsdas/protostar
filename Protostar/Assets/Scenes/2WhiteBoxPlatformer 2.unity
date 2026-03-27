@@ -1600,8 +1600,8 @@ Transform:
   m_GameObject: {fileID: 116539763}
   serializedVersion: 2
   m_LocalRotation: {x: 0.5, y: -0.5, z: 0.5, w: 0.5}
-  m_LocalPosition: {x: 403.89, y: 52.4, z: 124.2}
-  m_LocalScale: {x: 0.08645487, y: 0.13358226, z: 0.11236995}
+  m_LocalPosition: {x: 403.89, y: 46.4, z: 120.84}
+  m_LocalScale: {x: 0.08645487, y: 0.13358226, z: 0.16356201}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1068399221}
@@ -3182,17 +3182,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5451405574167764195, guid: 4997c99e86a97f34385015a253951c88, type: 3}
   m_PrefabInstance: {fileID: 224999664}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &224999666 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7145963474638805246, guid: 4997c99e86a97f34385015a253951c88, type: 3}
-  m_PrefabInstance: {fileID: 224999664}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1 &224999667 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 122090866617771699, guid: 4997c99e86a97f34385015a253951c88, type: 3}
@@ -3210,7 +3199,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bf5c202f9dd7a440a77a062fe161f4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Protostar.UI::ActionBindingText
-  textMesh: {fileID: 224999666}
+  TextMesh: {fileID: 0}
   message: '{Move} to move
 
     {Jump} to jump'
@@ -10373,7 +10362,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bf5c202f9dd7a440a77a062fe161f4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Protostar.UI::ActionBindingText
-  textMesh: {fileID: 1244376260}
+  TextMesh: {fileID: 0}
   message: "Welcome to the collector\u2019s den of your mentor. Here they keep objects
     and souvenirs from their many travels.\r\n\r\nThe second step to creating a world
     is the spice of life itself. You are sure that the strange creature floating
@@ -11657,7 +11646,7 @@ Transform:
   m_GameObject: {fileID: 410221174}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 400.98, y: 33.28, z: 115.28}
+  m_LocalPosition: {x: 400.98, y: 31.19, z: 115.28}
   m_LocalScale: {x: 6.5720587, y: 0.28785118, z: -7.0042586}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -17645,7 +17634,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Protostar::FocusTextEffect
   focusUI: {fileID: 1582639469}
-  text: {fileID: 455753206}
 --- !u!114 &455753206
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17658,7 +17646,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bf5c202f9dd7a440a77a062fe161f4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Protostar.UI::ActionBindingText
-  textMesh: {fileID: 0}
+  TextMesh: {fileID: 0}
   message: "You\u2019ve found the creature in the water tank! Its mesmerizing glow
     nearly puts you into a trance again, but you need it as a conceptual world ingredient.\r\n\r\n\r\nPick
     it up and put it in your backpack to integrate it with the world!"
@@ -19640,8 +19628,8 @@ Transform:
   m_GameObject: {fileID: 591136906}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 400.87, y: 33.279, z: 128.61002}
-  m_LocalScale: {x: 6.2803135, y: 0.29535818, z: -10.29154}
+  m_LocalPosition: {x: 400.87, y: 29.65, z: 128.61002}
+  m_LocalScale: {x: 6.2803135, y: 0.3506492, z: -10.29154}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 386563458}
@@ -23568,7 +23556,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bf5c202f9dd7a440a77a062fe161f4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Protostar.UI::ActionBindingText
-  textMesh: {fileID: 1582639465}
+  TextMesh: {fileID: 0}
   message: 'This is your old creation pod, the one your mentor used to put you together.
     It was the very first bed you slept in. The eternal pre-life, pre-conception
     sleep.
@@ -23590,7 +23578,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Protostar::FocusTextEffect
   focusUI: {fileID: 1582639469}
-  text: {fileID: 864227804}
 --- !u!114 &864227806
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66162,11 +66149,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d43b74e70a5c1aa48b66f662c75efba7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -223.5
+      value: -223.72
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d43b74e70a5c1aa48b66f662c75efba7, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -308.3
+      value: -311.66
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d43b74e70a5c1aa48b66f662c75efba7, type: 3}
       propertyPath: m_LocalRotation.w
@@ -68490,17 +68477,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 10, y: 0.5, z: 10}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &1244376260 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7145963474638805246, guid: 6d660e13b2b617a4b8b846e6b846fee4, type: 3}
-  m_PrefabInstance: {fileID: 548860487}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1001 &1247109474
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -75261,7 +75237,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bf5c202f9dd7a440a77a062fe161f4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Protostar.UI::ActionBindingText
-  textMesh: {fileID: 0}
+  TextMesh: {fileID: 0}
   message: "Ah, here is the control board in all its glory! Whether or not it\u2019s
     a good idea to take this meticulous project from the room and conceptually unravel
     it into an unfinished planet does not cross your mind. It\u2019s exactly what
@@ -75280,7 +75256,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Protostar::FocusTextEffect
   focusUI: {fileID: 0}
-  text: {fileID: 1379896828}
 --- !u!114 &1379896830
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -80417,17 +80392,6 @@ Transform:
   - {fileID: 1173862839}
   m_Father: {fileID: 976666963}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1396422763 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7145963474638805246, guid: 6d660e13b2b617a4b8b846e6b846fee4, type: 3}
-  m_PrefabInstance: {fileID: 1373222869}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1 &1398961611
 GameObject:
   m_ObjectHideFlags: 0
@@ -85603,17 +85567,6 @@ Transform:
   - {fileID: 285987338}
   m_Father: {fileID: 1770108561}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1409123656 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7145963474638805246, guid: 6d660e13b2b617a4b8b846e6b846fee4, type: 3}
-  m_PrefabInstance: {fileID: 630414231}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!43 &1416441016
 Mesh:
   m_ObjectHideFlags: 0
@@ -86823,7 +86776,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bf5c202f9dd7a440a77a062fe161f4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Protostar.UI::ActionBindingText
-  textMesh: {fileID: 1396422763}
+  TextMesh: {fileID: 0}
   message: "You are a child made of stardust living in a strange and massive city
     of wonders. You are currently standing in your living quarters. That much you
     know.\r\n\r\nYour mentor, a creator and traveler of worlds, has tasked you with
@@ -93623,8 +93576,8 @@ Transform:
   m_GameObject: {fileID: 1562870140}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 1, w: 0}
-  m_LocalPosition: {x: 401.15, y: 52.53, z: 130.52}
-  m_LocalScale: {x: 6.2803135, y: 0.29535818, z: -5.874617}
+  m_LocalPosition: {x: 401.15, y: 52.503, z: 130.52}
+  m_LocalScale: {x: 6.2803135, y: 0.3506492, z: -5.874617}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1585770513}
@@ -94056,17 +94009,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5451405574167764195, guid: 6d660e13b2b617a4b8b846e6b846fee4, type: 3}
   m_PrefabInstance: {fileID: 1582639463}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1582639465 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7145963474638805246, guid: 6d660e13b2b617a4b8b846e6b846fee4, type: 3}
-  m_PrefabInstance: {fileID: 1582639463}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!223 &1582639466 stripped
 Canvas:
   m_CorrespondingSourceObject: {fileID: 1148328799444461120, guid: 6d660e13b2b617a4b8b846e6b846fee4, type: 3}
@@ -96405,8 +96347,8 @@ Transform:
   m_GameObject: {fileID: 1688586329}
   serializedVersion: 2
   m_LocalRotation: {x: 0.5, y: 0.5, z: 0.5, w: 0.5}
-  m_LocalPosition: {x: 409.41, y: 37.894997, z: 136.75002}
-  m_LocalScale: {x: 0.25517568, y: 0.25517568, z: 0.23765017}
+  m_LocalPosition: {x: 409.41, y: 35.128998, z: 136.75002}
+  m_LocalScale: {x: 0.30294454, y: 0.25517568, z: 0.23765017}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1068399221}
@@ -103079,7 +103021,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bf5c202f9dd7a440a77a062fe161f4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Protostar.UI::ActionBindingText
-  textMesh: {fileID: 1409123656}
+  TextMesh: {fileID: 0}
   message: "You are now standing in your mentor\u2019s lab. Better be careful not
     to knock over anything; they have done a lot of strange experimentation you don\u2019t
     understand here!\r\n\r\nThe final step to creating a world is technology and
