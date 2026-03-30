@@ -8096,6 +8096,37 @@ Transform:
   - {fileID: 1349400468}
   m_Father: {fileID: 1291792454}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &211009871
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 211009872}
+  m_Layer: 0
+  m_Name: VFXSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &211009872
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 211009871}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 890825963}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &218594803
 GameObject:
   m_ObjectHideFlags: 0
@@ -63867,6 +63898,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 116889316238556093, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1494381267}
+    - targetCorrespondingSourceObject: {fileID: 116889316238556093, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 211009872}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
 --- !u!4 &890825963 stripped
@@ -68829,6 +68863,53 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
+--- !u!1 &926823591
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 926823593}
+  - component: {fileID: 926823594}
+  m_Layer: 0
+  m_Name: RespawnVFX
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &926823593
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 926823591}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2021015651}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &926823594
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 926823591}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a9e94deebf48bf429630400a4280be4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Protostar::RespawnOrbVFX
+  spawnTransform: {fileID: 211009872}
+  orbVFXPrefab: {fileID: 4704356003382172376, guid: fce733499957eff4582739e840d79cdc, type: 3}
+  absorptionDuration: 0.7
 --- !u!1 &937496171
 GameObject:
   m_ObjectHideFlags: 0
@@ -129593,6 +129674,8 @@ MonoBehaviour:
   - {fileID: 57766512}
   playerTransform: {fileID: 890825963}
   fadeEffectCanvas: {fileID: 291279335}
+  respawnVfxTransform: {fileID: 211009872}
+  respawnOrbVFX: {fileID: 926823594}
   respawnTime: 2
   teleportFadeTime: 0.8
   teleport: 1
@@ -129611,6 +129694,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 926823593}
   - {fileID: 291279336}
   - {fileID: 834036378}
   - {fileID: 436049257}
