@@ -452,7 +452,7 @@ public class PlayerInteractor : Interactor
         // Play sound if needed
         try
         {
-            AudioManager.Instance.PlayOneShot(shiftEvent, pos);
+            AudioManager.PlayOneShot(shiftEvent, pos);
         }
         catch (Exception e)
         {

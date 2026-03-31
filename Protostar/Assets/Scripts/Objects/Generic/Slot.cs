@@ -64,10 +64,10 @@ public class Slot<T> :
         UpdateVisuals();
         OnSlotChanged?.Invoke();
 
-        // Play sound (completely independent � failure does not affect anything)
+        // Play sound (completely independent, failure does not affect anything)
         try
         {
-            RuntimeManager.PlayOneShot(objectPlaceSoundEvent, transform.position);
+            AudioManager.PlayOneShot(objectPlaceSoundEvent, transform.position);
         }
         catch (System.Exception e)
         {

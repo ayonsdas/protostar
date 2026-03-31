@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ActionBindingText : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI textMesh;
+    public TextMeshProUGUI TextMesh;
 
     [TextArea]
     [Tooltip("Message to display, using {} enclosing an action name to replace with the current bindings")]
@@ -21,17 +21,17 @@ public class ActionBindingText : MonoBehaviour
 
     private void Start()
     {
-        if (textMesh != null)
+        if (TextMesh != null)
         {
-            textMesh.text = ActionBindingUtil.ReplaceBindings(message);
+            TextMesh.text = ActionBindingUtil.ReplaceBindings(message);
         }
     }
 
     private void HandleInputModeChanged(InputMode _inputMode)
     {
-        if (textMesh != null)
+        if (TextMesh != null)
         {
-            textMesh.text = ActionBindingUtil.ReplaceBindings(message);
+            TextMesh.text = ActionBindingUtil.ReplaceBindings(message);
         }
     }
 }

@@ -150,8 +150,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 208322a3ef10bf64d97969fcbe747d7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StartViewPresenter
-  gameSceneName: WhiteBoxPuzzle
+  gameSceneName: 2WhiteBoxPlatformer 2
   mainMenuSceneName: MainMenu
+  clickSound:
+    Guid:
+      Data1: 180037691
+      Data2: 1088810810
+      Data3: -1360361805
+      Data4: -2106061938
+    Path: event:/MenuUISelect
+  hoverSound:
+    Guid:
+      Data1: 1817073185
+      Data2: 1146719623
+      Data3: 1965430193
+      Data4: 1327400217
+    Path: event:/MenuUIHover
+  startSound:
+    Guid:
+      Data1: -795562191
+      Data2: 1330710980
+      Data3: 158450869
+      Data4: -1033376024
+    Path: event:/MenuUIPlay
 --- !u!114 &1635979260738408482
 MonoBehaviour:
   m_ObjectHideFlags: 0

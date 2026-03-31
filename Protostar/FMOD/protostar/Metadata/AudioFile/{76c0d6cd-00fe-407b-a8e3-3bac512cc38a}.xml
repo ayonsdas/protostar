@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.02.03.00">
 	<object class="AudioFile" id="{76c0d6cd-00fe-407b-a8e3-3bac512cc38a}">
 		<property name="assetPath">
-			<value>protostar land.wav</value>
+			<value>Player/protostar land.wav</value>
 		</property>
 		<property name="frequencyInKHz">
 			<value>48</value>

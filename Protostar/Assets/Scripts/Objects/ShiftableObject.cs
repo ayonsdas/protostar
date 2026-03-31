@@ -42,7 +42,7 @@ public class ShiftableObject : MonoBehaviour, IEngageable, IShiftable, IInteract
     {
         if (AudioManager.Instance != null && !objectShiftSound.IsNull)
         {
-            AudioManager.Instance.PlayOneShot(objectShiftSound, gameObject.transform.position);
+            AudioManager.PlayOneShot(objectShiftSound, gameObject.transform.position);
         }
     }
 

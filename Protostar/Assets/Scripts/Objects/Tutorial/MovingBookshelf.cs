@@ -46,7 +46,7 @@ public class MovingBookshelf : MonoBehaviour
             slot.Lock();
             animator.SetTrigger(trigger);
             PlayBookcaseMoveSound();
-            AudioManager.Instance.SetMusicParameter("Tutorial completion", 1);
+            AudioManager.PlayOneShot(bookcaseMoveSound, gameObject.transform.position);
         }
     }
 
@@ -54,7 +54,7 @@ public class MovingBookshelf : MonoBehaviour
     {
         if (AudioManager.Instance != null && !bookcaseMoveSound.IsNull)
         {
-            AudioManager.Instance.PlayOneShot(bookcaseMoveSound, gameObject.transform.position);
+            AudioManager.PlayOneShot(bookcaseMoveSound, gameObject.transform.position);
         }
     }
 }

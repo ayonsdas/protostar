@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using FMOD.Studio;
 using FMODUnity;
@@ -20,6 +21,9 @@ public class AudioManager : MonoBehaviour
     private List<StudioEventEmitter> eventEmitters;
     private EventInstance ambienceEventInstance;
     private EventInstance musicEventInstance;
+    private Dictionary<FMOD.GUID, float> lastPlayedTimes = new();
+    private float lastPlayedTime;
+
 
     public static AudioManager Instance { get; private set; }
     public void Awake()
@@ -69,9 +73,33 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void PlayOneShot(EventReference eventReference, Vector3 position)
+    public static void PlayOneShot(EventReference eventReference, Vector3 position = new Vector3())
     {
-        RuntimeManager.PlayOneShot(eventReference, position);
+        if (Instance == null || eventReference.IsNull) return;
+        Instance.PlayOneShot(eventReference.Guid, position);
+    }
+
+    public static void PlayOneShot(string path, Vector3 position = new Vector3())
+    {
+        if (Instance == null) return;
+        try
+        {
+            FMOD.GUID eventGuid = RuntimeManager.PathToGUID(path);
+            Instance.PlayOneShot(eventGuid, position);
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"[AudioManager] Failed to play one-shot sound at path '{path}': {e.Message}");
+        }
+    }
+
+    private void PlayOneShot(FMOD.GUID eventGuid, Vector3 position = new Vector3())
+    {
+        if (eventGuid.IsNull) return;
+
+        lastPlayedTime = Time.time;
+        lastPlayedTimes[eventGuid] = lastPlayedTime;
+        RuntimeManager.PlayOneShot(eventGuid, position);
     }
 
     public EventInstance CreateEventInstance(EventReference eventReference)
@@ -93,6 +121,31 @@ public class AudioManager : MonoBehaviour
     {
         musicEventInstance = CreateEventInstance(eventReference);
         musicEventInstance.start();
+    }
+
+    private FMOD.RESULT LoopEndCallback(
+        EVENT_CALLBACK_TYPE callbackType,
+        IntPtr instancePtr,
+        IntPtr propertyPtr
+    )
+    {
+        // Now cast parameters to TIMELINE_MARKER_PROPERTIES
+        var markerProps = (TIMELINE_MARKER_PROPERTIES)System.Runtime.InteropServices.Marshal.PtrToStructure(
+            propertyPtr, typeof(TIMELINE_MARKER_PROPERTIES));
+
+        if (callbackType != EVENT_CALLBACK_TYPE.TIMELINE_MARKER)
+        {
+            Debug.LogWarning($"[AudioManager] Received unexpected callback type: {callbackType}");
+            return FMOD.RESULT.OK;
+        }
+
+        // Check if the marker is called Loop
+        if (markerProps.name == "Loop")
+        {
+
+        }
+
+        return FMOD.RESULT.OK;
     }
 
     public void SetMusicActive(bool active, FMOD.Studio.STOP_MODE stopMode = FMOD.Studio.STOP_MODE.IMMEDIATE)
@@ -129,6 +182,26 @@ public class AudioManager : MonoBehaviour
         {
             ambienceEventInstance.stop(stopMode);
         }
+    }
+
+    public bool PlayedRecently(EventReference eventReference, float cooldown)
+    {
+        return PlayedRecently(eventReference.Guid, cooldown);
+    }
+
+    public bool PlayedRecently(string path, float cooldown)
+    {
+        FMOD.GUID eventGuid = RuntimeManager.PathToGUID(path);
+        return PlayedRecently(eventGuid, cooldown);
+    }
+
+    private bool PlayedRecently(FMOD.GUID eventGuid, float cooldown)
+    {
+        if (!lastPlayedTimes.ContainsKey(eventGuid))
+            return false;
+
+        float lastPlayedTime = lastPlayedTimes[eventGuid];
+        return Time.time - lastPlayedTime < cooldown;
     }
 
     private void Cleanup()

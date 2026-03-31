@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.02.03.00">
 	<object class="AudioFile" id="{893f64e1-011d-45c5-9775-b4ed90d87e72}">
 		<property name="assetPath">
-			<value>protostar jump.wav</value>
+			<value>Player/protostar jump.wav</value>
 		</property>
 		<property name="frequencyInKHz">
 			<value>48</value>

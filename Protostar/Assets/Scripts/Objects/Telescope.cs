@@ -205,7 +205,7 @@ public class Telescope : MonoBehaviour, IInteractionCandidate, IEngageable
             EnterTelescopeView(interactor);
             try
             {
-                AudioManager.Instance.PlayOneShot(interactEventReference, gameObject.transform.position);
+                AudioManager.PlayOneShot(interactEventReference, gameObject.transform.position);
             }
             catch (System.Exception e)
             {

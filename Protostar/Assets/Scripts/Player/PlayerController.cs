@@ -1,7 +1,6 @@
 using System;
 using FMOD.Studio;
 using FMODUnity;
-using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -54,7 +53,6 @@ public class PlayerController : MonoBehaviour
     private Vector2 moveInput;
     public bool IsMoving => moveInput.sqrMagnitude > 0.01f;
     public event Action OnJumpSuccess;
-    public float GetNormalizedSpeed => Mathf.Clamp(rb.linearVelocity.magnitude / moveSpeed, 0f, 1f);
     private Rigidbody rb;
     private CustomGravityBody gravityBody;
     private EventInstance footstepEventInstance;
@@ -72,6 +70,8 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Assign the BoxCollider used for ground and gravity checks. Only this collider will be used for detection.")]
     public BoxCollider groundCheckBoxCollider;
 
+    // Store player's last grounded state for respawning on last platform
+    public PlayerBodyState LastGroundedState { get; private set; } = new PlayerBodyState();
     private bool CanLand => !landSFXCooldownTimer.IsActive;
 
     /// <summary>
@@ -80,11 +80,12 @@ public class PlayerController : MonoBehaviour
     public void SetMovementLocked(bool locked)
     {
         movementLocked = locked;
+        Debug.Log("[PlayerController] Set movement lock to " + locked);
         if (locked)
         {
             moveInput = Vector2.zero;
             // Kill horizontal velocity immediately
-            if (rb != null && gravityBody != null)
+            if (rb != null && gravityBody != null && !rb.isKinematic)
             {
                 Vector3 gravityDir = gravityBody.GetGravityDirection();
                 float verticalComponent = Vector3.Dot(rb.linearVelocity, gravityDir);
@@ -139,6 +140,9 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (rb.isKinematic)
+            return;
+
         bool previouslyGrounded = IsGrounded;
         Vector3 gravityDown = gravityBody.GetGravityDirection();
 
@@ -159,6 +163,7 @@ public class PlayerController : MonoBehaviour
 
         // Jump check: use SphereCollider at groundCheck.position
         bool foundGround = false;
+
         if (groundCheck != null)
         {
             Collider[] colliders = Physics.OverlapSphere(groundCheck.position, groundCheckRadius, groundLayer, QueryTriggerInteraction.Ignore);
@@ -171,11 +176,30 @@ public class PlayerController : MonoBehaviour
                         OnLand();
                     }
                     foundGround = true;
-                    break;
                 }
             }
         }
         IsGrounded = foundGround;
+
+        if (IsGrounded)
+        {
+            LastGroundedState = new PlayerBodyState
+            {
+                Position = transform.position,
+                Rotation = transform.rotation,
+                GravityDirection = gravityBody.GetGravityDirection(),
+                LinearVelocity = rb.linearVelocity,
+                AngularVelocity = rb.angularVelocity
+            };
+        }
+
+        // Snap to ground if just landed, and falling down
+        float velocityAlongGravity = PhysicsUtils.VelocityIntoNormal(rb, gravityDown);
+        PhysicsUtils.SeperateVelocity(rb, gravityDown, out Vector3 horizontalVelocity, out Vector3 _verticalVelocity);
+        if (IsGrounded && !previouslyGrounded && velocityAlongGravity <= 0)
+        {
+            rb.linearVelocity = horizontalVelocity;
+        }
 
         if (CanGroundedJump)
         {
@@ -315,7 +339,7 @@ public class PlayerController : MonoBehaviour
         Vector3 currentVelocity = rb.linearVelocity;
 
         // Keep the vertical (gravity-aligned) component of velocity
-        float verticalComponent = Vector3.Dot(currentVelocity, gravityDirection);
+        float verticalComponent = PhysicsUtils.VelocityIntoNormal(rb, gravityDirection);
         Vector3 horizontalVelocity = currentVelocity - (gravityDirection * verticalComponent);
 
         // Desired horizontal velocity
@@ -369,7 +393,7 @@ public class PlayerController : MonoBehaviour
 
         ApplyJumpForce();
 
-        AudioManager.Instance.PlayOneShot(jumpEventReference, gameObject.transform.position);
+        AudioManager.PlayOneShot(jumpEventReference, gameObject.transform.position);
 
         OnJumpSuccess?.Invoke();
     }
@@ -381,7 +405,7 @@ public class PlayerController : MonoBehaviour
 
         // Strip downward velocity so jump goes upward right when landing
         Vector3 currentVelocity = rb.linearVelocity;
-        float verticalComponent = Vector3.Dot(currentVelocity, jumpDirection);
+        float verticalComponent = PhysicsUtils.VelocityIntoNormal(rb, jumpDirection);
         if (verticalComponent < 0)
         {
             rb.linearVelocity = currentVelocity - (jumpDirection * verticalComponent);
@@ -440,9 +464,37 @@ public class PlayerController : MonoBehaviour
     private void PlayLandSound()
     {
         if (AudioManager.Instance != null && !landEventReference.IsNull)
-            AudioManager.Instance.PlayOneShot(landEventReference, gameObject.transform.position);
+            AudioManager.PlayOneShot(landEventReference, gameObject.transform.position);
 
         else
             Debug.LogWarning("[PlayerController] Landing sound not assigned");
+    }
+
+    public float GetHorizontalSpeed()
+    {
+        PhysicsUtils.SeperateVelocity(
+            rb,
+            gravityBody.GetGravityDirection(),
+            out Vector3 horizontalVelocity,
+            out Vector3 _
+        );
+        return horizontalVelocity.magnitude;
+    }
+
+    public void RestoreBodyState(PlayerBodyState bodyState, bool restoreVelocity = false)
+    {
+        // Restore position and rotation
+        transform.position = bodyState.Position;
+        transform.rotation = bodyState.Rotation;
+
+        // Restore gravity direction
+        gravityBody.SetCustomGravityDirection(-bodyState.GravityDirection, rotateVelocity: false);
+
+        // Restore velocity if desired
+        if (restoreVelocity)
+        {
+            rb.linearVelocity = bodyState.LinearVelocity;
+            rb.angularVelocity = bodyState.AngularVelocity;
+        }
     }
 }

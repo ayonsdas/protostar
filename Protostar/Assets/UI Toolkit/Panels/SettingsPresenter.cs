@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using FMODUnity;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -15,9 +16,9 @@ public class SettingsPresenter
         "1280x720"
     };
 
-    public Action BackAction { set { UIHelper.RegisterButton(backButton, value); } }
-    public Action ReturnToMainMenuAction { set { UIHelper.RegisterButton(mainMenuButton, value); } }
-    public Action ControlsAction { set { UIHelper.RegisterButton(controlsButton, value); } }
+    public Action BackAction { set { UIHelper.RegisterButton(backButton, value, clickSound: _clickSound, hoverSound: _hoverSound); } }
+    public Action ReturnToMainMenuAction { set { UIHelper.RegisterButton(mainMenuButton, value, clickSound: _clickSound, hoverSound: _hoverSound); } }
+    public Action ControlsAction { set { UIHelper.RegisterButton(controlsButton, value, clickSound: _clickSound, hoverSound: _hoverSound); } }
 
     private Button backButton;
     private Button mainMenuButton;
@@ -27,7 +28,14 @@ public class SettingsPresenter
     private Slider masterVolumeSlider;
     private Slider mouseSensitivitySlider;
 
-    public SettingsPresenter(VisualElement root)
+    private readonly EventReference _clickSound;
+    private readonly EventReference _hoverSound;
+
+    public SettingsPresenter(
+        VisualElement root,
+        EventReference clickSound = default,
+        EventReference hoverSound = default
+    )
     {
         if (root == null)
         {
@@ -41,6 +49,9 @@ public class SettingsPresenter
         resolutionsDropdown = root.Q<DropdownField>("ResolutionDropdown");
         masterVolumeSlider = root.Q<Slider>("MasterVolumeSlider");
         mouseSensitivitySlider = root.Q<Slider>("MouseSensitivitySlider");
+
+        _clickSound = clickSound;
+        _hoverSound = hoverSound;
 
         if (backButton == null)
         {

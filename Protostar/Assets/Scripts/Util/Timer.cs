@@ -1,14 +1,15 @@
 public class Timer
 {
-    private float time;
+    private float duration;
     private float timer;
-    private bool stopped;
+    private bool stopped = true;
 
     public bool IsActive => !stopped && timer > 0;
 
-    public Timer(float time)
+    public Timer(float duration)
     {
-        this.time = time;
+        this.duration = duration;
+        timer = duration;
         UpdateManager.OnUpdate += HandleUpdate;
     }
 
@@ -33,9 +34,20 @@ public class Timer
         stopped = true;
     }
 
+    public void Reset()
+    {
+        timer = duration;
+    }
+
     public void Restart()
     {
-        timer = time;
+        timer = duration;
         Start();
+    }
+
+    public void SetDuration(float newDuration)
+    {
+        duration = newDuration;
+        Reset();
     }
 }

@@ -106,7 +106,7 @@ public class Cabinet : BaseInteractable, IInteractionCandidate
 
         try
         {
-            AudioManager.Instance.PlayOneShot(cabinetOpenEventReference, gameObject.transform.position);
+            AudioManager.PlayOneShot(cabinetOpenEventReference, gameObject.transform.position);
         }
         catch (System.Exception e)
         {
@@ -121,7 +121,7 @@ public class Cabinet : BaseInteractable, IInteractionCandidate
     {
         try
         {
-            AudioManager.Instance.PlayOneShot(bookOpenEventReference, gameObject.transform.position);
+            AudioManager.PlayOneShot(bookOpenEventReference, gameObject.transform.position);
         }
         catch (System.Exception e)
         {

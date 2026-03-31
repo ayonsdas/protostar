@@ -8,7 +8,7 @@
 			<value>1</value>
 		</property>
 		<relationship name="folder">
-			<destination>{490043c4-e8aa-4ff8-92c3-76fd89b9720c}</destination>
+			<destination>{74c27e2e-6ad9-4e9a-8076-31e33e68dfa5}</destination>
 		</relationship>
 		<relationship name="mixer">
 			<destination>{cfb734b0-3e1e-4120-a5ff-fa8e6f1c4ec2}</destination>
@@ -76,11 +76,8 @@
 	</object>
 	<object class="MultiSound" id="{432606fa-9def-4bd2-b6c9-35f556735ce9}">
 		<property name="length">
-			<value>2</value>
+			<value>0.625</value>
 		</property>
-		<relationship name="modulators">
-			<destination>{b9ea8410-f0c4-4553-bbc8-6c9d8c6142fb}</destination>
-		</relationship>
 		<relationship name="sounds">
 			<destination>{097b290f-24f5-4eb1-895b-33737b328d4c}</destination>
 		</relationship>
@@ -94,17 +91,11 @@
 	<object class="MixerBusEffectChain" id="{fdac5637-6db3-4d56-82b8-98376e348ae2}">
 		<relationship name="effects">
 			<destination>{b3fe64a8-446e-488b-8189-1fb5efd68023}</destination>
+			<destination>{d33d40e9-91fb-449e-b479-ed5efa88007c}</destination>
+			<destination>{df38dc2f-eed8-47e3-9da1-9c602cd3c0a4}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{66e6b589-9857-4ed3-8648-3b12ad7ee630}" />
-	<object class="RandomizerModulator" id="{b9ea8410-f0c4-4553-bbc8-6c9d8c6142fb}">
-		<property name="nameOfPropertyBeingModulated">
-			<value>pitch</value>
-		</property>
-		<property name="amount">
-			<value>8</value>
-		</property>
-	</object>
 	<object class="SingleSound" id="{097b290f-24f5-4eb1-895b-33737b328d4c}">
 		<relationship name="audioFile">
 			<destination>{76c0d6cd-00fe-407b-a8e3-3bac512cc38a}</destination>
@@ -112,4 +103,29 @@
 	</object>
 	<object class="MixerBusFader" id="{4be9159f-4513-4fb6-9498-60a6da42c236}" />
 	<object class="MixerBusFader" id="{b3fe64a8-446e-488b-8189-1fb5efd68023}" />
+	<object class="ThreeEQEffect" id="{d33d40e9-91fb-449e-b479-ed5efa88007c}">
+		<property name="lowGain">
+			<value>-20.5</value>
+		</property>
+		<property name="midGain">
+			<value>-22.5</value>
+		</property>
+		<property name="lowCrossover">
+			<value>140</value>
+		</property>
+	</object>
+	<object class="SFXReverbEffect" id="{df38dc2f-eed8-47e3-9da1-9c602cd3c0a4}">
+		<property name="decayTime">
+			<value>2800</value>
+		</property>
+		<property name="earlyDelay">
+			<value>24</value>
+		</property>
+		<property name="lateDelay">
+			<value>44</value>
+		</property>
+		<property name="wetLevel">
+			<value>-19.5</value>
+		</property>
+	</object>
 </objects>

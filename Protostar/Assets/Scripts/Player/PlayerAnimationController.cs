@@ -6,7 +6,7 @@ public class PlayerAnimationController : MonoBehaviour
     [SerializeField] private Animator animator;
     static readonly int JumpRequestedHash = Animator.StringToHash("JumpRequested");
     static readonly int IsGroundedHash = Animator.StringToHash("IsGrounded");
-    static readonly int SpeedHash = Animator.StringToHash("Speed");
+    static readonly int HorizontalSpeedHash = Animator.StringToHash("HorizontalSpeed");
     private void OnEnable()
     {
         playerController.OnGroundedChanged += HandleGroundedChanged;
@@ -21,7 +21,7 @@ public class PlayerAnimationController : MonoBehaviour
 
     private void Update()
     {
-        animator.SetFloat(SpeedHash, playerController.GetNormalizedSpeed);
+        animator.SetFloat(HorizontalSpeedHash, playerController.GetHorizontalSpeed());
     }
 
     private void HandleGroundedChanged(bool value)

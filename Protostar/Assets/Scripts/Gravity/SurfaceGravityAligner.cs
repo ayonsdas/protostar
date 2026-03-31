@@ -33,15 +33,7 @@ public class SurfaceGravityAligner : MonoBehaviour
 
         // Raycast downward in the player's current gravity direction
         Vector3 gravityDir = gravityBody.GetGravityDirection();
-        RaycastHit downHit, velocityHit;
-
-        bool hasDownHit = Physics.Raycast(
-            transform.position,
-            gravityDir,
-            out downHit,
-            downRaycastDistance,
-            surfaceLayerMask
-        );
+        RaycastHit lookaheadHit, airborneHit;
 
         Vector3 moveDir = rb.linearVelocity.magnitude > velocityThreshold
             ? Vector3.ProjectOnPlane(rb.linearVelocity.normalized, gravityDir).normalized
@@ -54,14 +46,13 @@ public class SurfaceGravityAligner : MonoBehaviour
         bool hasLookaheadHit = Physics.Raycast(
             lookaheadOrigin,
             gravityDir,
-            out velocityHit,
+            out lookaheadHit,
             velocityRaycastDistance,
             surfaceLayerMask
         )
         && rb.linearVelocity.magnitude > velocityThreshold;
 
         // Pure velocity cast — only used airborne
-        RaycastHit airborneHit;
         bool hasAirborneHit = Physics.Raycast(
                 transform.position,
                 rb.linearVelocity.normalized,
@@ -73,7 +64,6 @@ public class SurfaceGravityAligner : MonoBehaviour
             !playerController.IsGrounded;
 
         // Draw debug rays to visualize the casts
-        Debug.DrawRay(transform.position, gravityDir * downRaycastDistance, hasDownHit ? Color.green : Color.red);
         Debug.DrawRay(lookaheadOrigin, gravityDir * velocityRaycastDistance,
             hasLookaheadHit ? Color.yellow : Color.white);
         Debug.DrawRay(transform.position, rb.linearVelocity.normalized * velocityRaycastDistance,
@@ -81,30 +71,19 @@ public class SurfaceGravityAligner : MonoBehaviour
 
         // Pick the closer hit
         RaycastHit? best = null;
-        if (hasDownHit && hasLookaheadHit)
+        if (hasLookaheadHit)
         {
             // How much does each hit want to change our gravity?
-            float downDelta = Vector3.Angle(gravityDir, -downHit.normal);
-            float velDelta = Vector3.Angle(gravityDir, -velocityHit.normal);
+            // float velDelta = Vector3.Angle(gravityDir, -lookaheadHit.normal);
             //Debug.Log($"[SurfaceGravityAligner] Down Delta: {downDelta}, Velocity Delta: {velDelta}");
 
             // Prefer the hit that represents the biggest correction needed
-            best = velDelta > downDelta ? velocityHit : downHit;
-        }
-        else if (hasDownHit)
-        {
-            //Debug.Log($"[SurfaceGravityAligner] Down hit found with normal: {downHit.normal}");
-            best = downHit;
+            best = lookaheadHit;
         }
         else if (hasAirborneHit)
         {
             //Debug.Log($"[SurfaceGravityAligner] Airborne hit found with normal: {airborneHit.normal}");
             best = airborneHit;
-        }
-        else if (hasLookaheadHit)
-        {
-            //Debug.Log($"[SurfaceGravityAligner] Lookahead hit found with normal: {velocityHit.normal}");
-            best = velocityHit;
         }
 
         // Smoothly slerp toward the surface normal
