@@ -1,33 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <objects serializationModel="Studio.02.03.00">
-	<object class="ParameterPreset" id="{21dd50ce-67db-4940-b944-0c1150d15fb3}">
+	<object class="ParameterPreset" id="{df88c238-ee0c-4b24-9d92-a2947766e6a8}">
 		<property name="name">
-			<value>Orchestration</value>
+			<value>IsPause</value>
 		</property>
 		<relationship name="folder">
 			<destination>{41584f65-709a-4bb0-8548-a0f6f1e73b70}</destination>
 		</relationship>
 		<relationship name="parameter">
-			<destination>{16795d10-d79f-44a1-b524-0c328c24410c}</destination>
+			<destination>{ceb6c5fb-d6e7-407a-a66e-9a6022dee55f}</destination>
 		</relationship>
 	</object>
-	<object class="GameParameter" id="{16795d10-d79f-44a1-b524-0c328c24410c}">
-		<property name="maximum">
-			<value>3</value>
-		</property>
+	<object class="GameParameter" id="{ceb6c5fb-d6e7-407a-a66e-9a6022dee55f}">
 		<property name="initialValue">
 			<value>0</value>
 		</property>
 		<relationship name="modulators">
-			<destination>{fb57f8ac-bce3-4bbc-a2ea-1437d430b7f5}</destination>
+			<destination>{e472e94a-8ccb-4fbe-a4f9-454152494705}</destination>
 		</relationship>
 	</object>
-	<object class="SeekModulator" id="{fb57f8ac-bce3-4bbc-a2ea-1437d430b7f5}">
+	<object class="SeekModulator" id="{e472e94a-8ccb-4fbe-a4f9-454152494705}">
 		<property name="nameOfPropertyBeingModulated">
 			<value>cursorPosition</value>
 		</property>
 		<property name="speedAscending">
-			<value>0.15999999642372131</value>
+			<value>4.2000002861022949</value>
 		</property>
 	</object>
 </objects>

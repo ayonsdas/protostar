@@ -64,6 +64,9 @@
 		</relationship>
 	</object>
 	<object class="EventMixerMaster" id="{78fc1acf-0222-4e0a-abab-f7aa897ccf71}">
+		<property name="volume">
+			<value>-5</value>
+		</property>
 		<relationship name="effectChain">
 			<destination>{adb0f4ab-6f64-4b07-bec4-bb30ed016ff8}</destination>
 		</relationship>
@@ -80,6 +83,9 @@
 		</property>
 		<relationship name="modulators">
 			<destination>{7c1f1637-bb14-4c60-b0fd-cd68e639c45d}</destination>
+		</relationship>
+		<relationship name="fadeOutCurve">
+			<destination>{390c9b39-fca3-47b4-b560-03f1eb279681}</destination>
 		</relationship>
 		<relationship name="sounds">
 			<destination>{b9e58bac-d5da-49f2-a4bf-dba0daec0895}</destination>
@@ -110,6 +116,14 @@
 		<property name="amount">
 			<value>5</value>
 		</property>
+	</object>
+	<object class="FadeCurve" id="{390c9b39-fca3-47b4-b560-03f1eb279681}">
+		<relationship name="startPoint">
+			<destination>{5953eb75-1579-4917-8d61-6f32b3aa45a8}</destination>
+		</relationship>
+		<relationship name="endPoint">
+			<destination>{7929dd69-9834-49fd-88f3-779de2a72536}</destination>
+		</relationship>
 	</object>
 	<object class="SingleSound" id="{b9e58bac-d5da-49f2-a4bf-dba0daec0895}">
 		<relationship name="audioFile">
@@ -150,8 +164,30 @@
 		</property>
 	</object>
 	<object class="ThreeEQEffect" id="{470601ce-44ce-42c5-aabb-3880f592a6fb}">
+		<property name="lowGain">
+			<value>-9</value>
+		</property>
 		<property name="midGain">
-			<value>-17</value>
+			<value>-8.5</value>
+		</property>
+	</object>
+	<object class="AutomationPoint" id="{5953eb75-1579-4917-8d61-6f32b3aa45a8}">
+		<property name="position">
+			<value>0</value>
+		</property>
+		<property name="value">
+			<value>1</value>
+		</property>
+		<property name="curveShape">
+			<value>0.25471893</value>
+		</property>
+	</object>
+	<object class="AutomationPoint" id="{7929dd69-9834-49fd-88f3-779de2a72536}">
+		<property name="position">
+			<value>0.25</value>
+		</property>
+		<property name="value">
+			<value>0</value>
 		</property>
 	</object>
 </objects>
