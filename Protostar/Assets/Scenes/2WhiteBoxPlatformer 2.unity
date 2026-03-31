@@ -57338,8 +57338,28 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 584570856701392244, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
+      propertyPath: gravityFlipEvent.Path
+      value: event:/GravFlip
+      objectReference: {fileID: 0}
+    - target: {fileID: 584570856701392244, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
       propertyPath: fallingGravityMultiplier
       value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 584570856701392244, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
+      propertyPath: gravityFlipEvent.Guid.Data1
+      value: 2027902025
+      objectReference: {fileID: 0}
+    - target: {fileID: 584570856701392244, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
+      propertyPath: gravityFlipEvent.Guid.Data2
+      value: 1182800273
+      objectReference: {fileID: 0}
+    - target: {fileID: 584570856701392244, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
+      propertyPath: gravityFlipEvent.Guid.Data3
+      value: 2129738893
+      objectReference: {fileID: 0}
+    - target: {fileID: 584570856701392244, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
+      propertyPath: gravityFlipEvent.Guid.Data4
+      value: -1653077623
       objectReference: {fileID: 0}
     - target: {fileID: 584570856701392244, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
       propertyPath: jumpReleasedGravityMultiplier
