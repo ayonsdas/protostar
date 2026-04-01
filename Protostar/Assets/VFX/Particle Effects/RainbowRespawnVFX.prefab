@@ -48,12 +48,12 @@ MonoBehaviour:
   orbPrefab: {fileID: 3769644033643862251, guid: ee4da8fb79a4dd1419cc469ece0e1eae, type: 3}
   orbCount: 6
   orbitSpeed: 20
-  idleOrbitRadius: 2
-  idleFloatSpeed: 3.5
-  idleFloatAmount: 0.2
-  excitedOrbitRadius: 2
-  excitedFloatSpeed: 3.5
-  excitedFloatAmount: 0.2
+  idleOrbitRadius: 1.25
+  idleFloatSpeed: 5
+  idleFloatAmount: 0.1
+  excitedOrbitRadius: 1.25
+  excitedFloatSpeed: 7
+  excitedFloatAmount: 0.1
   detectionRange: 5
   transitionSpeed: 2
 --- !u!114 &6354542745257857839
