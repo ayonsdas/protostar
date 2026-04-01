@@ -19,6 +19,8 @@ public class CheckpointSystem : MonoBehaviour
     [Header("Respawn Variables")]
     public Transform playerTransform;
     public Canvas fadeEffectCanvas;
+    public Transform respawnVfxTransform;
+    public RespawnOrbVFX respawnOrbVFX;
     private Image fadeImage;
     private Quaternion playerStartRot;
     private Vector3 playerStartPos;
@@ -174,12 +176,6 @@ public class CheckpointSystem : MonoBehaviour
         }
         else
         {
-            // playerTransform.position = spawnPointData.Position;
-            // playerTransform.rotation = spawnPointData.Rotation;
-            // playerGravityBody.SetCustomGravityDirection(spawnPointData.GravityDirection, rotateVelocity: false);
-            // playerController.SetMovementLocked(false);
-            // IsRespawning = false;
-
             playerController.SetMovementLocked(true);
             playerRB.isKinematic = true;
             StartCoroutine(TeleportToCheckpoint(spawnPointData));
@@ -188,9 +184,8 @@ public class CheckpointSystem : MonoBehaviour
 
     private IEnumerator TeleportToCheckpoint(SpawnPoint spawnPointData)
     {
-        Color transparentColor = new Color(0, 0, 0, 0); // empty
-        Color opaqueColor = new Color(0, 0, 0, 1); // black
-
+        Color transparentColor = new Color(0, 0, 0, 0);
+        Color opaqueColor = new Color(0, 0, 0, 1);
         fadeImage.color = transparentColor;
         fadeEffectCanvas.gameObject.SetActive(true);
 
@@ -208,12 +203,12 @@ public class CheckpointSystem : MonoBehaviour
         playerGravityBody.SetCustomGravityDirection(spawnPointData.GravityDirection, rotateVelocity: false);
         CameraFollow cameraFollow = Camera.main.GetComponent<CameraFollow>();
         if (cameraFollow != null)
-        {
             cameraFollow.ResetCameraOffset();
-        }
+
+        respawnOrbVFX.SpawnOrbs(); // spawn while screen is still black
+
         Debug.Log($"[CheckpointSystem] Teleported to Position: {spawnPointData.Position}, Rotation: {spawnPointData.Rotation}, GravityDirection: {spawnPointData.GravityDirection}");
         fadeImage.color = opaqueColor;
-
         yield return new WaitForSeconds(.2f);
 
         secElapsed = 0f;
@@ -231,6 +226,10 @@ public class CheckpointSystem : MonoBehaviour
         fadeEffectCanvas.gameObject.SetActive(false);
 
         yield return new WaitForSeconds(.1f);
+
+        respawnOrbVFX.AbsorbOrbs(); // absorb, then unlock movement after absorption finishes
+        yield return new WaitForSeconds(respawnOrbVFX.absorptionDuration + 0.01f);
+
         playerController.SetMovementLocked(false);
         IsRespawning = false;
     }
