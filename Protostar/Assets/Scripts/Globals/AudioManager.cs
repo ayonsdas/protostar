@@ -24,8 +24,9 @@ public class AudioManager : MonoBehaviour
     private Dictionary<FMOD.GUID, float> lastPlayedTimes = new();
     private float lastPlayedTime;
 
-
     public static AudioManager Instance { get; private set; }
+    public static float SurfaceParameter = (float)SurfaceType.Default;
+
     public void Awake()
     {
         if (Instance != null)
@@ -73,19 +74,30 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public static void PlayOneShot(EventReference eventReference, Vector3 position = new Vector3())
+    public static void PlayOneShotOnSurface(EventReference eventReference, Vector3 position = new Vector3(), string surfaceParameterName = "surfaceId")
     {
-        if (Instance == null || eventReference.IsNull) return;
-        Instance.PlayOneShot(eventReference.Guid, position);
+        Dictionary<string, float> parameters = new()
+        {
+            [surfaceParameterName] = SurfaceParameter
+        };
+
+        Debug.Log($"[AudioManager] playing event {eventReference.Path} on surface {SurfaceParameter}");
+        PlayOneShot(eventReference, position, parameters);
     }
 
-    public static void PlayOneShot(string path, Vector3 position = new Vector3())
+    public static void PlayOneShot(EventReference eventReference, Vector3 position = new Vector3(), Dictionary<string, float> parameters = null)
+    {
+        if (Instance == null || eventReference.IsNull) return;
+        Instance.PlayOneShot(eventReference.Guid, position, parameters);
+    }
+
+    public static void PlayOneShot(string path, Vector3 position = new Vector3(), Dictionary<string, float> parameters = null)
     {
         if (Instance == null) return;
         try
         {
             FMOD.GUID eventGuid = RuntimeManager.PathToGUID(path);
-            Instance.PlayOneShot(eventGuid, position);
+            Instance.PlayOneShot(eventGuid, position, parameters);
         }
         catch (Exception e)
         {
@@ -93,13 +105,51 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    private void PlayOneShot(FMOD.GUID eventGuid, Vector3 position = new Vector3())
+    private void PlayOneShot(FMOD.GUID eventGuid, Vector3 position = new Vector3(), Dictionary<string, float> parameters = null)
     {
         if (eventGuid.IsNull) return;
 
         lastPlayedTime = Time.time;
         lastPlayedTimes[eventGuid] = lastPlayedTime;
-        RuntimeManager.PlayOneShot(eventGuid, position);
+
+        if (CreateInstanceWithinMaxDistance(eventGuid, position, out EventInstance instance))
+        {
+            instance.set3DAttributes(RuntimeUtils.To3DAttributes(position));
+            SetParameters(instance, parameters);
+            instance.start();
+            instance.release();
+        }
+    }
+
+    private static void SetParameters(EventInstance instance, Dictionary<string, float> parameters)
+    {
+        if (parameters == null || !instance.isValid()) return;
+
+        foreach (var (name, value) in parameters)
+        {
+            instance.setParameterByName(name, value);
+        }
+    }
+
+    private static bool CreateInstanceWithinMaxDistance(FMOD.GUID guid, Vector3 position, out EventInstance instance)
+    {
+        EventDescription description = RuntimeManager.GetEventDescription(guid);
+        if (Settings.Instance.StopEventsOutsideMaxDistance)
+        {
+            description.is3D(out bool is3D);
+            if (is3D)
+            {
+                description.getMinMaxDistance(out float min, out float max);
+                if (StudioListener.DistanceSquaredToNearestListener(position) > (max * max))
+                {
+                    instance = new EventInstance();
+                    return false;
+                }
+            }
+        }
+
+        description.createInstance(out instance);
+        return true;
     }
 
     public EventInstance CreateEventInstance(EventReference eventReference)

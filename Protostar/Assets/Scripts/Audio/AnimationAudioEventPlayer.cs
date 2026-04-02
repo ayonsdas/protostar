@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using FMODUnity;
 using UnityEngine;
 
@@ -7,24 +8,24 @@ public class AnimationAudioEventPlayer : MonoBehaviour
     [Tooltip("List of other audio events to check cooldowns for when playing an event")]
     [SerializeField] private List<EventReference> cooldownEventReferences = new();
 
-    private Dictionary<string, float> eventCooldowns = new();
-    private bool CanPlayEvent(string path)
+    private Dictionary<EventReference, float> eventCooldowns = new();
+    private bool CanPlayEvent(EventReference eventReference)
     {
-        // If no know cooldown, then assume can play
-        if (!eventCooldowns.ContainsKey(path))
+        // If no known cooldown, then assume can play
+        if (!eventCooldowns.ContainsKey(eventReference))
             return true;
 
         // Check if same event was played recently
-        float cooldownTime = eventCooldowns[path];
-        if (AudioManager.Instance.PlayedRecently(path, cooldownTime))
+        float cooldownTime = eventCooldowns[eventReference];
+        if (AudioManager.Instance.PlayedRecently(eventReference, cooldownTime))
         {
             return false;
         }
 
         // Check if any of the cooldown events were played recently
-        foreach (EventReference eventReference in cooldownEventReferences)
+        foreach (EventReference cooldownReference in cooldownEventReferences)
         {
-            if (AudioManager.Instance.PlayedRecently(eventReference, cooldownTime))
+            if (AudioManager.Instance.PlayedRecently(cooldownReference, cooldownTime))
             {
                 return false;
             }
@@ -35,13 +36,14 @@ public class AnimationAudioEventPlayer : MonoBehaviour
 
     public void PlayOneShot(AnimationEvent animationEvent)
     {
-        string eventName = animationEvent.stringParameter;
-        float cooldownTime = animationEvent.floatParameter;
-        eventCooldowns[eventName] = cooldownTime;
+        var soundEvent = animationEvent.objectReferenceParameter as SoundEvent;
+        if (soundEvent == null) return;
 
-        if (!CanPlayEvent(eventName))
+        eventCooldowns[soundEvent.Event] = soundEvent.Cooldown;
+
+        if (!CanPlayEvent(soundEvent.Event))
             return;
 
-        AudioManager.PlayOneShot(eventName, transform.position);
+        AudioManager.PlayOneShotOnSurface(soundEvent.Event, transform.position, soundEvent.SurfaceParameterName);
     }
 }
