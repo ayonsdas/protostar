@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -57,6 +59,8 @@ public class CameraFollow : MonoBehaviour
     private float cameraPitch = 0f; // Vertical rotation offset
     private Vector3 baseDirection = Vector3.back; // Base direction in world space (updates only during reset)
     private CheckpointSystem checkpointSystem;
+
+    private bool inAnimation;
 
     /// <summary>
     /// Returns true if the camera is currently flipped 180 degrees (when player is on ceiling)
@@ -347,6 +351,9 @@ public class CameraFollow : MonoBehaviour
         // Apply adjusted distance
         Vector3 finalPosition = target.position + cameraDir * currentDistance;
 
+        // If overriden by animation, don't actually change position or rotation
+        if (inAnimation) return;
+
         // Smoothly move camera
         transform.position = Vector3.SmoothDamp(transform.position, finalPosition, ref velocity, smoothTime);
 
@@ -360,6 +367,28 @@ public class CameraFollow : MonoBehaviour
 
             // Debug.Log($"[CameraFollow] Camera Up: {currentCameraUp}, Camera Rotation: {transform.rotation.eulerAngles}, LookRot: {lookRotation.eulerAngles}");
         }
+    }
+
+    public IEnumerator OverrideCamera(Vector3 targetPosition, Quaternion targetRotation, float duration)
+    {
+        inAnimation = true;
+        float t = 0f;
+        Vector3 startPos = transform.position;
+        Quaternion startRot = transform.rotation;
+
+        while (t < duration)
+        {
+            t += Time.deltaTime;
+            float progress = Mathf.SmoothStep(0f, 1f, t / duration);
+            transform.position = Vector3.Lerp(startPos, targetPosition, progress);
+            transform.rotation = Quaternion.Slerp(startRot, targetRotation, progress);
+            yield return null;
+        }
+    }
+
+    public void ReleaseCamera()
+    {
+        inAnimation = false;
     }
 
     public void ResetCameraOffset()

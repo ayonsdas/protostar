@@ -19,6 +19,7 @@ GameObject:
   - component: {fileID: 6870503674977786369}
   - component: {fileID: 4162050533541982623}
   - component: {fileID: 4076777060941218657}
+  - component: {fileID: 6663174371455193927}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -291,6 +292,33 @@ MonoBehaviour:
       Data3: -578663519
       Data4: 1782172042
     Path: event:/Player/Land
+--- !u!114 &6663174371455193927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 39550120540274030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0761d376271232b79bcf67a828ddd263, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Protostar::PickupAnimator
+  orbitDuration: 1.2
+  flyDuration: 0.4
+  orbitRadius: 1.5
+  orbitHeight: 1.5
+  orbitCount: 1.5
+  pickupSound:
+    Guid:
+      Data1: 363073422
+      Data2: 1097026764
+      Data3: -181025132
+      Data4: 1873657454
+    Path: event:/ObjInteract
+  backpackBone: {fileID: 116889316238556093}
+  playerController: {fileID: 2094070022166867159}
+  cameraController: {fileID: 0}
 --- !u!1 &7352152883732015007
 GameObject:
   m_ObjectHideFlags: 0

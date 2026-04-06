@@ -55,6 +55,7 @@ public class CheckpointSystem : MonoBehaviour
     private PlayerController playerController;
     private Rigidbody playerRB;
     private CustomGravityBody playerGravityBody;
+    private PickupAnimator pickupAnimator;
 
     void Start()
     {
@@ -70,8 +71,10 @@ public class CheckpointSystem : MonoBehaviour
             fadeImage = fadeEffectCanvas.GetComponentInChildren<Image>();
             fadeEffectCanvas.gameObject.SetActive(false);
         }
+
         playerRB = playerTransform.GetComponent<Rigidbody>();
         playerGravityBody = playerTransform.GetComponent<CustomGravityBody>();
+        pickupAnimator = playerTransform.GetComponent<PickupAnimator>();
     }
 
     public void SetActiveCheckpoint(int checkpointIndex)
@@ -110,19 +113,32 @@ public class CheckpointSystem : MonoBehaviour
 
     public void TryRespawnPlayer()
     {
+        if (!CanStartRespawn()) return;
+
+        RespawnPlayer();
+    }
+
+    private bool CanStartRespawn()
+    {
         if (IsRespawning)
         {
             Debug.LogWarning("[CheckpointSystem] Player is already respawning. Ignoring additional respawn request.");
-            return;
+            return false;
         }
 
         if (IsPlayerInside())
         {
             Debug.Log("[CheckpointSystem] Player is still inside a playable zone. No respawn needed.");
-            return;
+            return false;
         }
 
-        RespawnPlayer();
+        // In the middle of item pickup animation, don't trigger respawn
+        if (pickupAnimator != null && pickupAnimator.IsPlaying)
+        {
+            return false;
+        }
+
+        return true;
     }
 
     private bool IsPlayerInside()

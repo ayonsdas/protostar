@@ -37337,15 +37337,15 @@ AnimationClip:
   m_Events:
   - time: 0.033333335
     functionName: PlayOneShot
-    data: event:/Player/Footsteps
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0.3
+    data: 
+    objectReferenceParameter: {fileID: 11400000, guid: 0a8bad8d2c8919c2fb908cb7acedd7ab, type: 2}
+    floatParameter: 0
     intParameter: 0
     messageOptions: 0
   - time: 0.4
     functionName: PlayOneShot
-    data: event:/Player/Footsteps
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0.3
+    data: 
+    objectReferenceParameter: {fileID: 11400000, guid: 0a8bad8d2c8919c2fb908cb7acedd7ab, type: 2}
+    floatParameter: 0
     intParameter: 0
     messageOptions: 0

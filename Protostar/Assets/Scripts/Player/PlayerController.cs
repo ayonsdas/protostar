@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using FMOD.Studio;
 using FMODUnity;
 using UnityEngine;
@@ -72,7 +73,10 @@ public class PlayerController : MonoBehaviour
 
     // Store player's last grounded state for respawning on last platform
     public PlayerBodyState LastGroundedState { get; private set; } = new PlayerBodyState();
-    private bool CanLand => !landSFXCooldownTimer.IsActive;
+    private bool CanPlayLandSound => !landSFXCooldownTimer.IsActive;
+
+    private GameObject currentPlatform;
+    private PlatformSurface currentPlatformSurface;
 
     /// <summary>
     /// Lock or unlock player movement. When locked, WASD input is ignored for movement.
@@ -128,7 +132,6 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        footstepEventInstance = AudioManager.Instance.CreateEventInstance(footstepEventReference);
         footstepStartTime = Time.time;
 
         // Get reference to main camera
@@ -163,6 +166,7 @@ public class PlayerController : MonoBehaviour
 
         // Jump check: use SphereCollider at groundCheck.position
         bool foundGround = false;
+        GameObject groundPlatform = null;
 
         if (groundCheck != null)
         {
@@ -171,10 +175,7 @@ public class PlayerController : MonoBehaviour
             {
                 if (col != groundCheckBoxCollider)
                 {
-                    if (!previouslyGrounded && CanLand)
-                    {
-                        OnLand();
-                    }
+                    groundPlatform = col.gameObject;
                     foundGround = true;
                 }
             }
@@ -192,6 +193,24 @@ public class PlayerController : MonoBehaviour
                 AngularVelocity = rb.angularVelocity
             };
         }
+
+        if (currentPlatform != groundPlatform)
+        {
+            // Update platformSrface
+            currentPlatformSurface = null;
+            if (groundPlatform != null)
+            {
+                PlatformSurface surface = groundPlatform.GetComponentInParent<PlatformSurface>();
+                currentPlatformSurface = surface;
+            }
+
+            UpdatePlatformAudioParameters();
+            TryPlayLandSound();
+
+            currentPlatform = groundPlatform;
+        }
+
+
 
         // Snap to ground if just landed, and falling down
         float velocityAlongGravity = PhysicsUtils.VelocityIntoNormal(rb, gravityDown);
@@ -221,6 +240,11 @@ public class PlayerController : MonoBehaviour
         Debug.DrawLine(groundCheck.position, groundCheck.position + gravityDown * groundCheckRadius, debugColor);
 
         UpdateSound();
+    }
+
+    private void UpdatePlatformAudioParameters()
+    {
+        AudioManager.SurfaceParameter = currentPlatformSurface?.ParameterValue ?? (float)SurfaceType.Default;
     }
 
     private void OnEnable()
@@ -456,18 +480,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void OnLand()
+    private void TryPlayLandSound()
     {
-        landSFXCooldownTimer.Restart();
-        PlayLandSound();
-    }
-    private void PlayLandSound()
-    {
-        if (AudioManager.Instance != null && !landEventReference.IsNull)
-            AudioManager.PlayOneShot(landEventReference, gameObject.transform.position);
+        if (!CanPlayLandSound) return;
 
-        else
-            Debug.LogWarning("[PlayerController] Landing sound not assigned");
+        landSFXCooldownTimer.Restart();
+        AudioManager.PlayOneShotOnSurface(landEventReference, transform.position);
     }
 
     public float GetHorizontalSpeed()
