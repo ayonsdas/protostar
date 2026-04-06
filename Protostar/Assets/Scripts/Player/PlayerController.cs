@@ -75,6 +75,7 @@ public class PlayerController : MonoBehaviour
     public PlayerBodyState LastGroundedState { get; private set; } = new PlayerBodyState();
     private bool CanPlayLandSound => !landSFXCooldownTimer.IsActive;
 
+    private GameObject currentPlatform;
     private PlatformSurface currentPlatformSurface;
 
     /// <summary>
@@ -193,15 +194,11 @@ public class PlayerController : MonoBehaviour
             };
         }
 
-        if (IsGrounded != previouslyGrounded)
+        if (currentPlatform != groundPlatform)
         {
-            // Went from grounded to airborne, reset footstep sound since we aren't on the same platform
-            if (!IsGrounded)
-            {
-                currentPlatformSurface = null;
-            }
-
-            else if (groundPlatform != null)
+            // Update platformSrface
+            currentPlatformSurface = null;
+            if (groundPlatform != null)
             {
                 PlatformSurface surface = groundPlatform.GetComponentInParent<PlatformSurface>();
                 currentPlatformSurface = surface;
@@ -209,6 +206,8 @@ public class PlayerController : MonoBehaviour
 
             UpdatePlatformAudioParameters();
             TryPlayLandSound();
+
+            currentPlatform = groundPlatform;
         }
 
 
@@ -245,13 +244,7 @@ public class PlayerController : MonoBehaviour
 
     private void UpdatePlatformAudioParameters()
     {
-        AudioManager.SurfaceParameter = (float)SurfaceType.Default;
-        if (currentPlatformSurface != null)
-        {
-            AudioManager.SurfaceParameter = currentPlatformSurface.ParameterValue;
-        }
-
-        Debug.Log($"[PlayerController] Set surface audio parameter to {AudioManager.SurfaceParameter}");
+        AudioManager.SurfaceParameter = currentPlatformSurface?.ParameterValue ?? (float)SurfaceType.Default;
     }
 
     private void OnEnable()

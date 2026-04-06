@@ -74,14 +74,18 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public static void PlayOneShotOnSurface(EventReference eventReference, Vector3 position = new Vector3(), string surfaceParameterName = "surfaceId")
+    public static void PlayOneShotOnSurface(
+        EventReference eventReference,
+        Vector3 position = new Vector3(),
+        string surfaceParameterName = FMODParameters.FOOTSTEP_SURFACE_PARAMETER
+    )
     {
         Dictionary<string, float> parameters = new()
         {
             [surfaceParameterName] = SurfaceParameter
         };
 
-        Debug.Log($"[AudioManager] playing event {eventReference.Path} on surface {SurfaceParameter}");
+        //Debug.Log($"[AudioManager] playing event {eventReference.Path} on surface {SurfaceParameter}");
         PlayOneShot(eventReference, position, parameters);
     }
 
@@ -128,6 +132,7 @@ public class AudioManager : MonoBehaviour
         foreach (var (name, value) in parameters)
         {
             instance.setParameterByName(name, value);
+            // Debug.Log($"[AudioManager] Set parameter {name} to {value}");
         }
     }
 

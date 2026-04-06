@@ -21,4 +21,4 @@ MonoBehaviour:
     Path: event:/Player/Footsteps
   Cooldown: 0.3
   UseSurfaceType: 1
-  SurfaceParameterName: surfaceId
+  SurfaceParameterName: SurfaceType

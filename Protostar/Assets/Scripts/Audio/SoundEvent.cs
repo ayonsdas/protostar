@@ -7,5 +7,5 @@ public class SoundEvent : ScriptableObject
     public EventReference Event;
     public float Cooldown;
     public bool UseSurfaceType;
-    public string SurfaceParameterName = "surfaceId";
+    public string SurfaceParameterName = FMODParameters.FOOTSTEP_SURFACE_PARAMETER;
 }
