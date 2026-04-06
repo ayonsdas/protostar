@@ -76,7 +76,6 @@ public class PlayerController : MonoBehaviour
     private bool CanPlayLandSound => !landSFXCooldownTimer.IsActive;
 
     private PlatformSurface currentPlatformSurface;
-    private float currentSurfaceParameter = (float)SurfaceType.Default;
 
     /// <summary>
     /// Lock or unlock player movement. When locked, WASD input is ignored for movement.

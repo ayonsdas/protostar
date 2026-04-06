@@ -10,9 +10,31 @@ public class CutsceneInteractionItem : MonoBehaviour, IInteractable, IInteractio
     private bool cutsceneTriggered = false;
     public void Interact(GameObject interactor)
     {
-        Debug.Log($"[CutsceneInteractionItem] Interacting!");
+        PickupAnimator animator = interactor.GetComponentInParent<PickupAnimator>();
+        if (animator != null)
+        {
+            animator.PlayPickup(gameObject, onComplete: PlayCutscene);
+        }
+        else
+        {
+            DefaultPickup();
+            PlayCutscene();
+        }
+    }
+
+    private void PlayCutscene()
+    {
         cutscene.cutsceneCanvas.enabled = true;
         GameStateManager.Instance.SetState(GameState.Cutscene);
+    }
+
+    private void PickupObject(GameObject interactor)
+    {
+
+    }
+
+    private void DefaultPickup()
+    {
         AudioManager.PlayOneShot(pickupSound);
         gameObject.SetActive(false);
     }
