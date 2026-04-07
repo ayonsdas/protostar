@@ -493,7 +493,6 @@ public class PlayerController : MonoBehaviour
 
     private void TryPlayLandSound()
     {
-        Debug.Log($"Airtime {Airtime}");
         if (!CanPlayLandSound) return;
 
         landSFXCooldownTimer.Restart();
