@@ -5,5 +5,6 @@ public enum SurfaceType
     Cloth = 2,
     Glass = 3,
     Plastic = 4,
-    Metal = 5
+    Metal = 5,
+    Paper = 6
 }
