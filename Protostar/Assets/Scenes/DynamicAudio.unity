@@ -10161,7 +10161,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3839999296235505508, guid: 668a948ea1758ad469ba23346a5ed8db, type: 3}
   m_PrefabInstance: {fileID: 449055880}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 891730980}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ec051311a87feab4094422340ff9f4c5, type: 3}
@@ -10935,7 +10935,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 97887f7aa1c98e343bc4aa85f317be59, type: 3}
       insertIndex: -1
       addedObject: {fileID: 591136907}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 97887f7aa1c98e343bc4aa85f317be59, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1129201007}
   m_SourcePrefab: {fileID: 100100000, guid: 97887f7aa1c98e343bc4aa85f317be59, type: 3}
 --- !u!1 &164759042
 GameObject:
@@ -26266,6 +26269,10 @@ PrefabInstance:
       propertyPath: target
       value: 
       objectReference: {fileID: 890825963}
+    - target: {fileID: 4187091759001454084, guid: 668a948ea1758ad469ba23346a5ed8db, type: 3}
+      propertyPath: attenuationObject
+      value: 
+      objectReference: {fileID: 891730980}
     - target: {fileID: 5629239914107230304, guid: 668a948ea1758ad469ba23346a5ed8db, type: 3}
       propertyPath: target
       value: 
@@ -75758,6 +75765,26 @@ PrefabInstance:
       propertyPath: cameraController
       value: 
       objectReference: {fileID: 126014312}
+    - target: {fileID: 6663174371455193927, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
+      propertyPath: pickupSound.Path
+      value: event:/Pickup
+      objectReference: {fileID: 0}
+    - target: {fileID: 6663174371455193927, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
+      propertyPath: pickupSound.Guid.Data1
+      value: -1844018770
+      objectReference: {fileID: 0}
+    - target: {fileID: 6663174371455193927, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
+      propertyPath: pickupSound.Guid.Data2
+      value: 1309969774
+      objectReference: {fileID: 0}
+    - target: {fileID: 6663174371455193927, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
+      propertyPath: pickupSound.Guid.Data3
+      value: 1436433792
+      objectReference: {fileID: 0}
+    - target: {fileID: 6663174371455193927, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
+      propertyPath: pickupSound.Guid.Data4
+      value: -316612508
+      objectReference: {fileID: 0}
     - target: {fileID: 8402902860222378733, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
       propertyPath: m_Mass
       value: 1.4
@@ -75790,6 +75817,11 @@ Transform:
 BoxCollider:
   m_CorrespondingSourceObject: {fileID: 2962838371341248063, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
   m_PrefabInstance: {fileID: 890825962}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &891730980 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7911479844322094475, guid: 668a948ea1758ad469ba23346a5ed8db, type: 3}
+  m_PrefabInstance: {fileID: 449055880}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &906386312
 GameObject:
@@ -85201,6 +85233,24 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1121309664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd78f2222a7d4e42b998b7f5b437e5f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Protostar::PlatformSurface
+  surfaceType: 1
+--- !u!1 &1129201006 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 97887f7aa1c98e343bc4aa85f317be59, type: 3}
+  m_PrefabInstance: {fileID: 146050272}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1129201007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1129201006}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cd78f2222a7d4e42b998b7f5b437e5f2, type: 3}
