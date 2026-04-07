@@ -252,7 +252,10 @@ public class PlayerController : MonoBehaviour
 
     private void UpdatePlatformAudioParameters()
     {
-        AudioManager.SurfaceParameter = currentPlatformSurface?.ParameterValue ?? (float)SurfaceType.Default;
+        if (currentPlatformSurface != null)
+        {
+            AudioManager.SurfaceParameter = currentPlatformSurface.ParameterValue;
+        }
     }
 
     private void OnEnable()
