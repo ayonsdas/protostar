@@ -1,6 +1,7 @@
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine;
+using System;
 
 public class ManualCutscene : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class ManualCutscene : MonoBehaviour
     public Button nextButton;
     public TMP_Text nextButtonText;
     public Canvas cutsceneCanvas;
+
+    public event Action OnClose;
 
     public int currentPage = 0;
 
@@ -35,6 +38,7 @@ public class ManualCutscene : MonoBehaviour
             // Unlock player movement when video ends
             GameStateManager.Instance.RevertState();
             gameObject.SetActive(false);
+            OnClose?.Invoke();
             return;
         }
 

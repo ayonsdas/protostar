@@ -5,9 +5,21 @@ public class SceneAudioSetup : MonoBehaviour
 {
     [SerializeField] private EventReference musicEventReference;
     [SerializeField] private EventReference ambienceEventReference;
-    [SerializeField] private bool useOrchestration = false;
+
     private void Start()
     {
+        InitializeSceneSound();
+    }
+
+    private void OnDestroy()
+    {
+        DisableSceneSound();
+    }
+
+    private void InitializeSceneSound()
+    {
+        if (AudioManager.Instance == null) return;
+
         if (!musicEventReference.IsNull)
         {
             AudioManager.Instance.PlayMusic(musicEventReference);
@@ -19,38 +31,11 @@ public class SceneAudioSetup : MonoBehaviour
         }
     }
 
-    private void OnDestroy()
+    private void DisableSceneSound()
     {
-        if (AudioManager.Instance)
-        {
-            AudioManager.Instance.SetMusicActive(false);
-            AudioManager.Instance.SetAmbienceActive(false);
-        }
-    }
+        if (AudioManager.Instance == null) return;
 
-    private void OnEnable()
-    {
-        if (GameStateManager.Instance)
-            GameStateManager.Instance.OnStateChanged += HandleStateChanged;
-    }
-
-    private void OnDisable()
-    {
-        if (GameStateManager.Instance)
-            GameStateManager.Instance.OnStateChanged -= HandleStateChanged;
-    }
-
-    private void HandleStateChanged(GameState state)
-    {
-        // switch (state)
-        // {
-        //     case GameState.InGame:
-        //     case GameState.Cutscene:
-        //         AudioManager.Instance.SetMusicActive(true);
-        //         break;
-        //     default:
-        //         AudioManager.Instance.SetMusicActive(false);
-        //         break;
-        // }
+        AudioManager.Instance.SetMusicActive(false);
+        AudioManager.Instance.SetAmbienceActive(false);
     }
 }

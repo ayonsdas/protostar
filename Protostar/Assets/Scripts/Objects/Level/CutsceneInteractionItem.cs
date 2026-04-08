@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CutsceneInteractionItem : MonoBehaviour, IInteractable, IInteractionCandidate
 {
-    [SerializeField] private ManualCutscene cutscene;
+    public ManualCutscene Cutscene;
     [Header("Sound Settings")]
     [SerializeField] private EventReference pickupSound;
     private bool cutsceneTriggered = false;
@@ -13,20 +13,13 @@ public class CutsceneInteractionItem : MonoBehaviour, IInteractable, IInteractio
         PickupAnimator animator = interactor.GetComponentInParent<PickupAnimator>();
         if (animator != null)
         {
-            animator.PlayPickup(gameObject, onComplete: cutscene.Play);
+            animator.PlayPickup(gameObject, onComplete: Cutscene.Play);
         }
         else
         {
             DefaultPickup();
-            cutscene.Play();
+            Cutscene.Play();
         }
-    }
-
-
-
-    private void PickupObject(GameObject interactor)
-    {
-
     }
 
     private void DefaultPickup()
