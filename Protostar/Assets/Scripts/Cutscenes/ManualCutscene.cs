@@ -24,7 +24,7 @@ public class ManualCutscene : MonoBehaviour
         backButton.gameObject.SetActive(false);
         cutsceneImage.sprite = cutsceneFrames[0];
 
-        if(currentPage + 1 == cutsceneFrames.Length)
+        if (currentPage + 1 == cutsceneFrames.Length)
             nextButtonText.text = "Close";
     }
 
@@ -55,5 +55,11 @@ public class ManualCutscene : MonoBehaviour
 
         cutsceneImage.sprite = cutsceneFrames[currentPage];
         backButton.gameObject.SetActive(currentPage > 0);
+    }
+
+    public void Play()
+    {
+        cutsceneCanvas.enabled = true;
+        GameStateManager.Instance.SetState(GameState.Cutscene);
     }
 }

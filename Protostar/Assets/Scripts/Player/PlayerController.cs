@@ -73,10 +73,12 @@ public class PlayerController : MonoBehaviour
 
     // Store player's last grounded state for respawning on last platform
     public PlayerBodyState LastGroundedState { get; private set; } = new PlayerBodyState();
-    private bool CanPlayLandSound => !landSFXCooldownTimer.IsActive;
+    private bool CanPlayLandSound => !landSFXCooldownTimer.IsActive && Airtime > 0.1f;
+    private float Airtime => Time.time - lastGroundedTime;
 
     private GameObject currentPlatform;
     private PlatformSurface currentPlatformSurface;
+    private float lastGroundedTime;
 
     /// <summary>
     /// Lock or unlock player movement. When locked, WASD input is ignored for movement.
@@ -184,14 +186,7 @@ public class PlayerController : MonoBehaviour
 
         if (IsGrounded)
         {
-            LastGroundedState = new PlayerBodyState
-            {
-                Position = transform.position,
-                Rotation = transform.rotation,
-                GravityDirection = gravityBody.GetGravityDirection(),
-                LinearVelocity = rb.linearVelocity,
-                AngularVelocity = rb.angularVelocity
-            };
+
         }
 
         if (currentPlatform != groundPlatform)
@@ -208,9 +203,22 @@ public class PlayerController : MonoBehaviour
             TryPlayLandSound();
 
             currentPlatform = groundPlatform;
+
         }
 
+        if (IsGrounded)
+        {
+            LastGroundedState = new PlayerBodyState
+            {
+                Position = transform.position,
+                Rotation = transform.rotation,
+                GravityDirection = gravityBody.GetGravityDirection(),
+                LinearVelocity = rb.linearVelocity,
+                AngularVelocity = rb.angularVelocity
+            };
 
+            lastGroundedTime = Time.time;
+        }
 
         // Snap to ground if just landed, and falling down
         float velocityAlongGravity = PhysicsUtils.VelocityIntoNormal(rb, gravityDown);
@@ -244,7 +252,10 @@ public class PlayerController : MonoBehaviour
 
     private void UpdatePlatformAudioParameters()
     {
-        AudioManager.SurfaceParameter = currentPlatformSurface?.ParameterValue ?? (float)SurfaceType.Default;
+        if (currentPlatformSurface != null)
+        {
+            AudioManager.SurfaceParameter = currentPlatformSurface.ParameterValue;
+        }
     }
 
     private void OnEnable()

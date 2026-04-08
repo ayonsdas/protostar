@@ -95,15 +95,22 @@ public abstract class Interactor : MonoBehaviour
         IFocusable newFocus = null;
         MonoBehaviour mb = candidate as MonoBehaviour;
         if (mb != null)
-            newFocus = mb.gameObject.GetComponentInParent<IFocusable>();
-
-        if (newFocus == currentFocus)
         {
-            return;
+            newFocus = mb.gameObject.GetComponentInParent<IFocusable>();
         }
 
-        currentFocus?.Unfocus(gameObject);
-        newFocus?.Focus(gameObject);
+        if (newFocus == currentFocus) return;
+
+        var focusMB = currentFocus as MonoBehaviour;
+        if (focusMB != null && focusMB.isActiveAndEnabled)
+        {
+            currentFocus?.Unfocus(gameObject);
+        }
+
+        if (mb != null && mb.isActiveAndEnabled)
+        {
+            newFocus?.Focus(gameObject);
+        }
 
         currentFocus = newFocus;
     }

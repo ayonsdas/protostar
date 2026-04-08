@@ -13,20 +13,16 @@ public class CutsceneInteractionItem : MonoBehaviour, IInteractable, IInteractio
         PickupAnimator animator = interactor.GetComponentInParent<PickupAnimator>();
         if (animator != null)
         {
-            animator.PlayPickup(gameObject, onComplete: PlayCutscene);
+            animator.PlayPickup(gameObject, onComplete: cutscene.Play);
         }
         else
         {
             DefaultPickup();
-            PlayCutscene();
+            cutscene.Play();
         }
     }
 
-    private void PlayCutscene()
-    {
-        cutscene.cutsceneCanvas.enabled = true;
-        GameStateManager.Instance.SetState(GameState.Cutscene);
-    }
+
 
     private void PickupObject(GameObject interactor)
     {

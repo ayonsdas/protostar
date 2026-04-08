@@ -45,8 +45,8 @@ public class PickupAnimator : MonoBehaviour
         InputModeManager.Instance.SetPlayerControlsEnabled(false);
 
         // Set player kinematic to get manual control of transform
-        rigidbody.isKinematic = true;
         rigidbody.linearVelocity = Vector3.zero;
+        rigidbody.isKinematic = true;
 
         // Face the item
         Vector3 directionToItem = (item.transform.position - transform.position).normalized;
@@ -78,7 +78,7 @@ public class PickupAnimator : MonoBehaviour
         yield return StartCoroutine(FlyInPhase(item));
 
         // Disable item
-        item.gameObject.SetActive(false);
+        Destroy(item.gameObject);
 
         yield return new WaitForSeconds(endDuration);
 
