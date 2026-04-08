@@ -19,10 +19,7 @@ public class ManualCutscene : MonoBehaviour
     void Awake()
     {
         cutsceneCanvas = GetComponent<Canvas>();
-    }
 
-    void Start()
-    {
         cutsceneCanvas.enabled = false;
         backButton.gameObject.SetActive(false);
         cutsceneImage.sprite = cutsceneFrames[0];
