@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-2816254934330055963
+--- !u!114 &-5784056015623013357
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -20,45 +20,28 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Window
+  m_Name: rose mid2
   m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
-  m_Parent: {fileID: 2100000, guid: aeea9727a44e44a4c9cb7b52d52405d6, type: 2}
-  m_ModifiedSerializedProperties: 16
-  m_ValidKeywords:
-  - _ALPHAPREMULTIPLY_ON
-  - _SURFACE_TYPE_TRANSPARENT
+  m_Parent: {fileID: 2100000, guid: f33ec134898e1ca4182aba5db64fbd8d, type: 2}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3000
+  m_CustomRenderQueue: -1
   stringTagMap:
-    RenderType: Transparent
+    RenderType: Opaque
   disabledShaderPasses:
   - MOTIONVECTORS
-  - DepthOnly
-  - SHADOWCASTER
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
-    m_TexEnvs:
-    - _BaseMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
+    m_TexEnvs: []
     m_Ints: []
-    m_Floats:
-    - _DstBlend: 10
-    - _DstBlendAlpha: 10
-    - _Metallic: 0
-    - _Surface: 1
-    - _ZWrite: 0
+    m_Floats: []
     m_Colors:
-    - _BaseColor: {r: 0.7830188, g: 0.7830188, b: 0.7830188, a: 0.13725491}
-    - _Color: {r: 0.7830188, g: 0.7830188, b: 0.7830188, a: 0.13725491}
+    - _BaseColor: {r: 0.4943396, g: 0.24903522, b: 0.39504963, a: 1}
+    - _Color: {r: 0.49433953, g: 0.24903518, b: 0.39504957, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
