@@ -43,8 +43,9 @@ public class CameraOcclusionFade : MonoBehaviour
 
         foreach (RaycastHit hit in hits)
         {
+            var root = hit.collider.GetComponentInParent<DitherRoot>()?.gameObject ?? hit.collider.gameObject;
             // Get all child renderers of the hit object
-            Renderer[] renderers = hit.collider.GetComponentsInChildren<Renderer>();
+            Renderer[] renderers = root.GetComponentsInChildren<Renderer>();
 
             foreach (Renderer r in renderers)
             {
