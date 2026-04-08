@@ -359,7 +359,7 @@ GameObject:
   - component: {fileID: 4731046040161672231}
   - component: {fileID: 1096341637624663976}
   m_Layer: 5
-  m_Name: NewOutroCutscene 2
+  m_Name: NewOutroCutscene
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -471,7 +471,7 @@ MonoBehaviour:
   backButton: {fileID: 6423389081144072302}
   nextButton: {fileID: 6970725272716787460}
   nextButtonText: {fileID: 7705957160469565707}
-  cutsceneCanvas: {fileID: 0}
+  cutsceneCanvas: {fileID: 1086026320782331161}
   currentPage: 0
 --- !u!1 &5443399437956321424
 GameObject:

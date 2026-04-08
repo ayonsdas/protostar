@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using FMODUnity;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -29,6 +30,9 @@ public class CheckpointSystem : MonoBehaviour
     public bool teleport = false;
     public bool disablePreviousZones = false;
     public bool respawnAtLastPlatform = false;
+
+    [Header("Sound Settings")]
+    [SerializeField] private EventReference respawnSound;
 
     private bool isRespawning;
     public bool IsRespawning
@@ -183,6 +187,8 @@ public class CheckpointSystem : MonoBehaviour
             };
             Debug.Log($"[CheckpointSystem] Respawning at last grounded platform Position: {spawnPointData.Position}, Rotation: {spawnPointData.Rotation}, GravityDirection: {spawnPointData.GravityDirection}");
         }
+
+        AudioManager.PlayOneShot(respawnSound);
 
         if (!teleport)
         {
