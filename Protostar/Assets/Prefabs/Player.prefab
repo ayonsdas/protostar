@@ -189,7 +189,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   alignmentSpeed: 8
-  groundStickinessForce: 30
+  groundStickinessForce: 60
 --- !u!114 &584570856701392244
 MonoBehaviour:
   m_ObjectHideFlags: 0

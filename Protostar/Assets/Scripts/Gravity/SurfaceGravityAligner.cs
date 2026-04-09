@@ -99,7 +99,13 @@ public class SurfaceGravityAligner : MonoBehaviour
         // If grounded, apply extra force to stick to the surface and prevent sliding on slopes
         if (playerController.IsGrounded && best.HasValue)
         {
-            rb.AddForce(-best.Value.normal * groundStickinessForce, ForceMode.Acceleration);
+            Vector3 surfaceNormal = best.Value.normal;
+            float outwardVelocity = Vector3.Dot(rb.linearVelocity, surfaceNormal);
+
+            if (outwardVelocity > 0)
+            {
+                rb.AddForce(-surfaceNormal * groundStickinessForce, ForceMode.Acceleration);
+            }
         }
     }
 }
