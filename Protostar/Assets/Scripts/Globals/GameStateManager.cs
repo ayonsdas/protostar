@@ -174,7 +174,6 @@ public class GameStateManager : MonoBehaviour
         InputModeManager.PlayerInput.actions.FindActionMap("UI").Enable();
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = true;
-        Debug.Log(Cursor.lockState);
     }
 
     private void CloseUI()

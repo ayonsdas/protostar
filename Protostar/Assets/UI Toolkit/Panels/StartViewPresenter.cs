@@ -4,8 +4,7 @@ using UnityEngine.UIElements;
 
 public class StartViewPresenter : MonoBehaviour, IMenuView
 {
-    private const string CONTROLLER_MODE_CLASS = "controller-mode";
-    private const string MOUSE_MODE_CLASS = "mouse-mode";
+
 
     [SerializeField] private string gameSceneName = "MainLevel";
     [SerializeField] private string mainMenuSceneName = "MainMenu";
@@ -67,14 +66,15 @@ public class StartViewPresenter : MonoBehaviour, IMenuView
         {
             case InputMode.Mouse:
                 root.focusController.focusedElement?.Blur();
-                SetMouseMode();
+                UIHelper.SetMouseMode(root);
                 break;
             case InputMode.Controller:
-                SetControllerMode();
+                UIHelper.SetControllerMode(root);
                 SetButtonFocus(GameStateManager.Instance.CurrentState);
                 break;
         }
     }
+
     public void OnGameStateChanged(GameState newState)
     {
         mainMenuView.Display(newState == GameState.MainMenu);
@@ -87,26 +87,6 @@ public class StartViewPresenter : MonoBehaviour, IMenuView
         {
             SetButtonFocus(newState);
         }
-    }
-
-    private void SetControllerMode()
-    {
-        // If already in controller mode, dont need to switch
-        if (root.ClassListContains(CONTROLLER_MODE_CLASS)) return;
-
-        //Debug.Log("Set to controller mode");
-        root.RemoveFromClassList(MOUSE_MODE_CLASS);
-        root.AddToClassList(CONTROLLER_MODE_CLASS);
-    }
-
-    private void SetMouseMode()
-    {
-        // If already in controller mode, dont need to switch
-        if (root.ClassListContains(MOUSE_MODE_CLASS)) return;
-
-        //Debug.Log("Set to mouse mode");
-        root.RemoveFromClassList(CONTROLLER_MODE_CLASS);
-        root.AddToClassList(MOUSE_MODE_CLASS);
     }
 
     private void SetupMainMenu()

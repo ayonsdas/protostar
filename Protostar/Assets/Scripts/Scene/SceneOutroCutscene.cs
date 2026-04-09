@@ -3,35 +3,30 @@ using UnityEngine;
 public class SceneOutroCutscene : MonoBehaviour
 {
     [SerializeField] private CutsceneInteractionItem finalItem;
-    [SerializeField] private ManualCutscene outroCutscene;
-    [SerializeField] private bool returnToMenu = true;
+    [SerializeField] private ImageCutscene outroCutscene;
 
-    private void OnEnable()
+    private void Start()
     {
-        if (finalItem == null || outroCutscene == null) return;
+        if (MenuManager.Instance == null) return;
 
-        finalItem.Cutscene.OnClose += HandleItemCutsceneClose;
-        outroCutscene.OnClose += HandleOutroCutsceneClose;
-    }
-
-    private void OnDisable()
-    {
-        if (finalItem == null || outroCutscene == null) return;
-
-        finalItem.Cutscene.OnClose -= HandleItemCutsceneClose;
-        outroCutscene.OnClose -= HandleOutroCutsceneClose;
+        MenuManager.Instance.AddCutsceneCloseCallback(finalItem.Cutscene, HandleItemCutsceneClose);
     }
 
     private void HandleItemCutsceneClose()
     {
-        outroCutscene.Play();
+        if (MenuManager.Instance == null) return;
+        Debug.Log("[SceneOutroCutscene] Item cutscene closed, playing outro");
+
+        MenuManager.Instance.AddCutsceneCloseCallback(outroCutscene, HandleOutroCutsceneClose);
+        MenuManager.Instance.PlayCutscene(outroCutscene);
+
     }
 
     private void HandleOutroCutsceneClose()
     {
-        if (returnToMenu)
-        {
-            GameStateManager.Instance.ReturnToMainMenu();
-        }
+        Debug.Log("[SceneOutroCutscene] Outro cutscene closed, returning to menu");
+        if (GameStateManager.Instance == null) return;
+
+        GameStateManager.Instance.ReturnToMainMenu();
     }
 }

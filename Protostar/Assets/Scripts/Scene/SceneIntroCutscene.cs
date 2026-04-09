@@ -2,10 +2,12 @@ using UnityEngine;
 
 public class SceneIntroCutscene : MonoBehaviour
 {
-    [SerializeField] private ManualCutscene introCutscene;
+    [SerializeField] private ImageCutscene introCutscene;
 
     private void Start()
     {
-        introCutscene.Play();
+        if (MenuManager.Instance == null) return;
+
+        MenuManager.Instance.PlayCutscene(introCutscene);
     }
 }

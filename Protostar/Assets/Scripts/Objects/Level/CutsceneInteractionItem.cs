@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CutsceneInteractionItem : MonoBehaviour, IInteractable, IInteractionCandidate
 {
-    public ManualCutscene Cutscene;
+    public ImageCutscene Cutscene;
     [SerializeField] private Vector3 forwardAxis = Vector3.forward;
 
     [Header("Sound Settings")]
@@ -15,13 +15,30 @@ public class CutsceneInteractionItem : MonoBehaviour, IInteractable, IInteractio
         PickupAnimator animator = interactor.GetComponentInParent<PickupAnimator>();
         if (animator != null)
         {
-            animator.PlayPickup(gameObject, forwardAxis, onComplete: Cutscene.Play);
+            animator.PlayPickup(gameObject, forwardAxis, onComplete: PlayCutscene);
         }
         else
         {
             DefaultPickup();
-            Cutscene.Play();
+            PlayCutscene();
         }
+    }
+
+    private void PlayCutscene()
+    {
+        if (MenuManager.Instance == null)
+        {
+            Debug.LogWarning("[CutsceneInteractionItem] no menu manager, cant play cutscene");
+            return;
+        }
+
+        MenuManager.Instance.PlayCutscene(Cutscene);
+        MenuManager.Instance.AddCutsceneCloseCallback(Cutscene, HandleClose);
+    }
+
+    private void HandleClose()
+    {
+        cutsceneTriggered = true;
     }
 
     private void DefaultPickup()
