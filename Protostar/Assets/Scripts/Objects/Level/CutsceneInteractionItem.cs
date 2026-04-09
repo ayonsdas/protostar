@@ -5,6 +5,8 @@ using UnityEngine;
 public class CutsceneInteractionItem : MonoBehaviour, IInteractable, IInteractionCandidate
 {
     public ManualCutscene Cutscene;
+    [SerializeField] private Vector3 forwardAxis = Vector3.forward;
+
     [Header("Sound Settings")]
     [SerializeField] private EventReference pickupSound;
     private bool cutsceneTriggered = false;
@@ -13,7 +15,7 @@ public class CutsceneInteractionItem : MonoBehaviour, IInteractable, IInteractio
         PickupAnimator animator = interactor.GetComponentInParent<PickupAnimator>();
         if (animator != null)
         {
-            animator.PlayPickup(gameObject, onComplete: Cutscene.Play);
+            animator.PlayPickup(gameObject, forwardAxis, onComplete: Cutscene.Play);
         }
         else
         {

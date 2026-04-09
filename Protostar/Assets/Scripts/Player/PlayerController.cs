@@ -26,6 +26,8 @@ public class PlayerController : MonoBehaviour
 
     [Header("Gravity Rotation Settings")]
     public float gravityRotationSpeed = 2f; // How fast player rotates to match gravity
+    [Header("Respawn Settings")]
+    public Transform respawnPoint;
     [Header("Sound Settings")]
     [SerializeField] private bool disableFootsteps = false;
     [SerializeField] private float footstepSpeedThreshold = 0.01f;
@@ -184,11 +186,6 @@ public class PlayerController : MonoBehaviour
         }
         IsGrounded = foundGround;
 
-        if (IsGrounded)
-        {
-
-        }
-
         if (currentPlatform != groundPlatform)
         {
             // Update platformSrface
@@ -208,9 +205,20 @@ public class PlayerController : MonoBehaviour
 
         if (IsGrounded)
         {
+            Vector3 respawnPosition = transform.position;
+
+            if (Physics.Raycast(groundCheck.position, gravityDown, out RaycastHit hit, groundCheckRadius + 0.3f, groundLayer, QueryTriggerInteraction.Ignore))
+            {
+                if (hit.collider != groundCheckBoxCollider)
+                {
+                    var playerHeight = transform.position - respawnPoint.position;
+                    respawnPosition = hit.point + playerHeight;
+                }
+            }
+
             LastGroundedState = new PlayerBodyState
             {
-                Position = transform.position,
+                Position = respawnPosition,
                 Rotation = transform.rotation,
                 GravityDirection = gravityBody.GetGravityDirection(),
                 LinearVelocity = rb.linearVelocity,

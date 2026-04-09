@@ -28,33 +28,41 @@ public class PickupAnimator : MonoBehaviour
     [SerializeField] private PlayerController playerController;
     [SerializeField] private CameraFollow cameraController;
 
+    private Rigidbody playerRigidbody;
+    private CustomGravityBody customGravityBody;
+
     public bool IsPlaying { get; private set; }
 
-    public void PlayPickup(GameObject item, Action onComplete = null)
+    private void Start()
     {
-        StartCoroutine(PickupSequence(item, onComplete));
+        playerRigidbody = GetComponent<Rigidbody>();
+        customGravityBody = GetComponent<CustomGravityBody>();
     }
 
-    private IEnumerator PickupSequence(GameObject item, Action onComplete)
+    public void PlayPickup(GameObject item, Vector3 itemForwardAxis, Action onComplete = null)
+    {
+        StartCoroutine(PickupSequence(item, itemForwardAxis, onComplete));
+    }
+
+    private IEnumerator PickupSequence(GameObject item, Vector3 itemForwardAxis, Action onComplete)
     {
         // Set flag to disable respawning
         IsPlaying = true;
 
-        Rigidbody rigidbody = GetComponent<Rigidbody>();
         // Lock player
         InputModeManager.Instance.SetPlayerControlsEnabled(false);
 
         // Set player kinematic to get manual control of transform
-        rigidbody.linearVelocity = Vector3.zero;
-        rigidbody.isKinematic = true;
+        playerRigidbody.linearVelocity = Vector3.zero;
+        playerRigidbody.isKinematic = true;
 
         // Face the item
         Vector3 directionToItem = (item.transform.position - transform.position).normalized;
-        directionToItem.y = 0f;
-        transform.rotation = Quaternion.LookRotation(directionToItem);
+        Vector3 upDirection = customGravityBody.GetUpDirection();
+        directionToItem = Vector3.ProjectOnPlane(directionToItem, upDirection).normalized;
 
-        // Make item face player
-        item.transform.rotation = Quaternion.LookRotation(-directionToItem);
+        item.transform.rotation = Quaternion.FromToRotation(itemForwardAxis.normalized, -directionToItem);
+        transform.rotation = Quaternion.LookRotation(directionToItem, upDirection);
 
 
         // Play sound
@@ -86,7 +94,7 @@ public class PickupAnimator : MonoBehaviour
         if (cameraController != null)
             cameraController.ReleaseCamera();
 
-        rigidbody.isKinematic = false;
+        playerRigidbody.isKinematic = false;
         InputModeManager.Instance.SetPlayerControlsEnabled(true);
 
         // Give extra frame to prevent respawn after disabling kinematic
