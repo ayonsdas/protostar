@@ -16,17 +16,18 @@ public class OrbAbsorb : MonoBehaviour
 
         float elapsed = 0f;
         Vector3 startPos = transform.position;
+        Vector3 startScale = transform.localScale;
 
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
-            float t = elapsed / duration; 
+            float t = elapsed / duration;
 
             // Lerp position toward a point slightly above the target's pivot.
             transform.position = Vector3.Lerp(startPos, target.position + Vector3.up * .25f, t);
 
             // Shrink from full scale to zero over the same duration.
-            transform.localScale = Vector3.one * Mathf.Lerp(1f, 0f, t);
+            transform.localScale = startScale * Mathf.Lerp(1f, 0f, t);
 
             yield return null;
         }

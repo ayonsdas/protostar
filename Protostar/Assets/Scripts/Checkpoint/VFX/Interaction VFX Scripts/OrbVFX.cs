@@ -17,6 +17,8 @@ public class OrbVFX : MonoBehaviour
 
     [Tooltip("Base rotational speed of the orbit.")]
     public float orbitSpeed = 25f;
+    public float minScale = 1f;
+    public float maxScale = 1.1f;
 
     [Header("Idle State")]
     [Tooltip("Orbit radius when the player is far away.")]
@@ -61,6 +63,7 @@ public class OrbVFX : MonoBehaviour
             // Spawn each orb as a child so it follows this parent transform.
             orbs[i] = Instantiate(orbPrefab, transform.position, Quaternion.identity);
             orbs[i].transform.SetParent(transform);
+            orbs[i].transform.localScale *= Random.Range(minScale, maxScale);
 
             // Distribute orbs evenly around the circle.
             angleOffsets[i] = (360f / orbCount) * i;
@@ -76,7 +79,9 @@ public class OrbVFX : MonoBehaviour
 
     void Update()
     {
-        transform.rotation = player.rotation;
+        // Makes the orbit follow the players rotation which is wrong
+        // Might need to change eventually, but particles should just billboard themselves right?
+        //transform.rotation = player.rotation;
         UpdateProximity();
         MoveOrbs();
     }
@@ -108,6 +113,11 @@ public class OrbVFX : MonoBehaviour
 
         orbTime += Time.deltaTime * currentSpeed;
 
+        Vector3 scale = transform.lossyScale;
+        if (scale.x == 0f || scale.y == 0f || scale.z == 0f) return;
+
+        Vector3 inverseScale = new Vector3(1f / scale.x, 1f / scale.y, 1f / scale.z);
+
         for (int i = 0; i < orbCount; i++)
         {
             if (orbs[i] == null) continue;
@@ -121,7 +131,9 @@ public class OrbVFX : MonoBehaviour
             float z = Mathf.Sin(rad) * currentRadius;
             float y = Mathf.Sin(time + heightOffsets[i]) * currentFloat;
 
-            orbs[i].transform.localPosition = new Vector3(x, y, z);
+            Vector3 localPos = Vector3.Scale(new Vector3(x, y, z), inverseScale);
+
+            orbs[i].transform.localPosition = localPos;
         }
 
         // Adjust VFX Graph glow intensity: dim when idle, bright when excited.
@@ -143,14 +155,6 @@ public class OrbVFX : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, excitedOrbitRadius); // excited orbit radius
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(transform.position, detectionRange);     // proximity detection range
-
-        // Also show the interact range if an InteractableOrbItem is attached.
-        var item = GetComponent<InteractableOrbItem>();
-        if (item != null)
-        {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(transform.position, item.interactRange);
-        }
     }
 
     public float GetProximityFactor() => proximityFactor;

@@ -85,7 +85,6 @@ public class PickupAnimator : MonoBehaviour
         yield return StartCoroutine(OrbitPhase(item));
         yield return StartCoroutine(FlyInPhase(item));
 
-        // Disable item
         Destroy(item.gameObject);
 
         yield return new WaitForSeconds(endDuration);
