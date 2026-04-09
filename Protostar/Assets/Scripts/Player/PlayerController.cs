@@ -207,23 +207,24 @@ public class PlayerController : MonoBehaviour
         {
             Vector3 respawnPosition = transform.position;
 
-            if (Physics.Raycast(groundCheck.position, gravityDown, out RaycastHit hit, groundCheckRadius + 0.3f, groundLayer, QueryTriggerInteraction.Ignore))
+            if (Physics.Raycast(respawnPoint.position, gravityDown, out RaycastHit hit, groundCheckRadius + 0.3f, groundLayer, QueryTriggerInteraction.Ignore))
             {
                 if (hit.collider != groundCheckBoxCollider)
                 {
                     var playerHeight = transform.position - respawnPoint.position;
                     respawnPosition = hit.point + playerHeight;
+
+                    // Only set state when there is actually a platform directly below the player
+                    LastGroundedState = new PlayerBodyState
+                    {
+                        Position = respawnPosition,
+                        Rotation = transform.rotation,
+                        GravityDirection = gravityBody.GetGravityDirection(),
+                        LinearVelocity = rb.linearVelocity,
+                        AngularVelocity = rb.angularVelocity
+                    };
                 }
             }
-
-            LastGroundedState = new PlayerBodyState
-            {
-                Position = respawnPosition,
-                Rotation = transform.rotation,
-                GravityDirection = gravityBody.GetGravityDirection(),
-                LinearVelocity = rb.linearVelocity,
-                AngularVelocity = rb.angularVelocity
-            };
 
             lastGroundedTime = Time.time;
         }
