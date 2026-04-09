@@ -79,7 +79,7 @@ public class ImageCutscenePresenter : MonoBehaviour, IMenuView, ICutscenePlayer<
     private void UpdateUI()
     {
         bool isLastPage = currentPage + 1 == cutscene.Length;
-        _nextButton.text = isLastPage ? "End" : "Next";
+        _nextButton.text = isLastPage ? "Close" : "Next";
         _background.style.backgroundImage = new StyleBackground(cutscene.Frames[currentPage]);
         _backButton.style.display = currentPage > 0 ? DisplayStyle.Flex : DisplayStyle.None;
     }

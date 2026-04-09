@@ -52597,6 +52597,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -4427401162650624835, guid: 5cb7c6d372bffacf9a9160be226d3c8e, type: 3}
+      propertyPath: hoverSound.Path
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: -4427401162650624835, guid: 5cb7c6d372bffacf9a9160be226d3c8e, type: 3}
+      propertyPath: hoverSound.Guid.Data1
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -4427401162650624835, guid: 5cb7c6d372bffacf9a9160be226d3c8e, type: 3}
+      propertyPath: hoverSound.Guid.Data2
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -4427401162650624835, guid: 5cb7c6d372bffacf9a9160be226d3c8e, type: 3}
+      propertyPath: hoverSound.Guid.Data3
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -4427401162650624835, guid: 5cb7c6d372bffacf9a9160be226d3c8e, type: 3}
+      propertyPath: hoverSound.Guid.Data4
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1388764050645882758, guid: 5cb7c6d372bffacf9a9160be226d3c8e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 515.36053
