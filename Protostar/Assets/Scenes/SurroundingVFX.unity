@@ -42735,7 +42735,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ParallaxStarLayer
   cameraTransform: {fileID: 765700456}
-  parallaxStrength: 0.5
+  parallaxStrength: 0.93
 --- !u!1 &616225737
 GameObject:
   m_ObjectHideFlags: 0
@@ -50422,38 +50422,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3307222304699434245, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
   m_PrefabInstance: {fileID: 763559502}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &765417835
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 765417836}
-  m_Layer: 0
-  m_Name: Particles
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &765417836
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 765417835}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 269.50674, y: -0, z: -487.844}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1939363690}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &765700456 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7851867205609341588, guid: 668a948ea1758ad469ba23346a5ed8db, type: 3}
@@ -101767,45 +101735,33 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5309794369528067766, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
+      propertyPath: m_SortingOrder
+      value: -10
+      objectReference: {fileID: 0}
     - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
       propertyPath: moveWithTransform
       value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
-      propertyPath: ShapeModule.enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
-      propertyPath: ShapeModule.arc.mode
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
       propertyPath: moveWithCustomTransform
       value: 
       objectReference: {fileID: 614139537}
     - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
-      propertyPath: ShapeModule.radius.value
-      value: 150
-      objectReference: {fileID: 0}
-    - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
       propertyPath: InitialModule.maxNumParticles
       value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
       propertyPath: InitialModule.startSize.scalar
-      value: 14
+      value: 3.5
       objectReference: {fileID: 0}
     - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
       propertyPath: InitialModule.startSize.minScalar
-      value: 10
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
       propertyPath: EmissionModule.rateOverTime.scalar
       value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
-      propertyPath: InitialModule.startLifetime.scalar
-      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
       propertyPath: InitialModule.startColor.maxColor.b
@@ -101822,10 +101778,6 @@ PrefabInstance:
     - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
       propertyPath: InitialModule.startColor.minMaxState
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
-      propertyPath: InitialModule.startLifetime.minScalar
-      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
       propertyPath: InitialModule.startColor.maxGradient.key0.b
@@ -131345,7 +131297,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ParallaxStarLayer
   cameraTransform: {fileID: 765700456}
-  parallaxStrength: 0.95
+  parallaxStrength: 0.97
 --- !u!1 &1391897334
 GameObject:
   m_ObjectHideFlags: 0
@@ -169615,32 +169567,24 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
-      propertyPath: ShapeModule.enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
       propertyPath: moveWithCustomTransform
       value: 
       objectReference: {fileID: 432282016}
-    - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
-      propertyPath: ShapeModule.radius.value
-      value: 500
-      objectReference: {fileID: 0}
     - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
       propertyPath: InitialModule.maxNumParticles
       value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
       propertyPath: InitialModule.startSize.scalar
-      value: 12
+      value: 1.2
       objectReference: {fileID: 0}
     - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
       propertyPath: InitialModule.startSize.minScalar
-      value: 8
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
       propertyPath: EmissionModule.rateOverTime.scalar
-      value: 45
+      value: 75
       objectReference: {fileID: 0}
     - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
       propertyPath: InitialModule.startColor.maxColor.b
@@ -173619,32 +173563,24 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
-      propertyPath: ShapeModule.enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
       propertyPath: moveWithCustomTransform
       value: 
       objectReference: {fileID: 1381266376}
-    - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
-      propertyPath: ShapeModule.radius.value
-      value: 300
-      objectReference: {fileID: 0}
     - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
       propertyPath: InitialModule.maxNumParticles
       value: 150
       objectReference: {fileID: 0}
     - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
       propertyPath: InitialModule.startSize.scalar
-      value: 12
+      value: 2.3
       objectReference: {fileID: 0}
     - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
       propertyPath: InitialModule.startSize.minScalar
-      value: 8
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
       propertyPath: EmissionModule.rateOverTime.scalar
-      value: 30
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
       propertyPath: InitialModule.startColor.maxColor.b
@@ -176856,7 +176792,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1642445424}
   m_Layer: 0
-  m_Name: Particles
+  m_Name: CameraFollowParticles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -204095,7 +204031,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1939363689}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -204103,7 +204039,7 @@ Transform:
   - {fileID: 614139537}
   - {fileID: 1381266376}
   - {fileID: 432282016}
-  m_Father: {fileID: 765417836}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1942599440
 GameObject:
@@ -212094,4 +212030,4 @@ SceneRoots:
   - {fileID: 1225328241}
   - {fileID: 1380560363}
   - {fileID: 1617914641}
-  - {fileID: 765417836}
+  - {fileID: 1939363690}
