@@ -34610,7 +34610,7 @@ GameObject:
   m_Component:
   - component: {fileID: 432282016}
   - component: {fileID: 432282017}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: FarStars
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -34646,7 +34646,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ParallaxStarLayer
   cameraTransform: {fileID: 765700456}
-  parallaxStrength: 0.99
+  parallaxStrength: 0.95
 --- !u!1 &434151049
 GameObject:
   m_ObjectHideFlags: 0
@@ -42699,7 +42699,7 @@ GameObject:
   m_Component:
   - component: {fileID: 614139537}
   - component: {fileID: 614139538}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: NearStars
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -42735,7 +42735,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ParallaxStarLayer
   cameraTransform: {fileID: 765700456}
-  parallaxStrength: 0.93
+  parallaxStrength: 0.8
 --- !u!1 &616225737
 GameObject:
   m_ObjectHideFlags: 0
@@ -101736,8 +101736,8 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5309794369528067766, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
-      propertyPath: m_SortingOrder
-      value: -10
+      propertyPath: m_SortMode
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
       propertyPath: moveWithTransform
@@ -101753,11 +101753,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
       propertyPath: InitialModule.startSize.scalar
-      value: 3.5
+      value: 35
       objectReference: {fileID: 0}
     - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
       propertyPath: InitialModule.startSize.minScalar
-      value: 3
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
       propertyPath: EmissionModule.rateOverTime.scalar
@@ -101810,6 +101810,10 @@ PrefabInstance:
     - target: {fileID: 8621785441971457170, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
       propertyPath: m_Name
       value: NearStarParticles
+      objectReference: {fileID: 0}
+    - target: {fileID: 8621785441971457170, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -131261,7 +131265,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1381266376}
   - component: {fileID: 1381266377}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: MidStars
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -131297,7 +131301,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ParallaxStarLayer
   cameraTransform: {fileID: 765700456}
-  parallaxStrength: 0.97
+  parallaxStrength: 0.9
 --- !u!1 &1391897334
 GameObject:
   m_ObjectHideFlags: 0
@@ -169576,11 +169580,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
       propertyPath: InitialModule.startSize.scalar
-      value: 1.2
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
       propertyPath: InitialModule.startSize.minScalar
-      value: 1
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
       propertyPath: EmissionModule.rateOverTime.scalar
@@ -169637,6 +169641,10 @@ PrefabInstance:
     - target: {fileID: 8621785441971457170, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
       propertyPath: m_Name
       value: FarStarParticles
+      objectReference: {fileID: 0}
+    - target: {fileID: 8621785441971457170, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -173572,11 +173580,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
       propertyPath: InitialModule.startSize.scalar
-      value: 2.3
+      value: 23
       objectReference: {fileID: 0}
     - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
       propertyPath: InitialModule.startSize.minScalar
-      value: 2
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7651326815231122360, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
       propertyPath: EmissionModule.rateOverTime.scalar
@@ -173629,6 +173637,10 @@ PrefabInstance:
     - target: {fileID: 8621785441971457170, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
       propertyPath: m_Name
       value: MidStarParticles
+      objectReference: {fileID: 0}
+    - target: {fileID: 8621785441971457170, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -204016,7 +204028,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1939363690}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Parallax Stars
   m_TagString: Untagged
   m_Icon: {fileID: 0}
