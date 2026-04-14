@@ -13252,6 +13252,7 @@ MonoBehaviour:
       Data3: -181025132
       Data4: 1873657454
     Path: event:/ObjInteract
+  interactItem: 0
 --- !u!114 &229141011
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34610,7 +34611,7 @@ GameObject:
   m_Component:
   - component: {fileID: 432282016}
   - component: {fileID: 432282017}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: FarStars
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -42699,7 +42700,7 @@ GameObject:
   m_Component:
   - component: {fileID: 614139537}
   - component: {fileID: 614139538}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: NearStars
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -59931,6 +59932,7 @@ MonoBehaviour:
       Data3: -181025132
       Data4: 1873657454
     Path: event:/ObjInteract
+  interactItem: 0
 --- !u!136 &864227808
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -101813,7 +101815,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8621785441971457170, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
       propertyPath: m_Layer
-      value: 10
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -131265,7 +131267,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1381266376}
   - component: {fileID: 1381266377}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: MidStars
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -169644,7 +169646,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8621785441971457170, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
       propertyPath: m_Layer
-      value: 10
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -173640,7 +173642,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8621785441971457170, guid: fd4bc788cab8b875dbb86fe509242a56, type: 3}
       propertyPath: m_Layer
-      value: 10
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -180130,6 +180132,7 @@ MonoBehaviour:
       Data3: -181025132
       Data4: 1873657454
     Path: event:/ObjInteract
+  interactItem: 0
 --- !u!65 &1716009756
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -204028,7 +204031,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1939363690}
-  m_Layer: 10
+  m_Layer: 0
   m_Name: Parallax Stars
   m_TagString: Untagged
   m_Icon: {fileID: 0}
