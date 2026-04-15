@@ -10153,22 +10153,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: db4c1858c1c9c014e96722002ab71aed, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 112965190}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: db4c1858c1c9c014e96722002ab71aed, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 112965189}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: db4c1858c1c9c014e96722002ab71aed, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 112965188}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: db4c1858c1c9c014e96722002ab71aed, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 112965187}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: db4c1858c1c9c014e96722002ab71aed, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 112965186}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: db4c1858c1c9c014e96722002ab71aed, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 112965185}
   m_SourcePrefab: {fileID: 100100000, guid: db4c1858c1c9c014e96722002ab71aed, type: 3}
 --- !u!4 &112965183 stripped
 Transform:
@@ -10180,63 +10165,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: db4c1858c1c9c014e96722002ab71aed, type: 3}
   m_PrefabInstance: {fileID: 112965182}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &112965185
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 112965184}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4bf5c202f9dd7a440a77a062fe161f4f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Protostar.UI::ActionBindingText
-  TextMesh: {fileID: 0}
-  message: 'This is your old creation pod, the one your mentor used to put you together.
-    It was the very first bed you slept in. The eternal pre-life, pre-conception
-    sleep.
-
-
-
-    Pick it up using {Interact} and put it in your backpack to integrate
-    it with the world!'
---- !u!114 &112965186
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 112965184}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a123e75441321a9408dd63da2310fd44, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Protostar::FocusTextEffect
-  focusUI: {fileID: 0}
---- !u!114 &112965187
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 112965184}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b092cb06c1fb6b24d88c3013c2d97d07, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
-  Cutscene: {fileID: 0}
-  forwardAxis: {x: 0, y: 0, z: 1}
-  orbItem: {fileID: 0}
-  pickupSound:
-    Guid:
-      Data1: 363073422
-      Data2: 1097026764
-      Data3: -181025132
-      Data4: 1873657454
-    Path: event:/ObjInteract
-  interactItem: 0
 --- !u!136 &112965188
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -10260,34 +10188,6 @@ CapsuleCollider:
   m_Height: 26
   m_Direction: 1
   m_Center: {x: 0, y: 9.55, z: -7.07}
---- !u!114 &112965189
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 112965184}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e5938b7bb399d38c5aa4dd5462d18e74, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Protostar::OutlineFocusEffect
-  _baseObject: {fileID: 112965184}
-  outlineLayerMask:
-    serializedVersion: 0
-    m_Bits: 256
---- !u!114 &112965190
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 112965184}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bbabac6e8fc84beea9ad4c696cd728f5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Protostar::SimpleFocusable
 --- !u!1 &114492725
 GameObject:
   m_ObjectHideFlags: 0
