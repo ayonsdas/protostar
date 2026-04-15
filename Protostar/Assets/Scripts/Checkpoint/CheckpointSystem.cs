@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using FMODUnity;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class CheckpointSystem : MonoBehaviour
@@ -61,6 +62,22 @@ public class CheckpointSystem : MonoBehaviour
     private CustomGravityBody playerGravityBody;
     private PickupAnimator pickupAnimator;
 
+    void OnEnable()
+    {
+        if (InputModeManager.Instance != null)
+        {
+            InputModeManager.PlayerInput.actions["Respawn"].performed += HandleRespawnAction;
+        }
+    }
+
+    void OnDisable()
+    {
+        if (InputModeManager.Instance != null)
+        {
+            InputModeManager.PlayerInput.actions["Respawn"].performed -= HandleRespawnAction;
+        }
+    }
+
     void Start()
     {
         DisablePlayableZones();
@@ -115,14 +132,22 @@ public class CheckpointSystem : MonoBehaviour
             currentPlayableZone.gameObject.SetActive(true);
     }
 
+    private void HandleRespawnAction(InputAction.CallbackContext _)
+    {
+        if (!CanStartRespawn(ignoreZones: true)) return;
+        Debug.Log("Starting Player Respawn");
+
+        RespawnPlayer(false);
+    }
+
     public void TryRespawnPlayer()
     {
         if (!CanStartRespawn()) return;
 
-        RespawnPlayer();
+        RespawnPlayer(respawnAtLastPlatform);
     }
 
-    private bool CanStartRespawn()
+    private bool CanStartRespawn(bool ignoreZones = false)
     {
         if (IsRespawning)
         {
@@ -130,7 +155,7 @@ public class CheckpointSystem : MonoBehaviour
             return false;
         }
 
-        if (IsPlayerInside())
+        if (!ignoreZones && IsPlayerInside())
         {
             Debug.Log("[CheckpointSystem] Player is still inside a playable zone. No respawn needed.");
             return false;
@@ -160,7 +185,7 @@ public class CheckpointSystem : MonoBehaviour
         return false;
     }
 
-    private void RespawnPlayer()
+    private void RespawnPlayer(bool onPlatform)
     {
         if (IsRespawning)
         {
@@ -177,7 +202,7 @@ public class CheckpointSystem : MonoBehaviour
             GravityDirection = -activeSpawnPoint.up
         };
 
-        if (respawnAtLastPlatform)
+        if (onPlatform)
         {
             spawnPointData = new SpawnPoint
             {

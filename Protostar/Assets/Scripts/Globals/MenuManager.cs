@@ -47,6 +47,21 @@ public class MenuManager : MonoBehaviour
         RegisterView(playerMenu);
     }
 
+    public void UnregisterCutscenePlayer<T>(ICutscenePlayer<T> player)
+    {
+        IMenuView playerMenu = player as IMenuView;
+        if (playerMenu == null) return;
+
+        if (player == activeCutscenePlayer)
+        {
+            activeCutscene = null;
+            activeCutscenePlayer = null;
+        }
+
+        cutscenePlayers.Remove(player);
+        UnregisterView(playerMenu);
+    }
+
     public void RegisterView(IMenuView view)
     {
         activeViews.Add(view);
