@@ -13,10 +13,22 @@ public class CutsceneInteractionItem : MonoBehaviour, IInteractable, IInteractio
     [Header("Sound Settings")]
     [SerializeField] private EventReference pickupSound;
     private bool cutsceneTriggered = false;
+
     public void Interact(GameObject interactor)
     {
         StartCoroutine(InteractCoroutine(interactor));
     }
+
+    public delegate void InteractAction(InteractItems item);
+    public event InteractAction OnInteract; 
+    public enum InteractItems
+    {
+        Item1,
+        Item2,
+        Item3
+    }
+
+    public InteractItems interactItem;
 
     private IEnumerator InteractCoroutine(GameObject interactor)
     {
@@ -46,6 +58,11 @@ public class CutsceneInteractionItem : MonoBehaviour, IInteractable, IInteractio
 
     private void PlayCutscene()
     {
+        if(OnInteract != null)
+        {
+            OnInteract(interactItem);
+        }
+
         if (MenuManager.Instance == null)
         {
             Debug.LogWarning("[CutsceneInteractionItem] no menu manager, cant play cutscene");
