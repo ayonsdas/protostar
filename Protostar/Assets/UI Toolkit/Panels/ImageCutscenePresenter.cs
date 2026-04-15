@@ -37,7 +37,7 @@ public class ImageCutscenePresenter : MonoBehaviour, IMenuView, ICutscenePlayer<
     private void OnDisable()
     {
         if (MenuManager.Instance != null)
-            MenuManager.Instance.UnregisterView(this);
+            MenuManager.Instance.UnregisterCutscenePlayer(this);
     }
 
     void Awake()

@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Object3
   m_EditorClassIdentifier: Protostar.Core::ImageCutscene
   Frames:
-  - {fileID: 21300000, guid: 9e68ce26683e40f48b2a9c9410cd6916, type: 3}
+  - {fileID: 21300000, guid: 71f317f3b9a2e264a9165e5ce2aac967, type: 3}

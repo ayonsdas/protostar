@@ -32,6 +32,7 @@ public class FocusTextEffect : MonoBehaviour, IFocusEffect
     }
     public void OnFocus()
     {
+        Debug.Log($"[FocusTextEffect] {gameObject.name} focused, showing {focusUI.name} UI");
         focusUI.ShowUI();
         _text.enabled = true;
     }
