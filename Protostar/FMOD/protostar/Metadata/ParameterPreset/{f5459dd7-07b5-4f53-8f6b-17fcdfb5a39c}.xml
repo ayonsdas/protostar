@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="ParameterPreset" id="{f5459dd7-07b5-4f53-8f6b-17fcdfb5a39c}">
+		<property name="name">
+			<value>PianoKey</value>
+		</property>
+		<relationship name="folder">
+			<destination>{41584f65-709a-4bb0-8548-a0f6f1e73b70}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{9ca1dc95-be32-42fa-ad52-1b601bbbf0bd}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{9ca1dc95-be32-42fa-ad52-1b601bbbf0bd}">
+		<property name="maximum">
+			<value>16</value>
+		</property>
+		<property name="initialValue">
+			<value>0</value>
+		</property>
+	</object>
+</objects>
