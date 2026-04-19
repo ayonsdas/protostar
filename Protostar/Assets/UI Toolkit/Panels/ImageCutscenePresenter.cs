@@ -128,7 +128,6 @@ public class ImageCutscenePresenter : MonoBehaviour, IMenuView, ICutscenePlayer<
         currentPage = 0;
         UpdateUI();
         GameStateManager.Instance.SetState(GameState.Cutscene);
-        Debug.Log($"Playing Cutscene {cutscene.name} focus {root.panel.focusController.focusedElement}");
     }
 
     private void SetButtonFocus(Button button)

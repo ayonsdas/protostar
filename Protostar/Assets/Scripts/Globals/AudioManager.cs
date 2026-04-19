@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using FMOD.Studio;
 using FMODUnity;
 using UnityEngine;
@@ -115,6 +116,10 @@ public class AudioManager : MonoBehaviour
 
         lastPlayedTime = Time.time;
         lastPlayedTimes[eventGuid] = lastPlayedTime;
+
+        string parameterString = "";
+        if (parameters != null)
+            parameterString = string.Join(", ", parameters.Select(kvp => $"{kvp.Key}: {kvp.Value}"));
 
         if (CreateInstanceWithinMaxDistance(eventGuid, position, out EventInstance instance))
         {

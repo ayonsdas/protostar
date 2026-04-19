@@ -201,6 +201,13 @@ public class PlayerController : MonoBehaviour
 
             currentPlatform = groundPlatform;
 
+            // Try to play surface audio
+            var audioSurface = currentPlatform?.GetComponent<IAudioSurface>();
+            Debug.Log($"Landed on platform {currentPlatform} found IAudioSurface? {audioSurface != null}");
+            if (audioSurface != null)
+            {
+                audioSurface.Play(transform.position);
+            }
         }
 
         if (IsGrounded)
