@@ -425,11 +425,8 @@
 		</property>
 	</object>
 	<object class="TransitionDestinationSound" id="{ec62e91a-c784-49ce-ae39-29b6bc0f3d89}">
-		<property name="start">
-			<value>6.8571428571428568</value>
-		</property>
 		<property name="length">
-			<value>0</value>
+			<value>6.8571428571428568</value>
 		</property>
 	</object>
 	<object class="TransitionSourceSound" id="{1f4d3d6f-79ba-409b-91bc-2eacac25c051}">
@@ -490,11 +487,8 @@
 		</property>
 	</object>
 	<object class="TransitionDestinationSound" id="{2d0e4745-bd4f-4c9b-9439-dc153b96ef54}">
-		<property name="start">
-			<value>6.8571428571428568</value>
-		</property>
 		<property name="length">
-			<value>0</value>
+			<value>6.8571428571428568</value>
 		</property>
 	</object>
 	<object class="TransitionSourceSound" id="{6664e36a-fe5a-4fa3-a4d8-d15dcb5a7270}">
@@ -550,7 +544,6 @@
 		<property name="length">
 			<value>42.848208333333318</value>
 		</property>
-		<property name="name" />
 		<relationship name="fadeOutCurve">
 			<destination>{110a82b4-def6-4b1c-a5b3-1692966a3fa8}</destination>
 		</relationship>
@@ -689,7 +682,7 @@
 			<value>28.294645833333355</value>
 		</property>
 		<property name="quantizationInterval">
-			<value>2</value>
+			<value>3</value>
 		</property>
 		<relationship name="timeline">
 			<destination>{8cd1f559-e9eb-4d23-aa53-4212d1a89bce}</destination>
