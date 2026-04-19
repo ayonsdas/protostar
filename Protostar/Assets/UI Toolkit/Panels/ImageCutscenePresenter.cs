@@ -48,7 +48,10 @@ public class ImageCutscenePresenter : MonoBehaviour, IMenuView, ICutscenePlayer<
         _background = root.Q("background-image");
         _backButton = root.Q<Button>("back-button");
         _nextButton = root.Q<Button>("next-button");
+    }
 
+    void Start()
+    {
         UIHelper.RegisterButton(_backButton, HandleBackButtonClicked, clickSound: clickSound, hoverSound: hoverSound);
         UIHelper.RegisterButton(_nextButton, HandleNextButtonClicked, clickSound: clickSound, hoverSound: hoverSound);
     }
@@ -79,9 +82,19 @@ public class ImageCutscenePresenter : MonoBehaviour, IMenuView, ICutscenePlayer<
     private void UpdateUI()
     {
         bool isLastPage = currentPage + 1 == cutscene.Length;
+        bool isFirstPage = currentPage == 0;
         _nextButton.text = isLastPage ? "Close" : "Next";
         _background.style.backgroundImage = new StyleBackground(cutscene.Frames[currentPage]);
-        _backButton.style.display = currentPage > 0 ? DisplayStyle.Flex : DisplayStyle.None;
+
+        if (isFirstPage)
+        {
+            _backButton.style.display = DisplayStyle.None;
+            SetButtonFocus(_nextButton);
+        }
+        else
+        {
+            _backButton.style.display = DisplayStyle.Flex;
+        }
     }
 
     public void OnGameStateChanged(GameState state)
@@ -90,7 +103,7 @@ public class ImageCutscenePresenter : MonoBehaviour, IMenuView, ICutscenePlayer<
         root.Display(active);
         if (active)
         {
-            _nextButton?.Focus();
+            SetButtonFocus(_nextButton);
         }
     }
 
@@ -104,7 +117,7 @@ public class ImageCutscenePresenter : MonoBehaviour, IMenuView, ICutscenePlayer<
                 break;
             case InputMode.Controller:
                 UIHelper.SetControllerMode(root);
-                _nextButton?.Focus();
+                SetButtonFocus(_nextButton);
                 break;
         }
     }
@@ -115,5 +128,12 @@ public class ImageCutscenePresenter : MonoBehaviour, IMenuView, ICutscenePlayer<
         currentPage = 0;
         UpdateUI();
         GameStateManager.Instance.SetState(GameState.Cutscene);
+        Debug.Log($"Playing Cutscene {cutscene.name} focus {root.panel.focusController.focusedElement}");
+    }
+
+    private void SetButtonFocus(Button button)
+    {
+        if (button == null) return;
+        button.Focus();
     }
 }

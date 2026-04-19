@@ -139,21 +139,17 @@ public class StartViewPresenter : MonoBehaviour, IMenuView
     {
 
         // Set initial focus for controller navigation
-        switch (state)
+        Button focusTarget = state switch
         {
-            case GameState.MainMenu:
-                mainMenuView.Q<Button>()?.Focus();
-                break;
-            case GameState.Settings:
-            case GameState.Paused:
-                settingsView.Q<Button>()?.Focus();
-                break;
-            case GameState.Credits:
-                creditsView.Q<Button>()?.Focus();
-                break;
-            case GameState.Controls:
-                controlsView.Q<Button>()?.Focus();
-                break;
-        }
+            GameState.MainMenu => mainMenuView.Q<Button>(),
+            GameState.Settings or GameState.Paused => settingsView.Q<Button>(),
+            GameState.Credits => creditsView.Q<Button>(),
+            GameState.Controls => controlsView.Q<Button>(),
+            _ => null
+        };
+
+        if (focusTarget == null) return;
+
+        focusTarget.Focus();
     }
 }
