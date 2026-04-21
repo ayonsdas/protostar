@@ -2,7 +2,7 @@
     <Style src="project://database/Assets/UI%20Toolkit/Styles/buttons.uss?fileID=7433441132597879392&amp;guid=918d511739c223b43938892711387e22&amp;type=3#buttons"/>
     <ui:VisualElement name="cutscene-root" style="width: 100%; height: 100%; position: absolute;">
         <ui:VisualElement name="background-image" style="width: 100%; height: 100%; position: absolute;"/>
-        <ui:VisualElement style="position: absolute; bottom: 20px; right: 20px; flex-direction: row;">
+        <ui:VisualElement style="position: absolute; bottom: 20px; right: auto; flex-direction: row; left: 20px; width: 280px; justify-content: space-between;">
             <ui:Button name="back-button" text="Back" class="menu-button"/>
             <ui:Button name="next-button" text="Next" class="menu-button"/>
         </ui:VisualElement>

@@ -88,12 +88,12 @@ public class ImageCutscenePresenter : MonoBehaviour, IMenuView, ICutscenePlayer<
 
         if (isFirstPage)
         {
-            _backButton.style.display = DisplayStyle.None;
+            _backButton.style.visibility = Visibility.Hidden;
             SetButtonFocus(_nextButton);
         }
         else
         {
-            _backButton.style.display = DisplayStyle.Flex;
+            _backButton.style.visibility = Visibility.Visible;
         }
     }
 
