@@ -63905,63 +63905,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: db4c1858c1c9c014e96722002ab71aed, type: 3}
   m_PrefabInstance: {fileID: 936529356}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &775182025
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 775182023}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4bf5c202f9dd7a440a77a062fe161f4f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Protostar.UI::ActionBindingText
-  TextMesh: {fileID: 0}
-  message: 'This is your old creation pod, the one your mentor used to put you together.
-    It was the very first bed you slept in. The eternal pre-life, pre-conception
-    sleep.
-
-
-
-    Pick it up using {Interact} and put it in your backpack to integrate
-    it with the world!'
---- !u!114 &775182026
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 775182023}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a123e75441321a9408dd63da2310fd44, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Protostar::FocusTextEffect
-  focusUI: {fileID: 0}
---- !u!114 &775182027
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 775182023}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b092cb06c1fb6b24d88c3013c2d97d07, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
-  Cutscene: {fileID: 0}
-  forwardAxis: {x: 0, y: 0, z: 1}
-  orbItem: {fileID: 0}
-  pickupSound:
-    Guid:
-      Data1: 363073422
-      Data2: 1097026764
-      Data3: -181025132
-      Data4: 1873657454
-    Path: event:/ObjInteract
-  interactItem: 0
 --- !u!136 &775182028
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -63985,34 +63928,6 @@ CapsuleCollider:
   m_Height: 26
   m_Direction: 1
   m_Center: {x: 0, y: 9.55, z: -7.07}
---- !u!114 &775182029
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 775182023}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e5938b7bb399d38c5aa4dd5462d18e74, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Protostar::OutlineFocusEffect
-  _baseObject: {fileID: 775182023}
-  outlineLayerMask:
-    serializedVersion: 0
-    m_Bits: 256
---- !u!114 &775182030
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 775182023}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bbabac6e8fc84beea9ad4c696cd728f5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Protostar::SimpleFocusable
 --- !u!1 &775408366
 GameObject:
   m_ObjectHideFlags: 0
@@ -111870,22 +111785,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: db4c1858c1c9c014e96722002ab71aed, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 775182030}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: db4c1858c1c9c014e96722002ab71aed, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 775182029}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: db4c1858c1c9c014e96722002ab71aed, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 775182028}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: db4c1858c1c9c014e96722002ab71aed, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 775182027}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: db4c1858c1c9c014e96722002ab71aed, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 775182026}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: db4c1858c1c9c014e96722002ab71aed, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 775182025}
   m_SourcePrefab: {fileID: 100100000, guid: db4c1858c1c9c014e96722002ab71aed, type: 3}
 --- !u!1 &937528695
 GameObject:
