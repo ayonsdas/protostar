@@ -21,4 +21,6 @@ public class InputBuffer
 
         return false;
     }
+
+    public bool IsActive => timer.IsActive;
 }

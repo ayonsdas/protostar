@@ -26,17 +26,16 @@ public class PlayerAnimationController : MonoBehaviour
 
     private void HandleGroundedChanged(bool value)
     {
+        Debug.Log($"[Anim] GroundedChanged -> {value} | IsJumping was: {animator.GetBool("IsJumping")} | frame: {Time.frameCount}");
         animator.SetBool(IsGroundedHash, value);
+        if (value && !playerController.HasJumpBuffered) animator.SetBool("IsJumping", false);
     }
 
     private void HandleJumpRequested()
     {
+        Debug.Log($"[Anim] JumpRequested | IsGrounded: {animator.GetBool(IsGroundedHash)} | IsJumping was: {animator.GetBool("IsJumping")} | frame: {Time.frameCount}");
+        animator.ResetTrigger(JumpRequestedHash);
         animator.SetTrigger(JumpRequestedHash);
-    }
-
-    // Called by the jump animation event, makes controller trigger jump force
-    public void OnJumpTakeoff()
-    {
-        playerController.ApplyJumpForce();
+        animator.SetBool("IsJumping", true);
     }
 }
