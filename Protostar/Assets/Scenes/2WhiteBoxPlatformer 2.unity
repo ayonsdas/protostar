@@ -384,7 +384,10 @@ PrefabInstance:
     - {fileID: 739440790628378298, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
     - {fileID: 793349216906816764, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6343462185270445500, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1664933778}
   m_SourcePrefab: {fileID: 100100000, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
 --- !u!4 &2414074 stripped
 Transform:
@@ -10968,6 +10971,11 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 92477162}
   m_Mesh: {fileID: 1543205240142271586, guid: bd752826739fc284e99e580ed2f5bbd9, type: 3}
+--- !u!1 &93335682 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6343462185270445500, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
+  m_PrefabInstance: {fileID: 1011760688}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &94285416
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13586,7 +13594,10 @@ PrefabInstance:
     - {fileID: 4104973947076318633, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
     - {fileID: 739440790628378298, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6343462185270445500, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 366891597}
   m_SourcePrefab: {fileID: 100100000, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
 --- !u!1001 &142305186
 PrefabInstance:
@@ -14322,6 +14333,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 790593012}
   m_SourcePrefab: {fileID: 100100000, guid: 97887f7aa1c98e343bc4aa85f317be59, type: 3}
+--- !u!1 &153636789 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6343462185270445500, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
+  m_PrefabInstance: {fileID: 141799371}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &154759177
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -35618,6 +35634,19 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3307222304699434245, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
   m_PrefabInstance: {fileID: 141799371}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &366891597
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 153636789}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd78f2222a7d4e42b998b7f5b437e5f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Protostar::PlatformSurface
+  surfaceType: 1
 --- !u!1 &369688903
 GameObject:
   m_ObjectHideFlags: 0
@@ -37303,6 +37332,11 @@ MonoBehaviour:
   Item1: {fileID: 864227806}
   Item2: {fileID: 229141010}
   Item3: {fileID: 1716009755}
+--- !u!1 &394245441 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6343462185270445500, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
+  m_PrefabInstance: {fileID: 1204040016}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &395929729 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 5f1955fb5e8736848b7535ad177d2015, type: 3}
@@ -52783,6 +52817,7 @@ GameObject:
   - component: {fileID: 602315472}
   - component: {fileID: 602315471}
   - component: {fileID: 602315470}
+  - component: {fileID: 602315473}
   m_Layer: 3
   m_Name: Tutorial Room Floor (7)
   m_TagString: Untagged
@@ -52884,6 +52919,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 602315468}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &602315473
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 602315468}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd78f2222a7d4e42b998b7f5b437e5f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Protostar::PlatformSurface
+  surfaceType: 5
 --- !u!1001 &604220897
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -53524,7 +53572,10 @@ PrefabInstance:
     - {fileID: 4104973947076318633, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
     - {fileID: 739440790628378298, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6343462185270445500, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2043898100}
   m_SourcePrefab: {fileID: 100100000, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
 --- !u!1001 &615012601
 PrefabInstance:
@@ -53914,6 +53965,11 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 5f1955fb5e8736848b7535ad177d2015, type: 3}
   m_PrefabInstance: {fileID: 1451198955}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &635442898 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6343462185270445500, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
+  m_PrefabInstance: {fileID: 1366996994}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &640492133
 GameObject:
@@ -56879,7 +56935,10 @@ PrefabInstance:
     - {fileID: 4104973947076318633, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
     - {fileID: 739440790628378298, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6343462185270445500, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2143236678}
   m_SourcePrefab: {fileID: 100100000, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
 --- !u!1 &695122238
 GameObject:
@@ -62625,6 +62684,19 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3307222304699434245, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
   m_PrefabInstance: {fileID: 1011760688}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &750941237
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 93335682}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd78f2222a7d4e42b998b7f5b437e5f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Protostar::PlatformSurface
+  surfaceType: 5
 --- !u!1 &752247296
 GameObject:
   m_ObjectHideFlags: 0
@@ -116587,6 +116659,7 @@ GameObject:
   - component: {fileID: 999015244}
   - component: {fileID: 999015243}
   - component: {fileID: 999015242}
+  - component: {fileID: 999015245}
   m_Layer: 3
   m_Name: Tutorial Room Floor (8)
   m_TagString: Untagged
@@ -116688,6 +116761,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 999015240}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &999015245
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 999015240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd78f2222a7d4e42b998b7f5b437e5f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Protostar::PlatformSurface
+  surfaceType: 5
 --- !u!1 &999059930
 GameObject:
   m_ObjectHideFlags: 0
@@ -117445,7 +117531,10 @@ PrefabInstance:
     - {fileID: 4104973947076318633, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
     - {fileID: 739440790628378298, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6343462185270445500, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 750941237}
   m_SourcePrefab: {fileID: 100100000, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
 --- !u!1 &1014267990
 GameObject:
@@ -124308,7 +124397,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd78f2222a7d4e42b998b7f5b437e5f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Protostar::PlatformSurface
-  surfaceType: 1
+  surfaceType: 3
 --- !u!1 &1074560648
 GameObject:
   m_ObjectHideFlags: 0
@@ -133917,7 +134006,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: -9195700006118969179, guid: e30cd8b21a53bf543a9415353abe5f9e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1747202478}
   m_SourcePrefab: {fileID: 100100000, guid: e30cd8b21a53bf543a9415353abe5f9e, type: 3}
 --- !u!4 &1161175782 stripped
 Transform:
@@ -139729,7 +139821,10 @@ PrefabInstance:
     - {fileID: 4104973947076318633, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
     - {fileID: 739440790628378298, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6343462185270445500, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1721276781}
   m_SourcePrefab: {fileID: 100100000, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
 --- !u!1 &1205039357
 GameObject:
@@ -140426,7 +140521,10 @@ PrefabInstance:
     - {fileID: 4104973947076318633, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
     - {fileID: 739440790628378298, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6343462185270445500, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2102787723}
   m_SourcePrefab: {fileID: 100100000, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
 --- !u!4 &1214256558 stripped
 Transform:
@@ -141388,7 +141486,10 @@ PrefabInstance:
     - {fileID: 4104973947076318633, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
     - {fileID: 739440790628378298, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6343462185270445500, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1488617491}
   m_SourcePrefab: {fileID: 100100000, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
 --- !u!1001 &1224419014
 PrefabInstance:
@@ -153806,7 +153907,10 @@ PrefabInstance:
     - {fileID: 4104973947076318633, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
     - {fileID: 739440790628378298, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6343462185270445500, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1520377554}
   m_SourcePrefab: {fileID: 100100000, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
 --- !u!1001 &1367741955
 PrefabInstance:
@@ -155288,6 +155392,7 @@ GameObject:
   - component: {fileID: 1392070446}
   - component: {fileID: 1392070445}
   - component: {fileID: 1392070444}
+  - component: {fileID: 1392070447}
   m_Layer: 3
   m_Name: Tutorial Room Floor (10)
   m_TagString: Untagged
@@ -155389,6 +155494,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1392070442}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1392070447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1392070442}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd78f2222a7d4e42b998b7f5b437e5f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Protostar::PlatformSurface
+  surfaceType: 5
 --- !u!4 &1393921488 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 5233867d9c1d17a4f9516ebce169a4e7, type: 3}
@@ -195590,6 +195708,24 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.7124748, y: 11.480669, z: 5.614666}
   m_Center: {x: 0.07651347, y: -0.015045643, z: -0.25204253}
+--- !u!1 &1488617490 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6343462185270445500, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
+  m_PrefabInstance: {fileID: 1223217327}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1488617491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1488617490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd78f2222a7d4e42b998b7f5b437e5f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Protostar::PlatformSurface
+  surfaceType: 5
 --- !u!4 &1490004742 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 1dda38b7e1aed8d408319916e62f596d, type: 3}
@@ -196861,6 +196997,19 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3307222304699434245, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
   m_PrefabInstance: {fileID: 1366996994}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1520377554
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 635442898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd78f2222a7d4e42b998b7f5b437e5f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Protostar::PlatformSurface
+  surfaceType: 5
 --- !u!43 &1524326925
 Mesh:
   m_ObjectHideFlags: 0
@@ -201687,7 +201836,10 @@ PrefabInstance:
     - {fileID: 4104973947076318633, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
     - {fileID: 739440790628378298, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6343462185270445500, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1675730851}
   m_SourcePrefab: {fileID: 100100000, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
 --- !u!1 &1606629365
 GameObject:
@@ -205425,6 +205577,24 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1663872083}
   m_Mesh: {fileID: 8421744311104621043, guid: 91b4e3bdfec64f34fac5b3d4b7ea6268, type: 3}
+--- !u!1 &1664933777 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6343462185270445500, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
+  m_PrefabInstance: {fileID: 2414073}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1664933778
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1664933777}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd78f2222a7d4e42b998b7f5b437e5f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Protostar::PlatformSurface
+  surfaceType: 2
 --- !u!4 &1665065128 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 5f1955fb5e8736848b7535ad177d2015, type: 3}
@@ -205520,6 +205690,7 @@ GameObject:
   - component: {fileID: 1667204424}
   - component: {fileID: 1667204423}
   - component: {fileID: 1667204422}
+  - component: {fileID: 1667204425}
   m_Layer: 3
   m_Name: Tutorial Room Floor (10)
   m_TagString: Untagged
@@ -205621,6 +205792,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1667204420}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1667204425
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1667204420}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd78f2222a7d4e42b998b7f5b437e5f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Protostar::PlatformSurface
+  surfaceType: 2
 --- !u!1001 &1667926067
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -205994,6 +206178,24 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1673962557}
   m_Mesh: {fileID: -313827566592780237, guid: bd752826739fc284e99e580ed2f5bbd9, type: 3}
+--- !u!1 &1675730850 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6343462185270445500, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
+  m_PrefabInstance: {fileID: 1603888886}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1675730851
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1675730850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd78f2222a7d4e42b998b7f5b437e5f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Protostar::PlatformSurface
+  surfaceType: 5
 --- !u!1 &1677219273
 GameObject:
   m_ObjectHideFlags: 0
@@ -208207,6 +208409,7 @@ GameObject:
   - component: {fileID: 1710137465}
   - component: {fileID: 1710137464}
   - component: {fileID: 1710137463}
+  - component: {fileID: 1710137466}
   m_Layer: 3
   m_Name: Tutorial Room Floor (9)
   m_TagString: Untagged
@@ -208308,6 +208511,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1710137461}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1710137466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1710137461}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd78f2222a7d4e42b998b7f5b437e5f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Protostar::PlatformSurface
+  surfaceType: 2
 --- !u!1 &1716009750 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: ff08a17ffb47cb7448cd72213fde4892, type: 3}
@@ -208481,7 +208697,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd78f2222a7d4e42b998b7f5b437e5f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Protostar::PlatformSurface
-  surfaceType: 1
+  surfaceType: 2
 --- !u!1 &1717818003
 GameObject:
   m_ObjectHideFlags: 0
@@ -208921,6 +209137,19 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3307222304699434245, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
   m_PrefabInstance: {fileID: 1204040016}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1721276781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 394245441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd78f2222a7d4e42b998b7f5b437e5f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Protostar::PlatformSurface
+  surfaceType: 5
 --- !u!43 &1722308490
 Mesh:
   m_ObjectHideFlags: 0
@@ -210078,6 +210307,24 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1744859326}
   m_Mesh: {fileID: -364044783463932134, guid: d3271d7d2c208184aab9312f25587bfa, type: 3}
+--- !u!1 &1747202474 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -9195700006118969179, guid: e30cd8b21a53bf543a9415353abe5f9e, type: 3}
+  m_PrefabInstance: {fileID: 1161175781}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1747202478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1747202474}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd78f2222a7d4e42b998b7f5b437e5f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Protostar::PlatformSurface
+  surfaceType: 0
 --- !u!1 &1748711071
 GameObject:
   m_ObjectHideFlags: 0
@@ -211243,7 +211490,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd78f2222a7d4e42b998b7f5b437e5f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Protostar::PlatformSurface
-  surfaceType: 4
+  surfaceType: 5
 --- !u!114 &1772206504
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -222174,6 +222421,7 @@ GameObject:
   - component: {fileID: 1803187358}
   - component: {fileID: 1803187357}
   - component: {fileID: 1803187356}
+  - component: {fileID: 1803187359}
   m_Layer: 3
   m_Name: Tutorial Room Floor
   m_TagString: Untagged
@@ -222275,6 +222523,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1803187354}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1803187359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1803187354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd78f2222a7d4e42b998b7f5b437e5f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Protostar::PlatformSurface
+  surfaceType: 1
 --- !u!43 &1806759953
 Mesh:
   m_ObjectHideFlags: 0
@@ -243028,6 +243289,24 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2043536302}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &2043898099 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6343462185270445500, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
+  m_PrefabInstance: {fileID: 612869261}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2043898100
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2043898099}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd78f2222a7d4e42b998b7f5b437e5f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Protostar::PlatformSurface
+  surfaceType: 1
 --- !u!1 &2044639650
 GameObject:
   m_ObjectHideFlags: 0
@@ -245436,6 +245715,24 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 19e8814ce8dfa584c9a9a044037104ea, type: 3}
   m_PrefabInstance: {fileID: 2100145459}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2102787722 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6343462185270445500, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
+  m_PrefabInstance: {fileID: 1214256557}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2102787723
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2102787722}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd78f2222a7d4e42b998b7f5b437e5f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Protostar::PlatformSurface
+  surfaceType: 2
 --- !u!1 &2104938665
 GameObject:
   m_ObjectHideFlags: 0
@@ -247031,6 +247328,7 @@ GameObject:
   - component: {fileID: 2128192842}
   - component: {fileID: 2128192841}
   - component: {fileID: 2128192840}
+  - component: {fileID: 2128192843}
   m_Layer: 3
   m_Name: Tutorial Room Floor (1)
   m_TagString: Untagged
@@ -247132,6 +247430,19 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2128192838}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &2128192843
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2128192838}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd78f2222a7d4e42b998b7f5b437e5f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Protostar::PlatformSurface
+  surfaceType: 1
 --- !u!1 &2129466479
 GameObject:
   m_ObjectHideFlags: 0
@@ -247938,6 +248249,24 @@ Transform:
   - {fileID: 678041320}
   m_Father: {fileID: 1694867673}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2143236677 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6343462185270445500, guid: c23e0e11f22f34549bdc38b48a1e1ccd, type: 3}
+  m_PrefabInstance: {fileID: 694770612}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2143236678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2143236677}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd78f2222a7d4e42b998b7f5b437e5f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Protostar::PlatformSurface
+  surfaceType: 5
 --- !u!1 &2146189275
 GameObject:
   m_ObjectHideFlags: 0
