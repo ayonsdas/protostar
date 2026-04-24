@@ -18926,8 +18926,9 @@ GameObject:
   - component: {fileID: 229604393}
   - component: {fileID: 229604392}
   - component: {fileID: 229604391}
+  - component: {fileID: 229604394}
   m_Layer: 8
-  m_Name: Cube (12)
+  m_Name: MusicEmitter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -18947,6 +18948,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1964085053}
+  - {fileID: 1925185257}
   m_Father: {fileID: 1375547093}
   m_LocalEulerAnglesHint: {x: 90.2, y: 90, z: 90}
 --- !u!65 &229604391
@@ -19027,6 +19029,26 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 229604389}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &229604394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 229604389}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cabf9c6a01f5746ba5578090d2ca02c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Protostar::Gramophone
+  gramophoneEvent:
+    Guid:
+      Data1: -119770500
+      Data2: 1074124965
+      Data3: 1751474091
+      Data4: 2016643351
+    Path: event:/Piano
+  emitterTransform: {fileID: 1925185257}
 --- !u!1 &232299654
 GameObject:
   m_ObjectHideFlags: 0
@@ -233660,6 +233682,37 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
+--- !u!1 &1925185256
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1925185257}
+  m_Layer: 8
+  m_Name: Emitter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1925185257
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1925185256}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.70710576, y: 0.0012341143, z: 0.0012341143, w: 0.70710576}
+  m_LocalPosition: {x: 0.072731175, y: 343.85516, z: -0.31774098}
+  m_LocalScale: {x: 17.227243, y: 26.352093, z: 12721.897}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 229604390}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1927385333
 GameObject:
   m_ObjectHideFlags: 0

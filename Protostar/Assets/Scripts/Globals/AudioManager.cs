@@ -169,6 +169,14 @@ public class AudioManager : MonoBehaviour
         return eventInstance;
     }
 
+    public EventInstance CreateEventInstance(EventReference eventReference, Vector3 position)
+    {
+        EventInstance eventInstance = RuntimeManager.CreateInstance(eventReference);
+        eventInstances.Add(eventInstance);
+        eventInstance.set3DAttributes(RuntimeUtils.To3DAttributes(position));
+        return eventInstance;
+    }
+
     public StudioEventEmitter InitializeEventEmitter(EventReference eventReference, GameObject emitter)
     {
         StudioEventEmitter eventEmitter = emitter.GetComponent<StudioEventEmitter>();
