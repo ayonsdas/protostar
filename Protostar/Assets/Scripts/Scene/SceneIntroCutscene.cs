@@ -8,6 +8,12 @@ public class SceneIntroCutscene : MonoBehaviour
     {
         if (MenuManager.Instance == null) return;
 
+        MenuManager.Instance.AddCutsceneCloseCallback(introCutscene, HandleIntroClose);
         MenuManager.Instance.PlayCutscene(introCutscene);
+    }
+
+    private void HandleIntroClose()
+    {
+        AudioManager.Instance.SetMusicParameter("IntroComplete", 1);
     }
 }

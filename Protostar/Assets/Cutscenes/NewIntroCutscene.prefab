@@ -467,7 +467,9 @@ MonoBehaviour:
   - {fileID: 21300000, guid: a5bfbdcc6a1e14000a680123e876f3d9, type: 3}
   - {fileID: 21300000, guid: a35b5bc916bdf447fabc70937c827639, type: 3}
   - {fileID: 21300000, guid: abd775e29a2c34295b4afce879111b8e, type: 3}
-  - {fileID: 21300000, guid: 72182dd97865c41858263b26bd72288d, type: 3}
+  - {fileID: 21300000, guid: 8ad59eed1d2344780a3dea2867b189a5, type: 3}
+  - {fileID: 21300000, guid: 693e0bfa9535f4c40b3b54fa4bc6ba33, type: 3}
+  - {fileID: 21300000, guid: 8b4d07279704e4745b8f1c8729ed0fb6, type: 3}
   backButton: {fileID: 6423389081144072302}
   nextButton: {fileID: 6970725272716787460}
   nextButtonText: {fileID: 7705957160469565707}

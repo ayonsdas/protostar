@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using FMOD.Studio;
 using FMODUnity;
 using UnityEngine;
@@ -116,6 +117,10 @@ public class AudioManager : MonoBehaviour
         lastPlayedTime = Time.time;
         lastPlayedTimes[eventGuid] = lastPlayedTime;
 
+        string parameterString = "";
+        if (parameters != null)
+            parameterString = string.Join(", ", parameters.Select(kvp => $"{kvp.Key}: {kvp.Value}"));
+
         if (CreateInstanceWithinMaxDistance(eventGuid, position, out EventInstance instance))
         {
             instance.set3DAttributes(RuntimeUtils.To3DAttributes(position));
@@ -161,6 +166,14 @@ public class AudioManager : MonoBehaviour
     {
         EventInstance eventInstance = RuntimeManager.CreateInstance(eventReference);
         eventInstances.Add(eventInstance);
+        return eventInstance;
+    }
+
+    public EventInstance CreateEventInstance(EventReference eventReference, Vector3 position)
+    {
+        EventInstance eventInstance = RuntimeManager.CreateInstance(eventReference);
+        eventInstances.Add(eventInstance);
+        eventInstance.set3DAttributes(RuntimeUtils.To3DAttributes(position));
         return eventInstance;
     }
 

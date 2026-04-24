@@ -20,6 +20,8 @@ public class SceneOutroCutscene : MonoBehaviour
         MenuManager.Instance.AddCutsceneCloseCallback(outroCutscene, HandleOutroCutsceneClose);
         MenuManager.Instance.PlayCutscene(outroCutscene);
 
+        if (AudioManager.Instance == null) return;
+        AudioManager.Instance.SetMusicParameter("GameComplete", 1);
     }
 
     private void HandleOutroCutsceneClose()

@@ -82,6 +82,8 @@ public class PlayerController : MonoBehaviour
     private PlatformSurface currentPlatformSurface;
     private float lastGroundedTime;
 
+    public bool HasJumpBuffered => jumpBuffer.IsActive;
+
     /// <summary>
     /// Lock or unlock player movement. When locked, WASD input is ignored for movement.
     /// </summary>
@@ -201,6 +203,12 @@ public class PlayerController : MonoBehaviour
 
             currentPlatform = groundPlatform;
 
+            // Try to play surface audio
+            var audioSurface = currentPlatform?.GetComponent<IAudioSurface>();
+            if (audioSurface != null)
+            {
+                audioSurface.Play(transform.position);
+            }
         }
 
         if (IsGrounded)
@@ -242,7 +250,7 @@ public class PlayerController : MonoBehaviour
             // Use buffered jump if we have it
             if (jumpBuffer.Consume())
             {
-                Debug.Log($"[PlayerController] Using buffered jump, starting with velocity {rb.linearVelocity}");
+                Debug.Log($"[PC] Buffer consumed | frame: {Time.frameCount}");
                 HandleJumpSuccess();
             }
             // Only restart coyote time if not using buffered jump

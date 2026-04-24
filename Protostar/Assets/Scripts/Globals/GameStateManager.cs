@@ -135,9 +135,11 @@ public class GameStateManager : MonoBehaviour
         CurrentState = newState;
 
         // Pause/unpause game time
-        bool inGame = newState == GameState.InGame;
-        Time.timeScale = inGame ? 1f : 0f;
-        AudioManager.Instance.SetMusicParameter("IsPause", inGame ? 0f : 1f);
+        bool timePaused = newState != GameState.InGame;
+        Time.timeScale = timePaused ? 0f : 1f;
+
+        bool musicPaused = newState != GameState.InGame && newState != GameState.Cutscene;
+        AudioManager.Instance.SetMusicParameter("IsPause", musicPaused ? 1f : 0f);
 
         OnStateChanged?.Invoke(newState);
     }
