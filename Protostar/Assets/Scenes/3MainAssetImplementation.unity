@@ -7376,7 +7376,7 @@ Transform:
   m_GameObject: {fileID: 191893176}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 1, w: 0}
-  m_LocalPosition: {x: -202.87, y: 124.22, z: 222.11}
+  m_LocalPosition: {x: -202.87, y: 124.22, z: 222.46}
   m_LocalScale: {x: 22.399483, y: 0.030208202, z: 10.8616295}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -34098,7 +34098,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b092cb06c1fb6b24d88c3013c2d97d07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Protostar::CutsceneInteractionItem
-  cutscene: {fileID: 488902700}
+  Cutscene: {fileID: 0}
+  forwardAxis: {x: 0, y: 0, z: 1}
+  orbItem: {fileID: 0}
   pickupSound:
     Guid:
       Data1: 363073422
@@ -34106,6 +34108,7 @@ MonoBehaviour:
       Data3: -181025132
       Data4: 1873657454
     Path: event:/ObjInteract
+  interactItem: 0
 --- !u!65 &455753208
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -34219,47 +34222,47 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: a5838c375b0572c44a06ce57a85905a7, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.0022039665
+      value: 0.0031029133
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a5838c375b0572c44a06ce57a85905a7, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.00097496924
+      value: 0.0010236203
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a5838c375b0572c44a06ce57a85905a7, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.0026714427
+      value: 0.0016083913
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a5838c375b0572c44a06ce57a85905a7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.0353
+      value: 0.035494
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a5838c375b0572c44a06ce57a85905a7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.0265
+      value: 0.0258
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a5838c375b0572c44a06ce57a85905a7, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.00938
+      value: 0.00922
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a5838c375b0572c44a06ce57a85905a7, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.6108385
+      value: 0.527924
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a5838c375b0572c44a06ce57a85905a7, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.6108385
+      value: -0.527924
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a5838c375b0572c44a06ce57a85905a7, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.35619712
+      value: -0.4704214
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a5838c375b0572c44a06ce57a85905a7, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.35619712
+      value: 0.4704214
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a5838c375b0572c44a06ce57a85905a7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: -29.505
+      value: -6.593
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: a5838c375b0572c44a06ce57a85905a7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
@@ -39440,17 +39443,6 @@ Light:
   m_LightUnit: 1
   m_LuxAtDistance: 1
   m_EnableSpotReflector: 1
---- !u!114 &488902700 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4548484269641328857, guid: d2bb0c98edfd6c7488e668440bae6f77, type: 3}
-  m_PrefabInstance: {fileID: 271409145}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 032c4e7af6f4e374dba739796303b160, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ManualCutscene
 --- !u!1 &495397439
 GameObject:
   m_ObjectHideFlags: 0
@@ -49004,7 +48996,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b092cb06c1fb6b24d88c3013c2d97d07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  cutscene: {fileID: 1197740947}
+  Cutscene: {fileID: 0}
+  forwardAxis: {x: 0, y: 0, z: 1}
+  orbItem: {fileID: 0}
   pickupSound:
     Guid:
       Data1: 363073422
@@ -49012,6 +49006,7 @@ MonoBehaviour:
       Data3: -181025132
       Data4: 1873657454
     Path: event:/ObjInteract
+  interactItem: 0
 --- !u!136 &864227808
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -50178,7 +50173,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b092cb06c1fb6b24d88c3013c2d97d07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Protostar::CutsceneInteractionItem
-  cutscene: {fileID: 0}
+  Cutscene: {fileID: 0}
+  forwardAxis: {x: 0, y: 0, z: 1}
+  orbItem: {fileID: 0}
   pickupSound:
     Guid:
       Data1: 363073422
@@ -50186,6 +50183,7 @@ MonoBehaviour:
       Data3: -181025132
       Data4: 1873657454
     Path: event:/ObjInteract
+  interactItem: 0
 --- !u!65 &895209354
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -50694,7 +50692,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b092cb06c1fb6b24d88c3013c2d97d07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  cutscene: {fileID: 1197740947}
+  Cutscene: {fileID: 0}
+  forwardAxis: {x: 0, y: 0, z: 1}
+  orbItem: {fileID: 0}
   pickupSound:
     Guid:
       Data1: 363073422
@@ -50702,6 +50702,7 @@ MonoBehaviour:
       Data3: -181025132
       Data4: 1873657454
     Path: event:/ObjInteract
+  interactItem: 0
 --- !u!136 &903701859
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -53998,7 +53999,6 @@ MonoBehaviour:
       Data3: 111836566
       Data4: -2106466884
     Path: event:/Ambience/LivingSpaceAmbience
-  useOrchestration: 1
 --- !u!4 &1025114207 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 281caad2806d7493eb205ef55ad38c51, type: 3}
@@ -60015,17 +60015,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5987407326663451661, guid: 8e3c5cf8df3cef0468199a871a2cd7e5, type: 3}
   m_PrefabInstance: {fileID: 1195337819}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1197740947 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 644732950325172679, guid: d21c37104370fb34db01d627edff8e08, type: 3}
-  m_PrefabInstance: {fileID: 1987956452}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 032c4e7af6f4e374dba739796303b160, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ManualCutscene
 --- !u!1 &1200200959
 GameObject:
   m_ObjectHideFlags: 0
@@ -150951,6 +150940,13 @@ MonoBehaviour:
   teleport: 1
   disablePreviousZones: 0
   respawnAtLastPlatform: 0
+  respawnSound:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
 --- !u!4 &2021015651
 Transform:
   m_ObjectHideFlags: 0
@@ -163009,7 +163005,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 424.15997, y: 16.821014, z: 102.62073}
-  m_LocalScale: {x: 2.1510673, y: 1.396, z: 1.9094584}
+  m_LocalScale: {x: 2.1510673, y: 1.396, z: 2.2877681}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3727559992857604509}
