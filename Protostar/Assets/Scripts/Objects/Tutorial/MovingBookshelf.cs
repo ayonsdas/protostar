@@ -46,22 +46,15 @@ public class MovingBookshelf : MonoBehaviour
             slot.Lock();
             animator.SetTrigger(trigger);
             PlayBookcaseMoveSound();
-
+            AudioManager.PlayOneShot(bookcaseMoveSound, gameObject.transform.position);
         }
     }
 
     private void PlayBookcaseMoveSound()
     {
-        try
+        if (AudioManager.Instance != null && !bookcaseMoveSound.IsNull)
         {
-            if (AudioManager.Instance != null && !bookcaseMoveSound.IsNull)
-            {
-                AudioManager.PlayOneShot(bookcaseMoveSound, gameObject.transform.position);
-            }
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogWarning($"[MovingBookshelf] Failed to play bookcase move sound: {e.Message}");
+            AudioManager.PlayOneShot(bookcaseMoveSound, gameObject.transform.position);
         }
     }
 }

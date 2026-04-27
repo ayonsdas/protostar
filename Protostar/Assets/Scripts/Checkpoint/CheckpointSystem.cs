@@ -108,18 +108,8 @@ public class CheckpointSystem : MonoBehaviour
             Debug.Log("Active Checkpoint updated to Checkpoint " + activeCheckpointIndex);
 
             // Update the Orchestration parameter in AudioManager
-            try
-            {
-                if (AudioManager.Instance != null)
-                {
-                    AudioManager.Instance.SetMusicParameter("Orchestration", activeCheckpointIndex);
-                    Debug.Log($"[CheckpointSystem] Set Music Orchestration parameter to {activeCheckpointIndex}");
-                }
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogWarning($"[CheckpointSystem] Failed to set music orchestration parameter: {e.Message}");
-            }
+            AudioManager.Instance.SetMusicParameter("Orchestration", activeCheckpointIndex);
+            Debug.Log($"[CheckpointSystem] Set Music Orchestration parameter to {activeCheckpointIndex}");
         }
     }
 
@@ -223,14 +213,7 @@ public class CheckpointSystem : MonoBehaviour
             Debug.Log($"[CheckpointSystem] Respawning at last grounded platform Position: {spawnPointData.Position}, Rotation: {spawnPointData.Rotation}, GravityDirection: {spawnPointData.GravityDirection}");
         }
 
-        try
-        {
-            AudioManager.PlayOneShot(respawnSound);
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogWarning($"[CheckpointSystem] Failed to play respawn sound: {e.Message}");
-        }
+        AudioManager.PlayOneShot(respawnSound);
 
         if (!teleport)
         {

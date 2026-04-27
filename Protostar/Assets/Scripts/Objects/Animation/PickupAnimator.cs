@@ -66,14 +66,7 @@ public class PickupAnimator : MonoBehaviour
 
 
         // Play sound
-        try
-        {
-            AudioManager.PlayOneShot(pickupSound, transform.position);
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogWarning($"[PickupAnimator] Failed to play pickup sound: {e.Message}");
-        }
+        AudioManager.PlayOneShot(pickupSound, transform.position);
 
         // Control the camera
         Vector3 cinematicPosition = transform.position

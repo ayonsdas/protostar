@@ -140,7 +140,8 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        footstepStartTime = Time.time;
+        // Initialize to allow footsteps immediately (debounce will pass)
+        footstepStartTime = Time.time - footstepDebounceTime - 1f;
 
         // Get reference to main camera
         if (Camera.main != null)
@@ -567,25 +568,33 @@ public class PlayerController : MonoBehaviour
     private void UpdateSound()
     {
         if (disableFootsteps) return;
-        try
+        
+        // Initialize footstep event instance if not valid
+        if (!footstepEventInstance.isValid())
         {
-            if (!footstepEventInstance.isValid()) return;
-            
-            if (CanStartFootsteps())
+            if (AudioManager.Instance != null && !footstepEventReference.IsNull)
             {
-                PLAYBACK_STATE playbackState;
-                footstepEventInstance.getPlaybackState(out playbackState);
-                if (playbackState == PLAYBACK_STATE.STOPPED)
-                {
-                    //Debug.Log("Started footsteps Velocity: " + rb.linearVelocity + " Grounded: " + isGrounded);
-                    footstepStartTime = Time.time;
-                    footstepEventInstance.start();
-                }
+                footstepEventInstance = AudioManager.Instance.CreateEventInstance(footstepEventReference, transform.position);
+            }
+            else
+            {
+                return;
             }
         }
-        catch (System.Exception e)
+        
+        if (CanStartFootsteps())
         {
-            Debug.LogWarning($"[PlayerController] Failed to update footstep sound: {e.Message}");
+            PLAYBACK_STATE playbackState;
+            footstepEventInstance.getPlaybackState(out playbackState);
+            
+            // Update 3D position
+            footstepEventInstance.set3DAttributes(FMODUnity.RuntimeUtils.To3DAttributes(transform.position));
+            
+            if (playbackState == PLAYBACK_STATE.STOPPED || playbackState == PLAYBACK_STATE.STOPPING)
+            {
+                footstepStartTime = Time.time;
+                footstepEventInstance.start();
+            }
         }
     }
 

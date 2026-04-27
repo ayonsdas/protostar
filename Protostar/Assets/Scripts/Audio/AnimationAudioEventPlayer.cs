@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using FMODUnity;
@@ -12,56 +11,39 @@ public class AnimationAudioEventPlayer : MonoBehaviour
     private Dictionary<EventReference, float> eventCooldowns = new();
     private bool CanPlayEvent(EventReference eventReference)
     {
-        try
-        {
-            if (AudioManager.Instance == null) return false;
-            
-            // If no known cooldown, then assume can play
-            if (!eventCooldowns.ContainsKey(eventReference))
-                return true;
+        // If no known cooldown, then assume can play
+        if (!eventCooldowns.ContainsKey(eventReference))
+            return true;
 
-            // Check if same event was played recently
-            float cooldownTime = eventCooldowns[eventReference];
-            if (AudioManager.Instance.PlayedRecently(eventReference, cooldownTime))
+        // Check if same event was played recently
+        float cooldownTime = eventCooldowns[eventReference];
+        if (AudioManager.Instance.PlayedRecently(eventReference, cooldownTime))
+        {
+            return false;
+        }
+
+        // Check if any of the cooldown events were played recently
+        foreach (EventReference cooldownReference in cooldownEventReferences)
+        {
+            if (AudioManager.Instance.PlayedRecently(cooldownReference, cooldownTime))
             {
                 return false;
             }
-
-            // Check if any of the cooldown events were played recently
-            foreach (EventReference cooldownReference in cooldownEventReferences)
-            {
-                if (AudioManager.Instance.PlayedRecently(cooldownReference, cooldownTime))
-                {
-                    return false;
-                }
-            }
-
-            return true;
         }
-        catch (Exception e)
-        {
-            Debug.LogWarning($"[AnimationAudioEventPlayer] Error checking event cooldown: {e.Message}");
-            return false;
-        }
+
+        return true;
     }
 
     public void PlayOneShot(AnimationEvent animationEvent)
     {
-        try
-        {
-            var soundEvent = animationEvent.objectReferenceParameter as SoundEvent;
-            if (soundEvent == null) return;
+        var soundEvent = animationEvent.objectReferenceParameter as SoundEvent;
+        if (soundEvent == null) return;
 
-            eventCooldowns[soundEvent.Event] = soundEvent.Cooldown;
+        eventCooldowns[soundEvent.Event] = soundEvent.Cooldown;
 
-            if (!CanPlayEvent(soundEvent.Event))
-                return;
+        if (!CanPlayEvent(soundEvent.Event))
+            return;
 
-            AudioManager.PlayOneShotOnSurface(soundEvent.Event, transform.position, soundEvent.SurfaceParameterName);
-        }
-        catch (Exception e)
-        {
-            Debug.LogWarning($"[AnimationAudioEventPlayer] Failed to play audio event: {e.Message}");
-        }
+        AudioManager.PlayOneShotOnSurface(soundEvent.Event, transform.position, soundEvent.SurfaceParameterName);
     }
 }

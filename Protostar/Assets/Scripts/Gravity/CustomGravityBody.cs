@@ -128,16 +128,9 @@ public class CustomGravityBody : MonoBehaviour
 
         if (angle > soundAngleThreshold)
         {
-            try
+            if (AudioManager.Instance != null && !gravityFlipEvent.IsNull)
             {
-                if (AudioManager.Instance != null && !gravityFlipEvent.IsNull)
-                {
-                    AudioManager.PlayOneShot(gravityFlipEvent, transform.position);
-                }
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogWarning($"[CustomGravityBody] Failed to play gravity flip sound: {e.Message}");
+                AudioManager.PlayOneShot(gravityFlipEvent, transform.position);
             }
         }
 

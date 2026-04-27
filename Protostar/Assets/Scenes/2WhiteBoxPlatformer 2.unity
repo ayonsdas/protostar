@@ -111021,6 +111021,10 @@ PrefabInstance:
       value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 2094070022166867159, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
+      propertyPath: disableFootsteps
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2094070022166867159, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
       propertyPath: landCooldownTime
       value: 0.5
       objectReference: {fileID: 0}

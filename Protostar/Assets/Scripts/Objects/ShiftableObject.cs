@@ -40,16 +40,9 @@ public class ShiftableObject : MonoBehaviour, IEngageable, IShiftable, IInteract
 
     private void PlayShiftSound()
     {
-        try
+        if (AudioManager.Instance != null && !objectShiftSound.IsNull)
         {
-            if (AudioManager.Instance != null && !objectShiftSound.IsNull)
-            {
-                AudioManager.PlayOneShot(objectShiftSound, gameObject.transform.position);
-            }
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogWarning($"[ShiftableObject] Failed to play shift sound: {e.Message}");
+            AudioManager.PlayOneShot(objectShiftSound, gameObject.transform.position);
         }
     }
 

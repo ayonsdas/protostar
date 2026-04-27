@@ -21,14 +21,7 @@ public class SceneOutroCutscene : MonoBehaviour
         MenuManager.Instance.PlayCutscene(outroCutscene);
 
         if (AudioManager.Instance == null) return;
-        try
-        {
-            AudioManager.Instance.SetMusicParameter("GameComplete", 1);
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogWarning($"[SceneOutroCutscene] Failed to set music parameter: {e.Message}");
-        }
+        AudioManager.Instance.SetMusicParameter("GameComplete", 1);
     }
 
     private void HandleOutroCutsceneClose()

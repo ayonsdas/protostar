@@ -138,18 +138,8 @@ public class GameStateManager : MonoBehaviour
         bool timePaused = newState != GameState.InGame;
         Time.timeScale = timePaused ? 0f : 1f;
 
-        try
-        {
-            bool musicPaused = newState != GameState.InGame && newState != GameState.Cutscene;
-            if (AudioManager.Instance != null)
-            {
-                AudioManager.Instance.SetMusicParameter("IsPause", musicPaused ? 1f : 0f);
-            }
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogWarning($"[GameStateManager] Failed to set music pause parameter: {e.Message}");
-        }
+        bool musicPaused = newState != GameState.InGame && newState != GameState.Cutscene;
+        AudioManager.Instance.SetMusicParameter("IsPause", musicPaused ? 1f : 0f);
 
         OnStateChanged?.Invoke(newState);
     }
