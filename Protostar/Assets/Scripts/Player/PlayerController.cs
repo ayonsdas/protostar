@@ -23,6 +23,8 @@ public class PlayerController : MonoBehaviour
     public Transform groundCheck; // Create an empty child object at player's feet
     [Tooltip("Layers to check for ground. Set to 'Everything' to jump off any object, or specific layers to limit what counts as ground.")]
     public LayerMask groundLayer = ~0; // Default to all layers (~0 = everything)
+    [Tooltip("Maximum angle (in degrees) for a surface to be considered ground. 45 means surfaces steeper than 45° won't count as ground.")]
+    [SerializeField] private float maxGroundAngle = 45f;
 
     [Header("Gravity Rotation Settings")]
     public float gravityRotationSpeed = 2f; // How fast player rotates to match gravity
@@ -176,13 +178,34 @@ public class PlayerController : MonoBehaviour
 
         if (groundCheck != null)
         {
+            Vector3 upDirection = gravityBody.GetUpDirection();
+            
+            // First, get all potential ground colliders in range
             Collider[] colliders = Physics.OverlapSphere(groundCheck.position, groundCheckRadius, groundLayer, QueryTriggerInteraction.Ignore);
+            
             foreach (Collider col in colliders)
             {
-                if (col != groundCheckBoxCollider)
+                // Skip our own collider
+                if (col == groundCheckBoxCollider) continue;
+                
+                // Do a raycast down to get the surface normal
+                RaycastHit hit;
+                if (Physics.Raycast(groundCheck.position, gravityDown, out hit, groundCheckRadius * 2f, groundLayer, QueryTriggerInteraction.Ignore))
                 {
-                    groundPlatform = col.gameObject;
-                    foundGround = true;
+                    // Make sure we hit this specific collider
+                    if (hit.collider == col)
+                    {
+                        // Check the angle of the surface normal vs our "up" direction
+                        float surfaceAngle = Vector3.Angle(hit.normal, upDirection);
+                        
+                        // Only consider it ground if the angle is within acceptable range
+                        if (surfaceAngle <= maxGroundAngle)
+                        {
+                            groundPlatform = col.gameObject;
+                            foundGround = true;
+                            break; // Found valid ground, no need to check more
+                        }
+                    }
                 }
             }
         }
@@ -269,9 +292,16 @@ public class PlayerController : MonoBehaviour
 
     private void UpdatePlatformAudioParameters()
     {
-        if (currentPlatformSurface != null)
+        try
         {
-            AudioManager.SurfaceParameter = currentPlatformSurface.ParameterValue;
+            if (currentPlatformSurface != null && AudioManager.Instance != null)
+            {
+                AudioManager.SurfaceParameter = currentPlatformSurface.ParameterValue;
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning($"[PlayerController] Failed to update surface audio parameter: {e.Message}");
         }
     }
 
@@ -410,6 +440,41 @@ public class PlayerController : MonoBehaviour
         AlignToGravity();
     }
 
+    void OnCollisionStay(Collision collision)
+    {
+        // Only process if player is airborne
+        if (IsGrounded) return;
+
+        Vector3 upDirection = gravityBody.GetUpDirection();
+        
+        // Check each contact point to see if we're hitting a wall
+        foreach (ContactPoint contact in collision.contacts)
+        {
+            // Calculate angle between contact normal and up direction
+            float angleToUp = Vector3.Angle(contact.normal, upDirection);
+            
+            // If angle > maxGroundAngle, it's a wall (not ground)
+            // Wall normals point away from the wall, mostly horizontal relative to gravity
+            if (angleToUp > maxGroundAngle)
+            {
+                // Get current velocity
+                Vector3 velocity = rb.linearVelocity;
+                
+                // Calculate velocity component pushing into the wall
+                // (negative dot product means moving toward wall)
+                float velocityIntoWall = Vector3.Dot(velocity, contact.normal);
+                
+                // If moving into the wall, remove that velocity component
+                if (velocityIntoWall < 0)
+                {
+                    // Remove the component pushing into the wall
+                    velocity -= contact.normal * velocityIntoWall;
+                    rb.linearVelocity = velocity;
+                }
+            }
+        }
+    }
+
     // Called by Player Input component (Send Messages behavior)
     public void OnMove(InputAction.CallbackContext ctx)
     {
@@ -445,7 +510,14 @@ public class PlayerController : MonoBehaviour
 
         ApplyJumpForce();
 
-        AudioManager.PlayOneShot(jumpEventReference, gameObject.transform.position);
+        try
+        {
+            AudioManager.PlayOneShot(jumpEventReference, gameObject.transform.position);
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning($"[PlayerController] Failed to play jump sound: {e.Message}");
+        }
 
         OnJumpSuccess?.Invoke();
     }
@@ -495,16 +567,25 @@ public class PlayerController : MonoBehaviour
     private void UpdateSound()
     {
         if (disableFootsteps) return;
-        if (CanStartFootsteps())
+        try
         {
-            PLAYBACK_STATE playbackState;
-            footstepEventInstance.getPlaybackState(out playbackState);
-            if (playbackState == PLAYBACK_STATE.STOPPED)
+            if (!footstepEventInstance.isValid()) return;
+            
+            if (CanStartFootsteps())
             {
-                //Debug.Log("Started footsteps Velocity: " + rb.linearVelocity + " Grounded: " + isGrounded);
-                footstepStartTime = Time.time;
-                footstepEventInstance.start();
+                PLAYBACK_STATE playbackState;
+                footstepEventInstance.getPlaybackState(out playbackState);
+                if (playbackState == PLAYBACK_STATE.STOPPED)
+                {
+                    //Debug.Log("Started footsteps Velocity: " + rb.linearVelocity + " Grounded: " + isGrounded);
+                    footstepStartTime = Time.time;
+                    footstepEventInstance.start();
+                }
             }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning($"[PlayerController] Failed to update footstep sound: {e.Message}");
         }
     }
 
@@ -512,8 +593,15 @@ public class PlayerController : MonoBehaviour
     {
         if (!CanPlayLandSound) return;
 
-        landSFXCooldownTimer.Restart();
-        AudioManager.PlayOneShotOnSurface(landEventReference, transform.position);
+        try
+        {
+            landSFXCooldownTimer.Restart();
+            AudioManager.PlayOneShotOnSurface(landEventReference, transform.position);
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning($"[PlayerController] Failed to play land sound: {e.Message}");
+        }
     }
 
     public float GetHorizontalSpeed()

@@ -10,15 +10,22 @@ public class PianoKey : MonoBehaviour, IAudioSurface
 
     public void Play(Vector3 playerPosition)
     {
-        Debug.Log("Playing piano key");
-        if (AudioManager.Instance == null || pianoEvent.IsNull) return;
-
-        Dictionary<string, float> parameters = new()
+        try
         {
-            [PIANO_KEY_PARAMETER] = _keyValue
-        };
-        Debug.Log($"Piano key event {pianoEvent.Path} parameter {PIANO_KEY_PARAMETER} = {_keyValue}");
+            Debug.Log("Playing piano key");
+            if (AudioManager.Instance == null || pianoEvent.IsNull) return;
 
-        AudioManager.PlayOneShot(pianoEvent, playerPosition, parameters);
+            Dictionary<string, float> parameters = new()
+            {
+                [PIANO_KEY_PARAMETER] = _keyValue
+            };
+            Debug.Log($"Piano key event {pianoEvent} parameter {PIANO_KEY_PARAMETER} = {_keyValue}");
+
+            AudioManager.PlayOneShot(pianoEvent, playerPosition, parameters);
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning($"[PianoKey] Failed to play piano sound: {e.Message}");
+        }
     }
 }

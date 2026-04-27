@@ -61,17 +61,24 @@ public class AudioManager : MonoBehaviour
 
     public void SetBusVolume(AudioBus bus, float volume)
     {
-        switch (bus)
+        try
         {
-            case AudioBus.Master:
-                masterBus.setVolume(volume);
-                break;
-            case AudioBus.Music:
-                musicBus.setVolume(volume);
-                break;
-            case AudioBus.SFX:
-                sfxBus.setVolume(volume);
-                break;
+            switch (bus)
+            {
+                case AudioBus.Master:
+                    masterBus.setVolume(volume);
+                    break;
+                case AudioBus.Music:
+                    musicBus.setVolume(volume);
+                    break;
+                case AudioBus.SFX:
+                    sfxBus.setVolume(volume);
+                    break;
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"[AudioManager] Failed to set bus volume: {e.Message}");
         }
     }
 
@@ -93,7 +100,14 @@ public class AudioManager : MonoBehaviour
     public static void PlayOneShot(EventReference eventReference, Vector3 position = new Vector3(), Dictionary<string, float> parameters = null)
     {
         if (Instance == null || eventReference.IsNull) return;
-        Instance.PlayOneShot(eventReference.Guid, position, parameters);
+        try
+        {
+            Instance.PlayOneShot(eventReference.Guid, position, parameters);
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"[AudioManager] Failed to play one-shot sound: {e.Message}");
+        }
     }
 
     public static void PlayOneShot(string path, Vector3 position = new Vector3(), Dictionary<string, float> parameters = null)
@@ -114,19 +128,26 @@ public class AudioManager : MonoBehaviour
     {
         if (eventGuid.IsNull) return;
 
-        lastPlayedTime = Time.time;
-        lastPlayedTimes[eventGuid] = lastPlayedTime;
-
-        string parameterString = "";
-        if (parameters != null)
-            parameterString = string.Join(", ", parameters.Select(kvp => $"{kvp.Key}: {kvp.Value}"));
-
-        if (CreateInstanceWithinMaxDistance(eventGuid, position, out EventInstance instance))
+        try
         {
-            instance.set3DAttributes(RuntimeUtils.To3DAttributes(position));
-            SetParameters(instance, parameters);
-            instance.start();
-            instance.release();
+            lastPlayedTime = Time.time;
+            lastPlayedTimes[eventGuid] = lastPlayedTime;
+
+            string parameterString = "";
+            if (parameters != null)
+                parameterString = string.Join(", ", parameters.Select(kvp => $"{kvp.Key}: {kvp.Value}"));
+
+            if (CreateInstanceWithinMaxDistance(eventGuid, position, out EventInstance instance))
+            {
+                instance.set3DAttributes(RuntimeUtils.To3DAttributes(position));
+                SetParameters(instance, parameters);
+                instance.start();
+                instance.release();
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"[AudioManager] Failed to play one-shot FMOD event: {e.Message}");
         }
     }
 
@@ -134,61 +155,116 @@ public class AudioManager : MonoBehaviour
     {
         if (parameters == null || !instance.isValid()) return;
 
-        foreach (var (name, value) in parameters)
+        try
         {
-            instance.setParameterByName(name, value);
-            // Debug.Log($"[AudioManager] Set parameter {name} to {value}");
+            foreach (var (name, value) in parameters)
+            {
+                instance.setParameterByName(name, value);
+                // Debug.Log($"[AudioManager] Set parameter {name} to {value}");
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"[AudioManager] Failed to set audio parameters: {e.Message}");
         }
     }
 
     private static bool CreateInstanceWithinMaxDistance(FMOD.GUID guid, Vector3 position, out EventInstance instance)
     {
-        EventDescription description = RuntimeManager.GetEventDescription(guid);
-        if (Settings.Instance.StopEventsOutsideMaxDistance)
+        try
         {
-            description.is3D(out bool is3D);
-            if (is3D)
+            EventDescription description = RuntimeManager.GetEventDescription(guid);
+            if (Settings.Instance.StopEventsOutsideMaxDistance)
             {
-                description.getMinMaxDistance(out float min, out float max);
-                if (StudioListener.DistanceSquaredToNearestListener(position) > (max * max))
+                description.is3D(out bool is3D);
+                if (is3D)
                 {
-                    instance = new EventInstance();
-                    return false;
+                    description.getMinMaxDistance(out float min, out float max);
+                    if (StudioListener.DistanceSquaredToNearestListener(position) > (max * max))
+                    {
+                        instance = new EventInstance();
+                        return false;
+                    }
                 }
             }
-        }
 
-        description.createInstance(out instance);
-        return true;
+            description.createInstance(out instance);
+            return true;
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"[AudioManager] Failed to create event instance: {e.Message}");
+            instance = new EventInstance();
+            return false;
+        }
     }
 
     public EventInstance CreateEventInstance(EventReference eventReference)
     {
-        EventInstance eventInstance = RuntimeManager.CreateInstance(eventReference);
-        eventInstances.Add(eventInstance);
-        return eventInstance;
+        try
+        {
+            EventInstance eventInstance = RuntimeManager.CreateInstance(eventReference);
+            eventInstances.Add(eventInstance);
+            return eventInstance;
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"[AudioManager] Failed to create event instance: {e.Message}");
+            return new EventInstance();
+        }
     }
 
     public EventInstance CreateEventInstance(EventReference eventReference, Vector3 position)
     {
-        EventInstance eventInstance = RuntimeManager.CreateInstance(eventReference);
-        eventInstances.Add(eventInstance);
-        eventInstance.set3DAttributes(RuntimeUtils.To3DAttributes(position));
-        return eventInstance;
+        try
+        {
+            EventInstance eventInstance = RuntimeManager.CreateInstance(eventReference);
+            eventInstances.Add(eventInstance);
+            eventInstance.set3DAttributes(RuntimeUtils.To3DAttributes(position));
+            return eventInstance;
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"[AudioManager] Failed to create event instance with position: {e.Message}");
+            return new EventInstance();
+        }
     }
 
     public StudioEventEmitter InitializeEventEmitter(EventReference eventReference, GameObject emitter)
     {
-        StudioEventEmitter eventEmitter = emitter.GetComponent<StudioEventEmitter>();
-        eventEmitter.EventReference = eventReference;
-        eventEmitters.Add(eventEmitter);
-        return eventEmitter;
+        try
+        {
+            StudioEventEmitter eventEmitter = emitter.GetComponent<StudioEventEmitter>();
+            if (eventEmitter == null)
+            {
+                Debug.LogWarning($"[AudioManager] No StudioEventEmitter found on {emitter.name}");
+                return null;
+            }
+            eventEmitter.EventReference = eventReference;
+            eventEmitters.Add(eventEmitter);
+            return eventEmitter;
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"[AudioManager] Failed to initialize event emitter: {e.Message}");
+            return null;
+        }
     }
 
     public void PlayMusic(EventReference eventReference)
     {
-        musicEventInstance = CreateEventInstance(eventReference);
-        musicEventInstance.start();
+        try
+        {
+            musicEventInstance = CreateEventInstance(eventReference);
+            if (musicEventInstance.isValid())
+            {
+                musicEventInstance.start();
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"[AudioManager] Failed to play music: {e.Message}");
+        }
     }
 
     private FMOD.RESULT LoopEndCallback(
@@ -218,37 +294,74 @@ public class AudioManager : MonoBehaviour
 
     public void SetMusicActive(bool active, FMOD.Studio.STOP_MODE stopMode = FMOD.Studio.STOP_MODE.IMMEDIATE)
     {
-        if (active)
+        try
         {
-            musicEventInstance.start();
+            if (!musicEventInstance.isValid()) return;
+            
+            if (active)
+            {
+                musicEventInstance.start();
+            }
+            else
+            {
+                musicEventInstance.stop(stopMode);
+            }
         }
-        else
+        catch (Exception e)
         {
-            musicEventInstance.stop(stopMode);
+            Debug.LogWarning($"[AudioManager] Failed to set music active state: {e.Message}");
         }
     }
 
     public void SetMusicParameter(string parameterName, float value)
     {
-        musicEventInstance.setParameterByName(parameterName, value);
-        Debug.Log($"[AudioManager] Set music parameter {parameterName} to {value}");
+        try
+        {
+            if (!musicEventInstance.isValid()) return;
+            
+            musicEventInstance.setParameterByName(parameterName, value);
+            Debug.Log($"[AudioManager] Set music parameter {parameterName} to {value}");
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"[AudioManager] Failed to set music parameter: {e.Message}");
+        }
     }
 
     public void PlayAmbience(EventReference eventReference)
     {
-        ambienceEventInstance = CreateEventInstance(eventReference);
-        ambienceEventInstance.start();
+        try
+        {
+            ambienceEventInstance = CreateEventInstance(eventReference);
+            if (ambienceEventInstance.isValid())
+            {
+                ambienceEventInstance.start();
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"[AudioManager] Failed to play ambience: {e.Message}");
+        }
     }
 
     public void SetAmbienceActive(bool active, FMOD.Studio.STOP_MODE stopMode = FMOD.Studio.STOP_MODE.IMMEDIATE)
     {
-        if (active)
+        try
         {
-            ambienceEventInstance.start();
+            if (!ambienceEventInstance.isValid()) return;
+            
+            if (active)
+            {
+                ambienceEventInstance.start();
+            }
+            else
+            {
+                ambienceEventInstance.stop(stopMode);
+            }
         }
-        else
+        catch (Exception e)
         {
-            ambienceEventInstance.stop(stopMode);
+            Debug.LogWarning($"[AudioManager] Failed to set ambience active state: {e.Message}");
         }
     }
 
@@ -259,8 +372,16 @@ public class AudioManager : MonoBehaviour
 
     public bool PlayedRecently(string path, float cooldown)
     {
-        FMOD.GUID eventGuid = RuntimeManager.PathToGUID(path);
-        return PlayedRecently(eventGuid, cooldown);
+        try
+        {
+            FMOD.GUID eventGuid = RuntimeManager.PathToGUID(path);
+            return PlayedRecently(eventGuid, cooldown);
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"[AudioManager] Failed to check if played recently: {e.Message}");
+            return false;
+        }
     }
 
     private bool PlayedRecently(FMOD.GUID eventGuid, float cooldown)
@@ -274,20 +395,33 @@ public class AudioManager : MonoBehaviour
 
     private void Cleanup()
     {
-        if (eventInstances != null)
+        try
         {
-            foreach (EventInstance eventInstance in eventInstances)
+            if (eventInstances != null)
             {
-                eventInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
-                eventInstance.release();
+                foreach (EventInstance eventInstance in eventInstances)
+                {
+                    if (eventInstance.isValid())
+                    {
+                        eventInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+                        eventInstance.release();
+                    }
+                }
+            }
+            if (eventEmitters != null)
+            {
+                foreach (StudioEventEmitter emitter in eventEmitters)
+                {
+                    if (emitter != null)
+                    {
+                        emitter.Stop();
+                    }
+                }
             }
         }
-        if (eventEmitters != null)
+        catch (Exception e)
         {
-            foreach (StudioEventEmitter emitter in eventEmitters)
-            {
-                emitter.Stop();
-            }
+            Debug.LogWarning($"[AudioManager] Error during audio cleanup: {e.Message}");
         }
     }
 

@@ -1,0 +1,179 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!319 &31900000
+AvatarMask:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: bagmask
+  m_Mask: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  m_Elements:
+  - m_Path: 
+    m_Weight: 1
+  - m_Path: Armature
+    m_Weight: 0
+  - m_Path: Armature/backpack
+    m_Weight: 1
+  - m_Path: Armature/backpack/base1
+    m_Weight: 1
+  - m_Path: Armature/backpack/base1/string1
+    m_Weight: 1
+  - m_Path: Armature/backpack/base1/string1/string1_end
+    m_Weight: 1
+  - m_Path: Armature/backpack/base2
+    m_Weight: 1
+  - m_Path: Armature/backpack/base2/string2
+    m_Weight: 1
+  - m_Path: Armature/backpack/base2/string2/string2_end
+    m_Weight: 1
+  - m_Path: Armature/backpack/base3
+    m_Weight: 1
+  - m_Path: Armature/backpack/base3/string3
+    m_Weight: 1
+  - m_Path: Armature/backpack/base3/string3/string3_end
+    m_Weight: 1
+  - m_Path: Armature/backpack/base4
+    m_Weight: 1
+  - m_Path: Armature/backpack/base4/string4
+    m_Weight: 1
+  - m_Path: Armature/backpack/base4/string4/string4_end
+    m_Weight: 1
+  - m_Path: Armature/backpack/base5
+    m_Weight: 1
+  - m_Path: Armature/backpack/base5/base5_end
+    m_Weight: 1
+  - m_Path: Armature/elbow_L
+    m_Weight: 0
+  - m_Path: Armature/elbow_L/elbow_L_end
+    m_Weight: 0
+  - m_Path: Armature/elbow_R
+    m_Weight: 0
+  - m_Path: Armature/elbow_R/elbow_R_end
+    m_Weight: 0
+  - m_Path: Armature/foot_ik_L
+    m_Weight: 0
+  - m_Path: Armature/foot_ik_L/foot_ik_L_end
+    m_Weight: 0
+  - m_Path: Armature/foot_ik_R
+    m_Weight: 0
+  - m_Path: Armature/foot_ik_R/foot_ik_R_end
+    m_Weight: 0
+  - m_Path: Armature/hand_ik_L
+    m_Weight: 0
+  - m_Path: Armature/hand_ik_L/hand_ik_L_end
+    m_Weight: 0
+  - m_Path: Armature/hand_ik_R
+    m_Weight: 0
+  - m_Path: Armature/hand_ik_R/hand_ik_R_end
+    m_Weight: 0
+  - m_Path: Armature/knee_ik_L
+    m_Weight: 0
+  - m_Path: Armature/knee_ik_L/knee_ik_L_end
+    m_Weight: 0
+  - m_Path: Armature/knee_ik_R
+    m_Weight: 0
+  - m_Path: Armature/knee_ik_R/knee_ik_R_end
+    m_Weight: 0
+  - m_Path: Armature/root
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/hip_L
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/hip_L/upperLeg_L
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/hip_L/upperLeg_L/lowerLeg_L
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/hip_L/upperLeg_L/lowerLeg_L/foot_L
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/hip_L/upperLeg_L/lowerLeg_L/foot_L/toe_L
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/hip_L/upperLeg_L/lowerLeg_L/foot_L/toe_L/toe_L_end
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/hip_R
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/hip_R/upperLeg_R
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/hip_R/upperLeg_R/lowerLeg_R
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/hip_R/upperLeg_R/lowerLeg_R/foot_R
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/hip_R/upperLeg_R/lowerLeg_R/foot_R/toe_R
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/hip_R/upperLeg_R/lowerLeg_R/foot_R/toe_R/toe_R_end
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/spine_0
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/spine_0/spine_1
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/spine_0/spine_1/spine_2
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/spine_0/spine_1/spine_2/neck
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/spine_0/spine_1/spine_2/neck/head
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/spine_0/spine_1/spine_2/neck/head/eye_L
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/spine_0/spine_1/spine_2/neck/head/eye_L/eye_L_end
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/spine_0/spine_1/spine_2/neck/head/eye_R
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/spine_0/spine_1/spine_2/neck/head/eye_R/eye_R_end
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/spine_0/spine_1/spine_2/neck/head/flop_0
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/spine_0/spine_1/spine_2/neck/head/flop_0/flop_1
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/spine_0/spine_1/spine_2/neck/head/flop_0/flop_1/flop_2
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/spine_0/spine_1/spine_2/neck/head/flop_0/flop_1/flop_2/flop_3
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/spine_0/spine_1/spine_2/neck/head/flop_0/flop_1/flop_2/flop_3/flop_3_end
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/spine_0/spine_1/spine_2/shoulder_L
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/spine_0/spine_1/spine_2/shoulder_L/upperArm_L
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/spine_0/spine_1/spine_2/shoulder_L/upperArm_L/lowerArm_L
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/spine_0/spine_1/spine_2/shoulder_L/upperArm_L/lowerArm_L/hand_L
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/spine_0/spine_1/spine_2/shoulder_L/upperArm_L/lowerArm_L/hand_L/finger_0_L
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/spine_0/spine_1/spine_2/shoulder_L/upperArm_L/lowerArm_L/hand_L/finger_0_L/finger_1_L
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/spine_0/spine_1/spine_2/shoulder_L/upperArm_L/lowerArm_L/hand_L/finger_0_L/finger_1_L/finger_1_L_end
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/spine_0/spine_1/spine_2/shoulder_L/upperArm_L/lowerArm_L/hand_L/thumb_0_L
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/spine_0/spine_1/spine_2/shoulder_L/upperArm_L/lowerArm_L/hand_L/thumb_0_L/thumb_1_L
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/spine_0/spine_1/spine_2/shoulder_L/upperArm_L/lowerArm_L/hand_L/thumb_0_L/thumb_1_L/thumb_1_L_end
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/spine_0/spine_1/spine_2/shoulder_R
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/spine_0/spine_1/spine_2/shoulder_R/upperArm_R
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/spine_0/spine_1/spine_2/shoulder_R/upperArm_R/lowerArm_R
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/spine_0/spine_1/spine_2/shoulder_R/upperArm_R/lowerArm_R/hand_R
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/spine_0/spine_1/spine_2/shoulder_R/upperArm_R/lowerArm_R/hand_R/finger_0_R
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/spine_0/spine_1/spine_2/shoulder_R/upperArm_R/lowerArm_R/hand_R/finger_0_R/finger_1_R
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/spine_0/spine_1/spine_2/shoulder_R/upperArm_R/lowerArm_R/hand_R/finger_0_R/finger_1_R/finger_1_R_end
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/spine_0/spine_1/spine_2/shoulder_R/upperArm_R/lowerArm_R/hand_R/thumb_0_R
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/spine_0/spine_1/spine_2/shoulder_R/upperArm_R/lowerArm_R/hand_R/thumb_0_R/thumb_1_R
+    m_Weight: 0
+  - m_Path: Armature/root/pelvis/spine_0/spine_1/spine_2/shoulder_R/upperArm_R/lowerArm_R/hand_R/thumb_0_R/thumb_1_R/thumb_1_R_end
+    m_Weight: 0
+  - m_Path: bag
+    m_Weight: 1
+  - m_Path: player
+    m_Weight: 0
+  - m_Path: strap
+    m_Weight: 1

@@ -20,14 +20,21 @@ public class SceneAudioSetup : MonoBehaviour
     {
         if (AudioManager.Instance == null) return;
 
-        if (!musicEventReference.IsNull)
+        try
         {
-            AudioManager.Instance.PlayMusic(musicEventReference);
-        }
+            if (!musicEventReference.IsNull)
+            {
+                AudioManager.Instance.PlayMusic(musicEventReference);
+            }
 
-        if (!ambienceEventReference.IsNull)
+            if (!ambienceEventReference.IsNull)
+            {
+                AudioManager.Instance.PlayAmbience(ambienceEventReference);
+            }
+        }
+        catch (System.Exception e)
         {
-            AudioManager.Instance.PlayAmbience(ambienceEventReference);
+            Debug.LogWarning($"[SceneAudioSetup] Failed to start scene audio: {e.Message}");
         }
     }
 

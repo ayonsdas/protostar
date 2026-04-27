@@ -80,7 +80,14 @@ public class CutsceneInteractionItem : MonoBehaviour, IInteractable, IInteractio
 
     private void DefaultPickup()
     {
-        AudioManager.PlayOneShot(pickupSound);
+        try
+        {
+            AudioManager.PlayOneShot(pickupSound);
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning($"[CutsceneInteractionItem] Failed to play pickup sound: {e.Message}");
+        }
         gameObject.SetActive(false);
     }
 

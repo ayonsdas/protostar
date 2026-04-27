@@ -44854,7 +44854,7 @@ PrefabInstance:
     - target: {fileID: 5629239914107230304, guid: 668a948ea1758ad469ba23346a5ed8db, type: 3}
       propertyPath: playerRenderer
       value: 
-      objectReference: {fileID: 1716526284}
+      objectReference: {fileID: 0}
     - target: {fileID: 7851867205609341588, guid: 668a948ea1758ad469ba23346a5ed8db, type: 3}
       propertyPath: m_LocalPosition.x
       value: 361.86047
@@ -111060,6 +111060,10 @@ PrefabInstance:
       propertyPath: m_Center.y
       value: -0.012710476
       objectReference: {fileID: 0}
+    - target: {fileID: 4162050533541982623, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
+      propertyPath: m_Avatar
+      value: 
+      objectReference: {fileID: 9000000, guid: 852cf9425cb60b8479dbd10aa2131805, type: 3}
     - target: {fileID: 4162050533541982623, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
       propertyPath: m_Controller
       value: 
@@ -210480,11 +210484,6 @@ BoxCollider:
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: ff08a17ffb47cb7448cd72213fde4892, type: 3}
   m_PrefabInstance: {fileID: 1677528872}
-  m_PrefabAsset: {fileID: 0}
---- !u!137 &1716526284 stripped
-SkinnedMeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 3386632812885167989, guid: 196a7c5bb52d5ddb98929df48f3428b7, type: 3}
-  m_PrefabInstance: {fileID: 890825962}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1717244191
 GameObject:

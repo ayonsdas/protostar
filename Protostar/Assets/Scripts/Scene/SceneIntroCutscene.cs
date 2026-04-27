@@ -14,6 +14,16 @@ public class SceneIntroCutscene : MonoBehaviour
 
     private void HandleIntroClose()
     {
-        AudioManager.Instance.SetMusicParameter("IntroComplete", 1);
+        try
+        {
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.SetMusicParameter("IntroComplete", 1);
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning($"[SceneIntroCutscene] Failed to set music parameter: {e.Message}");
+        }
     }
 }

@@ -10,17 +10,27 @@ public class Gramophone : MonoBehaviour, IAudioSurface
 
     public void Play(Vector3 playerPosition)
     {
-        if (AudioManager.Instance == null || (gramophoneEvent.IsNull && !eventInstance.isValid())) return;
-
-        if (!eventInstance.isValid())
+        try
         {
-            eventInstance = AudioManager.Instance.CreateEventInstance(gramophoneEvent, emitterTransform.position);
+            if (AudioManager.Instance == null || (gramophoneEvent.IsNull && !eventInstance.isValid())) return;
+
+            if (!eventInstance.isValid())
+            {
+                eventInstance = AudioManager.Instance.CreateEventInstance(gramophoneEvent, emitterTransform.position);
+            }
+
+            if (eventInstance.isValid())
+            {
+                eventInstance.getPlaybackState(out PLAYBACK_STATE state);
+                if (state == PLAYBACK_STATE.STOPPED)
+                {
+                    eventInstance.start();
+                }
+            }
         }
-
-        eventInstance.getPlaybackState(out PLAYBACK_STATE state);
-        if (state == PLAYBACK_STATE.STOPPED)
+        catch (System.Exception e)
         {
-            eventInstance.start();
+            Debug.LogWarning($"[Gramophone] Failed to play gramophone sound: {e.Message}");
         }
     }
 }
