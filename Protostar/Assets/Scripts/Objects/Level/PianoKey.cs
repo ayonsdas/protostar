@@ -17,7 +17,7 @@ public class PianoKey : MonoBehaviour, IAudioSurface
         {
             [PIANO_KEY_PARAMETER] = _keyValue
         };
-        Debug.Log($"Piano key event {pianoEvent.Path} parameter {PIANO_KEY_PARAMETER} = {_keyValue}");
+        Debug.Log($"Piano key event {pianoEvent} parameter {PIANO_KEY_PARAMETER} = {_keyValue}");
 
         AudioManager.PlayOneShot(pianoEvent, playerPosition, parameters);
     }
